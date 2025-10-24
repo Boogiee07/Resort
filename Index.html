@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resort Escapes - Pansol Hot Spring Resorts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f7f7f7;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .hero-background {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            background-size: cover;
+            background-position: center;
+            min-height: 600px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+        }
+
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://placehold.co/1920x600/0ea5e9/ffffff?text=Pansol+Hot+Spring+Resorts') center/cover;
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        button,
+        a {
+            transition: all 0.2s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .dropdown-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        #resortDropdown {
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 20;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        #resortDropdown::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #resortDropdown::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #resortDropdown::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        #resortDropdown::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Header & Navigation Bar -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                    </path>
+                </svg>
+                <div>
+                    <h1 class="text-xl font-extrabold text-gray-900">Resort Escapes</h1>
+                    <p class="text-xs text-gray-500 hidden sm:block">Pansol Hot Spring Resorts</p>
+                </div>
+            </div>
+
+            <nav class="space-x-4 md:space-x-8 text-sm font-semibold">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
+                <a href="index2.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Featured Resorts</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden sm:inline">About</a>
+                <a href="#"
+                    class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section with Search -->
+    <div class="hero-background">
+        <div class="hero-content w-full max-w-5xl">
+            <!-- Hero Text -->
+            <div class="text-center mb-8">
+                <h2 class="text-5xl md:text-6xl font-black text-white mb-4 leading-tight">
+                    Discover Pansol Hot Springs
+                </h2>
+                <p class="text-xl text-white mb-8 font-light">
+                    Explore the best private hot spring resorts in Calamba, Laguna for your perfect getaway.
+                </p>
+            </div>
+            <div class="space-y-5">
+                <!-- Search Input with Dropdown -->
+                <div>
+                    <div class="relative">
+                        <svg class="absolute left-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400 z-10 pointer-events-none"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Search resorts by name or features..."
+                            class="w-full pl-14 pr-5 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-white"
+                            onkeypress="handleEnterKey(event)" onfocus="showDropdown()" oninput="filterResorts()"
+                            autocomplete="off">
+                        <div id="resortDropdown"
+                            class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg">
+                            <div id="dropdownContent" class="py-2">
+                                <div class="px-5 py-3 text-center text-gray-500">
+                                    <div class="loading-spinner mx-auto"></div>
+                                    <div class="mt-2 text-sm">Loading resorts...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div>
+                    <select id="sortSelect"
+                        class="w-full px-5 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-base text-gray-700">
+                        <option value="name">Sort by Name</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="bedrooms">Bedrooms: Most First</option>
+                    </select>
+                </div>
+
+                <!-- Search Button -->
+                <div>
+                    <button onclick="redirectToFeaturedResorts()"
+                        class="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all shadow-md hover:shadow-lg text-base tracking-wide">
+                        SEARCH
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start">
+                <div class="mb-4 md:mb-0 text-center md:text-left">
+                    <h5 class="text-xl font-bold mb-1">Resort Escapes</h5>
+                    <p class="text-sm text-gray-400">Your guide to Pansol hot spring resorts.</p>
+                </div>
+                <div class="text-center">
+                    <h6 class="font-semibold mb-2">Quick Links</h6>
+                    <ul class="text-sm space-y-1 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-400">About Pansol</a></li>
+                        <li><a href="#" class="hover:text-blue-400">Travel Tips</a></li>
+                        <li><a href="#" class="hover:text-blue-400">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
+                &copy; 2025 Resort Escapes. All rights reserved. Information purposes only.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoILyFqD0iuOe4DfA2YoyjNiu30Mzw_DM",
+            authDomain: "resort-ec9b6.firebaseapp.com",
+            projectId: "resort-ec9b6",
+            storageBucket: "resort-ec9b6.firebasestorage.app",
+            messagingSenderId: "1034701877647",
+            appId: "1:1034701877647:web:e14e3e791b9d7780e15bfa",
+            measurementId: "G-12YD26J2E8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Resort data will be loaded from Firebase
+        let resorts = [];
+        let resortsLoaded = false;
+
+        // Initialize Firebase and load data
+        function initializeFirebase() {
+            // Reference to resorts in database
+            const resortsRef = database.ref('resorts');
+
+            // Listen for data
+            resortsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    resorts = Object.values(data);
+                    resortsLoaded = true;
+                    filterResorts(); // Update dropdown with loaded data
+                } else {
+                    // If no data exists, initialize with sample data
+                    initializeSampleData();
+                }
+            }, (error) => {
+                console.error('Error loading resorts:', error);
+                // Fallback to sample data if Firebase fails
+                initializeSampleData();
+            });
+        }
+
+        // Initialize sample data in Firebase
+        function initializeSampleData() {
+            const sampleResorts = [
+                {
+                    id: 1,
+                    name: "Laguna Hot Spring Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A popular resort featuring natural hot spring pools and accommodations for families and groups.",
+                    facilities: ["Swimming pools", "Hot spring baths", "Cottages", "Function halls", "Restaurant", "Parking"],
+                    lat: 14.179855690866304,
+                    lng: 121.1837820447193,
+                    bedrooms: 3,
+                    price: "mid",
+                    amenities: ["hot-spring", "parking", "kitchen", "wifi"],
+                    priceValue: "₱3,000 per night",
+                    priceNumeric: 3000,
+                    image: "https://placehold.co/600x400/0ea5e9/ffffff?text=Laguna+Hot+Spring+Resort"
+                },
+                {
+                    id: 2,
+                    name: "Villa Mejia",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A private resort with swimming pools and complete facilities for events and gatherings.",
+                    facilities: ["Private pools", "Event space", "Kitchen facilities", "Barbecue area", "Air-conditioned rooms"],
+                    lat: 14.179350807676604,
+                    lng: 121.18485773727306,
+                    bedrooms: 4,
+                    price: "premium",
+                    amenities: ["aircon", "kitchen", "parking"],
+                    priceValue: "₱12,000 per night",
+                    priceNumeric: 12000,
+                    image: "https://placehold.co/600x400/8b5cf6/ffffff?text=Villa+Mejia"
+                },
+                {
+                    id: 3,
+                    name: "Glennette's Haven Private Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "An exclusive private resort with hot spring pools perfect for family outings and celebrations.",
+                    facilities: ["Hot spring baths", "Karaoke", "Videoke", "Outdoor grilling area", "WiFi"],
+                    lat: 14.179889853295485,
+                    lng: 121.1861350014737,
+                    bedrooms: 2,
+                    price: "budget",
+                    amenities: ["hot-spring", "karaoke", "wifi"],
+                    priceValue: "₱7,000 per night",
+                    priceNumeric: 7000,
+                    image: "https://placehold.co/600x400/10b981/ffffff?text=Glennette's+Haven"
+                },
+                {
+                    id: 4,
+                    name: "Elysian Sourire Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A tranquil resort offering relaxing hot spring pools and modern amenities.",
+                    facilities: ["Heated pools", "Spa services", "Gazebo", "Garden area", "Outdoor dining"],
+                    lat: 14.17950049393675,
+                    lng: 121.18694386655233,
+                    bedrooms: 5,
+                    price: "premium",
+                    amenities: ["hot-spring", "wifi", "aircon", "parking"],
+                    priceValue: "₱15,000 per night",
+                    priceNumeric: 15000,
+                    image: "https://placehold.co/600x400/f59e0b/ffffff?text=Elysian+Sourire"
+                },
+                {
+                    id: 5,
+                    name: "Villa Francesca Private Resort - Pansol",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A spacious private resort ideal for large groups and events with multiple pools.",
+                    facilities: ["Multiple swimming pools", "Function hall", "Videoke", "Cottages", "Playground"],
+                    lat: 14.180012234621406,
+                    lng: 121.1871543967939,
+                    bedrooms: 6,
+                    price: "premium",
+                    amenities: ["karaoke", "aircon", "kitchen", "parking"],
+                    priceValue: "₱18,000 per night",
+                    priceNumeric: 18000,
+                    image: "https://placehold.co/600x400/ec4899/ffffff?text=Villa+Francesca"
+                }
+            ];
+
+            // Write sample data to Firebase
+            const resortsRef = database.ref('resorts');
+            sampleResorts.forEach(resort => {
+                resortsRef.child(resort.id.toString()).set(resort);
+            });
+
+            resorts = sampleResorts;
+            resortsLoaded = true;
+        }
+
+        // Show dropdown when input is focused
+        function showDropdown() {
+            const dropdown = document.getElementById('resortDropdown');
+            dropdown.classList.remove('hidden');
+            if (resortsLoaded) {
+                filterResorts();
+            }
+        }
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const searchInput = document.getElementById('searchInput');
+            const dropdown = document.getElementById('resortDropdown');
+
+            if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Filter and display resorts in dropdown
+        function filterResorts() {
+            if (!resortsLoaded) return;
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const dropdownContent = document.getElementById('dropdownContent');
+
+            let filteredResorts = resorts;
+
+            if (searchTerm) {
+                filteredResorts = resorts.filter(resort =>
+                    resort.name.toLowerCase().includes(searchTerm) ||
+                    resort.description.toLowerCase().includes(searchTerm) ||
+                    resort.facilities.some(facility => facility.toLowerCase().includes(searchTerm)) ||
+                    resort.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            if (filteredResorts.length === 0) {
+                dropdownContent.innerHTML = `
+                    <div class="px-5 py-3 text-gray-500 text-sm">
+                        No resorts found
+                    </div>
+                `;
+            } else {
+                dropdownContent.innerHTML = filteredResorts.map(resort => `
+                    <div class="dropdown-item px-5 py-3 cursor-pointer border-b border-gray-100 last:border-b-0" onclick="selectResort('${resort.name.replace(/'/g, "\\'")}')">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="font-semibold text-gray-900">${resort.name}</div>
+                                <div class="text-sm text-gray-600">${resort.priceValue} • ${resort.bedrooms} bedrooms</div>
+                            </div>
+                            <div class="text-xs text-white bg-blue-600 px-2 py-1 rounded ml-2">
+                                ${resort.price}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Select resort from dropdown
+        function selectResort(resortName) {
+            document.getElementById('searchInput').value = resortName;
+            document.getElementById('resortDropdown').classList.add('hidden');
+        }
+
+        // Function to redirect to featured resorts page with search parameters
+        function redirectToFeaturedResorts() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const sortValue = document.getElementById('sortSelect').value;
+
+            // Build URL with query parameters
+            let url = '2.html';
+            const params = new URLSearchParams();
+
+            if (searchTerm) {
+                params.append('search', searchTerm);
+            }
+
+            if (sortValue && sortValue !== 'name') {
+                params.append('sort', sortValue);
+            }
+
+            // Add parameters to URL if they exist
+            const queryString = params.toString();
+            if (queryString) {
+                url += '?' + queryString;
+            }
+
+            // Redirect to the featured resorts page
+            window.location.href = url;
+        }
+
+        // Handle Enter key press in search input
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                redirectToFeaturedResorts();
+            }
+        }
+
+        // Initialize Firebase on page load
+        initializeFirebase();
+    </script>
+
+</body>
+
+</html>
