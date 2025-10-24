@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resort Details - Pansol Hot Spring Resorts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f7f7f7;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-image {
+            height: 500px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .facility-item {
+            transition: all 0.3s ease;
+        }
+
+        .facility-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .facility-item img {
+            transition: all 0.3s ease;
+        }
+
+        .facility-item:hover img {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
+        }
+
+        .amenity-item {
+            transition: all 0.3s ease;
+        }
+
+        .amenity-item:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-700 font-semibold">Loading resort details...</p>
+        </div>
+    </div>
+
+    <!-- Header & Navigation Bar -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <div>
+                    <h1 class="text-xl font-extrabold text-gray-900">Resort Escapes</h1>
+                    <p class="text-xs text-gray-500 hidden sm:block">Pansol Hot Spring Resorts</p>
+                </div>
+            </div>
+
+            <nav class="space-x-4 md:space-x-8 text-sm font-semibold">
+                <a href="1.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
+                <a href="2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Featured Resorts</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden sm:inline">About</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="hidden">
+        <!-- Back Button -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <a href="1.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-all back-button">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Back to Resorts
+            </a>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="relative">
+            <img id="resortHeroImage" class="hero-image" src="" alt="Resort">
+            <div class="absolute top-6 right-6">
+                <span id="priceBadge" class="px-6 py-3 rounded-full text-sm font-bold shadow-lg uppercase"></span>
+            </div>
+        </div>
+
+        <!-- Resort Information -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <!-- Title and Price Section -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
+                    <div class="flex-1">
+                        <h1 id="resortName" class="text-4xl md:text-5xl font-black text-gray-900 mb-4"></h1>
+                        <div class="flex items-center text-lg text-gray-600 mb-2">
+                            <svg class="w-6 h-6 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span id="resortAddress"></span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                            </svg>
+                            <span id="resortBedrooms"></span>
+                        </div>
+                    </div>
+                    <div class="text-left lg:text-right">
+                        <div class="text-5xl font-black text-blue-600 mb-2" id="resortPrice"></div>
+                        <div class="text-gray-600 text-lg">per night</div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- About Section -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    About This Resort
+                </h2>
+                <p id="resortDescription" class="text-gray-700 text-lg leading-relaxed"></p>
+            </div>
+
+            <!-- Amenities Section -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                    <svg class="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Amenities
+                </h2>
+                <div id="amenitiesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Amenities will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Facilities Section -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Facilities</h2>
+                <div id="facilitiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Facilities will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-xl p-8 mb-8 border-2 border-blue-100">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="w-8 h-8 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                    </svg>
+                    Location
+                </h2>
+                <p id="locationAddress" class="text-gray-800 text-lg mb-3"></p>
+                <div class="flex items-center text-gray-700">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                    <span class="text-sm">Coordinates: <span id="locationCoords" class="font-mono"></span></span>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="bg-gray-50 rounded-xl p-6 border-l-4 border-blue-600">
+                <p class="text-sm text-gray-600 italic">
+                    <strong>Note:</strong> This information is for reference purposes only. Please contact the resort directly for current availability, accurate pricing, and booking details. Prices and facilities may change without notice.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="hidden max-w-4xl mx-auto px-4 py-20 text-center">
+        <svg class="w-24 h-24 mx-auto text-red-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Resort Not Found</h2>
+        <p class="text-gray-600 mb-8">Sorry, we couldn't find the resort you're looking for.</p>
+        <a href="TEST1.HTML" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+            Browse All Resorts
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start">
+                <div class="mb-4 md:mb-0 text-center md:text-left">
+                    <h5 class="text-xl font-bold mb-1">Resort Escapes</h5>
+                    <p class="text-sm text-gray-400">Your guide to Pansol hot spring resorts.</p>
+                </div>
+                <div class="text-center">
+                    <h6 class="font-semibold mb-2">Quick Links</h6>
+                    <ul class="text-sm space-y-1 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-400">About Pansol</a></li>
+                        <li><a href="#" class="hover:text-blue-400">Travel Tips</a></li>
+                        <li><a href="#" class="hover:text-blue-400">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
+                &copy; 2025 Resort Escapes. All rights reserved. Information purposes only.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoILyFqD0iuOe4DfA2YoyjNiu30Mzw_DM",
+            authDomain: "resort-ec9b6.firebaseapp.com",
+            databaseURL: "https://resort-ec9b6-default-rtdb.firebaseio.com",
+            projectId: "resort-ec9b6",
+            storageBucket: "resort-ec9b6.firebasestorage.app",
+            messagingSenderId: "1034701877647",
+            appId: "1:1034701877647:web:e14e3e791b9d7780e15bfa",
+            measurementId: "G-12YD26J2E8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Facilities images mapping - organized by resort ID
+        const facilityImagesByResort = {
+            'resort1': {
+                'Swimming pools': 'picture/1_resort/6.jpg',
+                'Hot spring baths': 'picture/1_resort/7.jpg',
+                'Cottages': 'picture/1_resort/8.jpg',
+                'Function halls': 'picture/1_resort/9.jpg',
+                'Restaurant': 'picture/1_resort/10.jpg',
+                'Parking': 'picture/1_resort/11.jpg'
+            },
+            'resort2': {
+                'Swimming pools': 'picture/2_resort/6.jpg',
+                'Hot spring baths': 'picture/2_resort/7.jpg',
+                'Cottages': 'picture/2_resort/8.jpg',
+                'Function halls': 'picture/2_resort/9.jpg',
+                'Restaurant': 'picture/2_resort/10.jpg',
+                'Parking': 'picture/2_resort/11.jpg'
+            },
+            'resort3': {
+                'Swimming pools': 'picture/3_resort/6.jpg',
+                'Hot spring baths': 'picture/3_resort/7.jpg',
+                'Cottages': 'picture/3_resort/8.jpg',
+                'Function halls': 'picture/3_resort/9.jpg',
+                'Restaurant': 'picture/3_resort/10.jpg',
+                'Parking': 'picture/3_resort/11.jpg'
+            },
+            'resort4': {
+                'Swimming pools': 'picture/4_resort/6.jpg',
+                'Hot spring baths': 'picture/4_resort/7.jpg',
+                'Cottages': 'picture/4_resort/8.jpg',
+                'Function halls': 'picture/4_resort/9.jpg',
+                'Restaurant': 'picture/4_resort/10.jpg',
+                'Parking': 'picture/5_resort/11.jpg'
+            },
+            'resort5': {
+                'Swimming pools': 'picture/5_resort/6.jpg',
+                'Hot spring baths': 'picture/5_resort/7.jpg',
+                'Cottages': 'picture/5_resort/8.jpg',
+                'Function halls': 'picture/5_resort/9.jpg',
+                'Restaurant': 'picture/5_resort/10.jpg',
+                'Parking': 'picture/5_resort/11.jpg'
+            }
+            // Add more resorts as needed
+        };
+
+        // Fallback facility images
+
+        // Amenity labels and icons
+        const amenityDetails = {
+            'hot-spring': { icon: '🌊', label: 'Hot Spring', color: 'bg-orange-100 text-orange-800 border-orange-200' },
+            'aircon': { icon: '❄️', label: 'Air Conditioning', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+            'kitchen': { icon: '🍳', label: 'Kitchen', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+            'karaoke': { icon: '🎤', label: 'Karaoke/Videoke', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+            'wifi': { icon: '📶', label: 'WiFi', color: 'bg-cyan-100 text-cyan-800 border-cyan-200' },
+            'parking': { icon: '🅿️', label: 'Parking', color: 'bg-gray-100 text-gray-800 border-gray-200' }
+        };
+
+        // Price badge colors
+        const priceBadgeColors = {
+            'budget': 'bg-green-100 text-green-800',
+            'mid': 'bg-blue-100 text-blue-800',
+            'premium': 'bg-purple-100 text-purple-800'
+        };
+
+        // Get resort ID from URL
+        function getResortIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        // Load resort details
+        function loadResortDetails() {
+            const resortId = getResortIdFromUrl();
+            
+            if (!resortId) {
+                showError();
+                return;
+            }
+
+            const resortRef = database.ref('resorts/' + resortId);
+            
+            resortRef.once('value', (snapshot) => {
+                const resort = snapshot.val();
+                
+                if (resort) {
+                    displayResortDetails(resort);
+                } else {
+                    showError();
+                }
+            }, (error) => {
+                console.error('Error loading resort:', error);
+                showError();
+            });
+        }
+
+        // Display resort details
+        function displayResortDetails(resort) {
+            // Update page title
+            document.title = `${resort.name} - Resort Escapes`;
+
+            // Hero image
+            document.getElementById('resortHeroImage').src = resort.image;
+            document.getElementById('resortHeroImage').alt = resort.name;
+
+            // Price badge
+            const badge = document.getElementById('priceBadge');
+            badge.textContent = resort.price;
+            badge.className = `px-6 py-3 rounded-full text-sm font-bold shadow-lg uppercase ${priceBadgeColors[resort.price]}`;
+
+            // Resort name and basic info
+            document.getElementById('resortName').textContent = resort.name;
+            document.getElementById('resortAddress').textContent = resort.address;
+            document.getElementById('resortBedrooms').textContent = `${resort.bedrooms} Bedroom${resort.bedrooms > 1 ? 's' : ''}`;
+            document.getElementById('resortPrice').textContent = resort.priceValue.split(' ')[0];
+
+
+
+            // Amenities list (detailed section)
+            const amenitiesListHtml = resort.amenities.map(amenity => {
+                const details = amenityDetails[amenity];
+                return `
+                    <div class="amenity-item flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="font-normal text-gray-800">${details.label}</span>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('amenitiesList').innerHTML = amenitiesListHtml;
+
+            // Description
+            document.getElementById('resortDescription').textContent = resort.description;
+
+            // Facilities
+            const facilitiesHtml = resort.facilities.map(facility => `
+                <div class="facility-item">
+                    <img src="${facilityImagesByResort[facility] || 'https://placehold.co/400x300/94a3b8/ffffff?text=Facility'}" 
+                         alt="${facility}" 
+                         class="w-full h-48 object-cover rounded-lg mb-3"
+                         onerror="this.src='https://placehold.co/400x300/94a3b8/ffffff?text=Facility'">
+                    <h3 class="text-lg font-semibold text-gray-800 text-center">${facility}</h3>
+                </div>
+            `).join('');
+            document.getElementById('facilitiesGrid').innerHTML = facilitiesHtml;
+
+            // Location
+            document.getElementById('locationAddress').textContent = resort.address;
+            document.getElementById('locationCoords').textContent = `${resort.lat.toFixed(6)}, ${resort.lng.toFixed(6)}`;
+
+            // Hide loading, show content
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('mainContent').classList.remove('hidden');
+        }
+
+        // Show error message
+        function showError() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('errorMessage').classList.remove('hidden');
+        }
+
+        // Load resort on page load
+        loadResortDetails();
+    </script>
+
+</body>
+</html>
