@@ -109,7 +109,7 @@
             </div>
 
             <nav class="space-x-4 md:space-x-8 text-sm font-semibold">
-                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
+                <a href="index .html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
                 <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Featured Resorts</a>
                 <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden sm:inline">About</a>
                 <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
@@ -162,8 +162,6 @@
                         <div class="text-gray-600 text-lg">per night</div>
                     </div>
                 </div>
-
-
             </div>
 
             <!-- About Section -->
@@ -276,52 +274,28 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Facilities images mapping - organized by resort ID
-        const facilityImagesByResort = {
-            'resort1': {
-                'Swimming pools': 'picture/1_resort/6.jpg',
-                'Hot spring baths': 'picture/1_resort/7.jpg',
-                'Cottages': 'picture/1_resort/8.jpg',
-                'Function halls': 'picture/1_resort/9.jpg',
-                'Restaurant': 'picture/1_resort/10.jpg',
-                'Parking': 'picture/1_resort/11.jpg'
-            },
-            'resort2': {
-                'Swimming pools': 'picture/2_resort/6.jpg',
-                'Hot spring baths': 'picture/2_resort/7.jpg',
-                'Cottages': 'picture/2_resort/8.jpg',
-                'Function halls': 'picture/2_resort/9.jpg',
-                'Restaurant': 'picture/2_resort/10.jpg',
-                'Parking': 'picture/2_resort/11.jpg'
-            },
-            'resort3': {
-                'Swimming pools': 'picture/3_resort/6.jpg',
-                'Hot spring baths': 'picture/3_resort/7.jpg',
-                'Cottages': 'picture/3_resort/8.jpg',
-                'Function halls': 'picture/3_resort/9.jpg',
-                'Restaurant': 'picture/3_resort/10.jpg',
-                'Parking': 'picture/3_resort/11.jpg'
-            },
-            'resort4': {
-                'Swimming pools': 'picture/4_resort/6.jpg',
-                'Hot spring baths': 'picture/4_resort/7.jpg',
-                'Cottages': 'picture/4_resort/8.jpg',
-                'Function halls': 'picture/4_resort/9.jpg',
-                'Restaurant': 'picture/4_resort/10.jpg',
-                'Parking': 'picture/5_resort/11.jpg'
-            },
-            'resort5': {
-                'Swimming pools': 'picture/5_resort/6.jpg',
-                'Hot spring baths': 'picture/5_resort/7.jpg',
-                'Cottages': 'picture/5_resort/8.jpg',
-                'Function halls': 'picture/5_resort/9.jpg',
-                'Restaurant': 'picture/5_resort/10.jpg',
-                'Parking': 'picture/5_resort/11.jpg'
-            }
-            // Add more resorts as needed
-        };
+        // Get resort ID from URL
+        function getResortIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
 
-        // Fallback facility images
+        // Function to get facility image based on resort ID and facility name
+        function getFacilityImage(facilityName) {
+            const resortId = getResortIdFromUrl();
+            const resortNumber = resortId ? resortId.replace('resort', '') : '1';
+            
+            const facilityImageMap = {
+                'Swimming pools': `picture/${resortNumber}_resort/6.jpg`,
+                'Hot spring baths': `picture/${resortNumber}_resort/7.jpg`,
+                'Cottages': `picture/${resortNumber}_resort/8.jpg`,
+                'Function halls': `picture/${resortNumber}_resort/9.jpg`,
+                'Restaurant': `picture/${resortNumber}_resort/10.jpg`,
+                'Parking': `picture/${resortNumber}_resort/11.jpg`
+            };
+            
+            return facilityImageMap[facilityName] || 'https://placehold.co/400x300/94a3b8/ffffff?text=Facility';
+        }
 
         // Amenity labels and icons
         const amenityDetails = {
@@ -339,12 +313,6 @@
             'mid': 'bg-blue-100 text-blue-800',
             'premium': 'bg-purple-100 text-purple-800'
         };
-
-        // Get resort ID from URL
-        function getResortIdFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('id');
-        }
 
         // Load resort details
         function loadResortDetails() {
@@ -391,8 +359,6 @@
             document.getElementById('resortBedrooms').textContent = `${resort.bedrooms} Bedroom${resort.bedrooms > 1 ? 's' : ''}`;
             document.getElementById('resortPrice').textContent = resort.priceValue.split(' ')[0];
 
-
-
             // Amenities list (detailed section)
             const amenitiesListHtml = resort.amenities.map(amenity => {
                 const details = amenityDetails[amenity];
@@ -410,10 +376,10 @@
             // Description
             document.getElementById('resortDescription').textContent = resort.description;
 
-            // Facilities
+            // Facilities with images
             const facilitiesHtml = resort.facilities.map(facility => `
                 <div class="facility-item">
-                    <img src="${facilityImagesByResort[facility] || 'https://placehold.co/400x300/94a3b8/ffffff?text=Facility'}" 
+                    <img src="${getFacilityImage(facility)}" 
                          alt="${facility}" 
                          class="w-full h-48 object-cover rounded-lg mb-3"
                          onerror="this.src='https://placehold.co/400x300/94a3b8/ffffff?text=Facility'">
