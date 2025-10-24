@@ -109,8 +109,8 @@
             </div>
 
             <nav class="space-x-4 md:space-x-8 text-sm font-semibold">
-                <a href="index .html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
-                <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Featured Resorts</a>
+                <a href="1.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
+                <a href="2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Featured Resorts</a>
                 <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden sm:inline">About</a>
                 <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
             </nav>
@@ -229,7 +229,7 @@
         </svg>
         <h2 class="text-3xl font-bold text-gray-900 mb-4">Resort Not Found</h2>
         <p class="text-gray-600 mb-8">Sorry, we couldn't find the resort you're looking for.</p>
-        <a href="TEST1.HTML" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+        <a href="1.HTML" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
             Browse All Resorts
         </a>
     </div>
@@ -286,12 +286,12 @@
             const resortNumber = resortId ? resortId.replace('resort', '') : '1';
             
             const facilityImageMap = {
-                'Swimming pools': `picture/${resortNumber}_resort/6.jpg`,
-                'Hot spring baths': `picture/${resortNumber}_resort/7.jpg`,
-                'Cottages': `picture/${resortNumber}_resort/8.jpg`,
-                'Function halls': `picture/${resortNumber}_resort/9.jpg`,
-                'Restaurant': `picture/${resortNumber}_resort/10.jpg`,
-                'Parking': `picture/${resortNumber}_resort/11.jpg`
+                'Swimming pools': `picture/${resortNumber}_resort1/6.jpg`,
+                'Hot spring baths': `picture/${resortNumber}_resort1/7.jpg`,
+                'Cottages': `picture/${resortNumber}_resort1/8.jpg`,
+                'Function halls': `picture/${resortNumber}_resort1/9.jpg`,
+                'Restaurant': `picture/${resortNumber}_resort1/10.jpg`,
+                'Parking': `picture/${resortNumber}_resort1/11.jpg`
             };
             
             return facilityImageMap[facilityName] || 'https://placehold.co/400x300/94a3b8/ffffff?text=Facility';
