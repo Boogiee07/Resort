@@ -104,29 +104,11 @@
         }
 
         .hero-bg {
+            background-image: url('R.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             position: relative;
-        }
-        
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('picture/R.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.3;
-            z-index: 0;
-        }
-        
-        .hero-bg > * {
-            position: relative;
-            z-index: 1;
         }
 
         .filter-chip {
@@ -293,6 +275,7 @@
     <div class="hero-bg py-16 sm:py-24 px-4">
         <div class="max-w-7xl mx-auto text-center">
             <h2 class="text-4xl sm:text-5xl md:text-6xl font-black mb-6 drop-shadow-2xl inline-block">
+                <span class="bg-white text-gray-900 px-6 py-3 rounded-2xl shadow-2xl">
                     Resorts in Pansol
                 </span>
             </h2>
