@@ -104,7 +104,7 @@
         }
 
         .hero-bg {
-            background-image: url('picture/R.jpg');
+            background-image: url('R.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -237,8 +237,8 @@
                 </button>
             </div>
             <nav class="space-y-4">
-                <a href="index.html" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
-                <a href="index2.html" class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
+                <a href="1.html" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
+                <a href="2.html" class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
                 <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
             </nav>
         </div>
@@ -257,9 +257,9 @@
 
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-8 text-sm font-semibold">
-                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
-                <a href="index2.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Resorts</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
+                <a href="1.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
+                <a href="2.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Resorts</a>
+                <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
             </nav>
 
             <!-- Mobile Menu Button -->
@@ -589,12 +589,17 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Get URL parameters
+        // Get URL parameters - UPDATED TO INCLUDE ROOMS
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
                 search: params.get('search') || '',
-                sort: params.get('sort') || 'name'
+                sort: params.get('sort') || 'name',
+                rooms: params.get('rooms') ? parseInt(params.get('rooms')) : null,
+                stayType: params.get('stayType') || '',
+                checkIn: params.get('checkIn') || '',
+                checkOut: params.get('checkOut') || '',
+                adults: params.get('adults') || ''
             };
         }
 
@@ -622,7 +627,7 @@
             });
         }
 
-        // Initialize page with loaded data
+        // Initialize page with loaded data - UPDATED TO SHOW FILTER INFO
         function initializePageWithData() {
             const urlParams = getUrlParams();
             
@@ -637,10 +642,48 @@
                 currentSort = urlParams.sort;
             }
             
+            // Display filter info if rooms parameter exists
+            if (urlParams.rooms || urlParams.adults || urlParams.stayType) {
+                displayFilterInfo(urlParams);
+            }
+            
             // Apply initial filters
             applyFiltersAndSort();
             setupSearch();
             setupSort();
+        }
+
+        // NEW FUNCTION - Display filter information banner
+        function displayFilterInfo(params) {
+            const filterSection = document.querySelector('.filter-section .max-w-7xl');
+            
+            let filterInfoHTML = '<div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">';
+            filterInfoHTML += '<svg class="w-6 h-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">';
+            filterInfoHTML += '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+            filterInfoHTML += '</svg>';
+            filterInfoHTML += '<div class="flex-1"><div class="font-semibold text-blue-900 mb-1">Active Filters:</div>';
+            filterInfoHTML += '<div class="text-sm text-blue-800">';
+            
+            const filters = [];
+            if (params.rooms) filters.push(`${params.rooms} bedroom${params.rooms > 1 ? 's' : ''} or more`);
+            if (params.adults) filters.push(`${params.adults} adult${params.adults > 1 ? 's' : ''}`);
+            if (params.stayType) filters.push(params.stayType === 'overnight' ? 'Overnight stay' : 'Day use');
+            
+            filterInfoHTML += filters.join(' • ');
+            filterInfoHTML += '</div></div>';
+            filterInfoHTML += '<button onclick="clearSearchFilters()" class="text-blue-600 hover:text-blue-800 font-semibold text-sm whitespace-nowrap">Clear Filters</button>';
+            filterInfoHTML += '</div>';
+            
+            filterSection.insertAdjacentHTML('afterbegin', filterInfoHTML);
+        }
+
+        // NEW FUNCTION - Clear search filters
+        function clearSearchFilters() {
+            // Remove URL parameters
+            window.history.replaceState({}, '', window.location.pathname);
+            
+            // Reload the page to reset everything
+            window.location.reload();
         }
 
         // Toggle filter
@@ -714,14 +757,20 @@
             `).join('');
         }
 
-        // Apply filters and sorting
+        // Apply filters and sorting - UPDATED TO INCLUDE ROOM FILTERING
         function applyFiltersAndSort() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const urlParams = getUrlParams();
             let filtered = resorts;
 
             // Apply price filter
             if (activeFilter !== 'all') {
                 filtered = filtered.filter(resort => resort.price === activeFilter);
+            }
+
+            // Apply room/bedroom filter from URL parameters - THIS IS THE KEY ADDITION
+            if (urlParams.rooms) {
+                filtered = filtered.filter(resort => resort.bedrooms >= urlParams.rooms);
             }
 
             // Apply search filter
