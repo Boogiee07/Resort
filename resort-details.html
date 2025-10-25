@@ -464,7 +464,7 @@
                 <!-- Contact Section -->
                 <div class="text-center md:text-left">
                     <h6 class="font-semibold mb-3 text-lg">Contact Us</h6>
-                    <p class="text-sm text-gray-400 mb-3">For inquiries, reservations, or assistance:</p>
+                    <p class="text-sm text-gray-400 mb-3">For website inquiries and assistance:</p>
                     <div class="space-y-2">
                         <div class="flex items-center justify-center md:justify-start text-sm">
                             <svg class="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -480,7 +480,7 @@
                         </div>
                     </div>
                     <div class="mt-4 pt-4 border-t border-gray-700">
-                        <p class="text-xs text-gray-500 italic">We help you find the perfect hot spring resort for your relaxation and family bonding needs.</p>
+                        <p class="text-xs text-gray-500 italic"><strong>Note:</strong> This contact is for the website administrator, not the resort owner. For resort bookings and reservations, please contact the resort directly via their Facebook page.</p>
                     </div>
                 </div>
             </div>
@@ -693,14 +693,65 @@
             const rating = generateStarRating(resortId);
             displayStarRating(rating);
 
-            // Facebook button
+            // Facebook button or Contact button for specific resorts
             const facebookButton = document.getElementById('facebookButton');
             
-            if (resort.facebookUrl && resort.facebookUrl.trim() !== '') {
-                facebookButton.href = resort.facebookUrl;
+            // Check if this is Elysian Sourire Resort (resortId = 1)
+            if (resortId === '1' || resort.name.includes('Elysian Sourire')) {
+                // Change to Contact button
+                facebookButton.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                    </svg>
+                    Contact Resort
+                `;
+                facebookButton.href = 'tel:09204193551';
+            } else if (resortId === '2' || resort.name.includes("Glennette's Haven")) {
+                // Change to Contact button with options for Glennette's Haven
+                facebookButton.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                    </svg>
+                    Contact Resort
+                `;
+                facebookButton.href = 'tel:09272713040';
+                facebookButton.onclick = function(e) {
+                    e.preventDefault();
+                    const contactOptions = confirm('Choose contact method:\n\nOK = Call Phone\nCancel = Send Email');
+                    if (contactOptions) {
+                        window.location.href = 'tel:09272713040';
+                    } else {
+                        window.location.href = 'mailto:glennette98@yahoo.com.ph';
+                    }
+                };
+            } else if (resortId === '3' || resort.name.includes('Laguna Hot Spring')) {
+                // Change to Contact button with multiple options for Laguna Hot Spring
+                facebookButton.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                    </svg>
+                    Contact Resort
+                `;
+                facebookButton.href = '#';
+                facebookButton.onclick = function(e) {
+                    e.preventDefault();
+                    const contactChoice = prompt('Choose contact method:\n\n1 = Mobile (0956 458 4632)\n2 = Landline (049-545-2170)\n3 = Email\n\nEnter 1, 2, or 3:');
+                    if (contactChoice === '1') {
+                        window.location.href = 'tel:09564584632';
+                    } else if (contactChoice === '2') {
+                        window.location.href = 'tel:0495452170';
+                    } else if (contactChoice === '3') {
+                        window.location.href = 'mailto:Lagunahotspringresortsince1949@gmail.com';
+                    }
+                };
             } else {
-                const searchQuery = encodeURIComponent(resort.name);
-                facebookButton.href = `https://www.facebook.com/search/top?q=${searchQuery}`;
+                // Keep Facebook button for other resorts
+                if (resort.facebookUrl && resort.facebookUrl.trim() !== '') {
+                    facebookButton.href = resort.facebookUrl;
+                } else {
+                    const searchQuery = encodeURIComponent(resort.name);
+                    facebookButton.href = `https://www.facebook.com/search/top?q=${searchQuery}`;
+                }
             }
             facebookButton.style.display = 'inline-flex';
 
@@ -718,8 +769,16 @@
             }).join('');
             document.getElementById('amenitiesList').innerHTML = amenitiesListHtml;
 
-            // Description
-            document.getElementById('resortDescription').textContent = resort.description;
+            // Description - Custom descriptions for specific resorts
+            let description = resort.description;
+            if (resortId === '1' || resort.name.includes('Elysian Sourire')) {
+                description = 'Welcome to Elysian Sourire Resort. ELYSIAN is a Greek word that means beautiful or creative; divinely inspired; peaceful and perfect. SOURIRE is a French word for Smile 😊 A perfect place that will surely give you a beautiful Sourire.';
+            } else if (resortId === '2' || resort.name.includes("Glennette's Haven")) {
+                description = "Welcome to Glennette's Haven Private Resort, your exclusive sanctuary for relaxation and rejuvenation. Nestled in the heart of Pansol, our private resort offers a tranquil escape from the everyday hustle. Experience the therapeutic benefits of natural hot spring waters in the comfort and privacy of your own space. Perfect for families, friends, and intimate gatherings seeking a peaceful retreat.";
+            } else if (resortId === '3' || resort.name.includes('Laguna Hot Spring')) {
+                description = "Experience the legacy of Laguna Hot Spring Resort, serving families since 1949. As one of Pansol's pioneering hot spring resorts, we have been providing generations with authentic geothermal relaxation and unforgettable memories. Our naturally heated spring waters are known for their therapeutic properties, offering relief and rejuvenation. With over 75 years of hospitality excellence, we continue to be a beloved destination for those seeking the healing warmth of nature's hot springs in a family-friendly atmosphere.";
+            }
+            document.getElementById('resortDescription').textContent = description;
 
             // Facilities with images
             const facilitiesHtml = resort.facilities.map((facility, index) => `
@@ -733,9 +792,24 @@
             `).join('');
             document.getElementById('facilitiesGrid').innerHTML = facilitiesHtml;
 
-            // Location
-            document.getElementById('locationAddress').textContent = resort.address;
-            document.getElementById('locationCoords').textContent = `${resort.lat.toFixed(6)}, ${resort.lng.toFixed(6)}`;
+            // Location - Custom for specific resorts
+            let locationAddress = resort.address;
+            let locationCoords = `${resort.lat.toFixed(6)}, ${resort.lng.toFixed(6)}`;
+            let googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${resort.lat},${resort.lng}`;
+            
+            if (resortId === '1' || resort.name.includes('Elysian Sourire')) {
+                locationAddress = '758 Ilang-Ilang Street, Calamba, Philippines';
+                googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=758+Ilang-Ilang+Street+Calamba+Philippines';
+            } else if (resortId === '2' || resort.name.includes("Glennette's Haven")) {
+                locationAddress = 'Resurrection Street, Purok 5, Pansol, Calamba, Philippines';
+                googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=Resurrection+Street+Purok+5+Pansol+Calamba+Philippines';
+            } else if (resortId === '3' || resort.name.includes('Laguna Hot Spring')) {
+                locationAddress = '315 Purok 3 Brgy. Pansol, Calamba, Philippines';
+                googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=315+Purok+3+Brgy+Pansol+Calamba+Philippines';
+            }
+            
+            document.getElementById('locationAddress').innerHTML = `<a href="${googleMapsUrl}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline transition">${locationAddress}</a>`;
+            document.getElementById('locationCoords').textContent = locationCoords;
 
             // Hide loading, show content
             document.getElementById('loadingOverlay').style.display = 'none';
