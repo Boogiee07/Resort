@@ -15,10 +15,9 @@
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f7f7f7;
             color: #1f2937;
-            line-height: 1.6;
         }
         
         .line-clamp-2 {
@@ -26,14 +25,6 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .hero-bg {
-            background-image:  url('picture/R.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
         }
         
         html {
@@ -41,90 +32,21 @@
         }
         
         .resort-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
         .resort-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
         
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-        }
-        
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        .modal.active > div {
-            animation: modalFadeIn 0.3s ease;
-        }
-        
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        
-        button, a {
-            transition: all 0.2s ease;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .filter-chip {
-            transition: all 0.2s ease;
-        }
-
-        .filter-chip:hover {
-            transform: translateY(-2px);
-        }
-
         .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -145,7 +67,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Mobile menu styles */
         .mobile-menu {
             display: none;
             position: fixed;
@@ -179,29 +100,20 @@
             display: block;
         }
 
-        /* Responsive adjustments */
+        .hero-bg {
+            background-image: linear-gradient(rgba(37, 99, 235, 0.8), rgba(6, 182, 212, 0.8)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
         @media (max-width: 768px) {
             .resort-card:hover {
                 transform: translateY(-4px);
             }
 
-            .filter-section {
-                position: sticky;
-                top: 64px;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .modal.active {
-                padding: 0;
-                align-items: flex-start;
-            }
-
-            .modal.active > div {
-                border-radius: 0;
-                max-height: 100vh;
-                margin: 0;
-                width: 100%;
+            .hero-bg {
+                background-attachment: scroll;
             }
         }
     </style>
@@ -237,25 +149,25 @@
         </div>
     </div>
 
-    <!-- Header & Navigation Bar -->
+    <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <svg class="w-7 h-7 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <svg class="w-7 h-7 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
                 <div>
                     <h1 class="text-lg sm:text-xl font-extrabold text-gray-900">Pansol Resorts</h1>
-                    <p class="text-xs text-gray-500 hidden sm:block">Pansol Hot Spring Resorts</p>
+                    <p class="text-xs text-gray-500 hidden sm:block">Hot Spring Resorts</p>
                 </div>
             </div>
 
-            <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-8 text-sm font-semibold">
-                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
-                <a href="index2.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Resorts</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
+                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition">Home</a>
+                <a href="index2.html" class="text-blue-600">Resorts</a>
+                <a href="#contact" class="text-gray-600 hover:text-blue-600 transition">Contact</a>
             </nav>
 
-            <!-- Mobile Menu Button -->
             <button onclick="openMobileMenu()" class="md:hidden p-2 hover:bg-gray-100 rounded-lg">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -264,243 +176,170 @@
         </div>
     </header>
 
-    <!-- Page Header -->
-    <div class="bg-gradient-to-r from-blue-600 to-cyan-500 py-10 sm:py-16 px-4">
+    <!-- Hero Section with Background Image -->
+    <div class="hero-bg py-16 sm:py-24 px-4">
         <div class="max-w-7xl mx-auto text-center">
-            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3 sm:mb-4">
-                Resorts in Pansol
+            <h2 class="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-4 drop-shadow-2xl">
+                Resorts in <span class="bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">Pansol</span>
             </h2>
-            <p class="text-base sm:text-xl text-white opacity-90">
-                Discover our handpicked selection of the best hot spring resorts
+            <p class="text-lg sm:text-2xl text-white drop-shadow-lg max-w-3xl mx-auto">
+                Discover our <span class="bg-yellow-300 text-gray-900 px-3 py-1 rounded-lg font-bold">handpicked selection</span> of the best hot spring resorts
             </p>
         </div>
     </div>
 
-    <!-- Filter and Search Section -->
-    <section class="filter-section bg-white py-4 sm:py-6 px-4 sm:px-6 lg:px-8 shadow-sm sticky z-40">
+    <!-- Filter Section -->
+    <section class="bg-white py-6 px-4 shadow-md sticky top-16 z-40">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col gap-4">
                 <!-- Search Bar -->
-                <div class="w-full">
-                    <div class="relative">
-                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="Search resorts..." 
-                            class="w-full pl-12 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                        >
-                    </div>
+                <div class="relative">
+                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search resorts..." 
+                        class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
                 </div>
 
-                <!-- Filter Chips - Scrollable on mobile -->
-                <div class="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-                    <div class="flex gap-2 min-w-max sm:min-w-0 sm:flex-wrap">
-                        <button onclick="toggleFilter('all')" class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-blue-600 text-white whitespace-nowrap" data-filter="all">
+                <!-- Filter Chips -->
+                <div class="overflow-x-auto pb-2">
+                    <div class="flex gap-2 min-w-max">
+                        <button onclick="toggleFilter('all')" class="filter-chip px-4 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white" data-filter="all">
                             All Resorts
                         </button>
-                        <button onclick="toggleFilter('budget')" class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap" data-filter="budget">
+                        <button onclick="toggleFilter('budget')" class="filter-chip px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700" data-filter="budget">
                             Budget
                         </button>
-                        <button onclick="toggleFilter('mid')" class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap" data-filter="mid">
+                        <button onclick="toggleFilter('mid')" class="filter-chip px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700" data-filter="mid">
                             Mid-Range
                         </button>
-                        <button onclick="toggleFilter('premium')" class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap" data-filter="premium">
+                        <button onclick="toggleFilter('premium')" class="filter-chip px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700" data-filter="premium">
                             Premium
                         </button>
                     </div>
                 </div>
 
-                <!-- Sort Dropdown -->
-                <div class="w-full sm:w-auto">
-                    <select id="sortSelect" class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-xs sm:text-sm">
+                <!-- Sort and Results -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                    <select id="sortSelect" class="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
                         <option value="name">Sort by Name</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
                         <option value="bedrooms">Bedrooms: Most First</option>
                     </select>
-                </div>
-
-                <!-- Results Counter -->
-                <div class="text-xs sm:text-sm text-gray-600">
-                    <span id="resultsCount">Loading...</span>
+                    <div class="text-sm text-gray-600">
+                        <span id="resultsCount">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Resorts Grid Section -->
-    <section class="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <!-- Resorts Grid -->
+    <section class="py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-            <!-- Grid for Resort Cards -->
-            <div id="resortsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                <!-- Resort cards will be inserted here by JavaScript -->
+            <div id="resortsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Resort cards will be inserted here -->
             </div>
 
-            <!-- No Results Message -->
-            <div id="noResults" class="hidden text-center py-12 sm:py-16">
-                <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- No Results -->
+            <div id="noResults" class="hidden text-center py-16">
+                <svg class="w-20 h-20 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <p class="text-xl sm:text-2xl font-bold text-gray-600 mb-2">No resorts found</p>
-                <p class="text-sm sm:text-base text-gray-500 mb-6">Try adjusting your filters or search terms</p>
-                <button onclick="resetFilters()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm sm:text-base">
+                <p class="text-2xl font-bold text-gray-600 mb-2">No resorts found</p>
+                <p class="text-gray-500 mb-6">Try adjusting your filters or search terms</p>
+                <button onclick="resetFilters()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">
                     Clear All Filters
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Modal for Resort Details -->
-    <div id="resortModal" class="modal">
-        <div class="bg-white rounded-xl sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] sm:max-h-[90vh] overflow-y-auto m-0 sm:m-4">
-            <div class="relative">
-                <button onclick="closeModal()" class="absolute top-2 sm:top-4 right-2 sm:right-4 z-10 bg-white rounded-full p-1.5 sm:p-2 shadow-lg hover:bg-gray-100 transition">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-                <img id="modalImage" class="w-full h-48 sm:h-64 object-cover" src="" alt="">
-            </div>
-            <div class="p-4 sm:p-8">
-                <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
-                    <div class="flex-1">
-                        <h3 id="modalTitle" class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2"></h3>
-                        <p id="modalAddress" class="text-base sm:text-lg text-gray-600 mb-2"></p>
-                    </div>
-                    <div class="text-left sm:text-right w-full sm:w-auto">
-                        <div id="modalPrice" class="text-xl sm:text-2xl font-bold text-blue-600"></div>
-                        <div id="modalBedrooms" class="text-sm text-gray-600"></div>
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">About This Resort</h4>
-                    <p id="modalDescription" class="text-sm sm:text-base text-gray-700 leading-relaxed"></p>
-                </div>
-
-                <div class="mb-6">
-                    <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Facilities Available</h4>
-                    <div id="modalFacilities" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
-                </div>
-
-                <div class="mb-6">
-                    <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-3">Amenities</h4>
-                    <div id="modalAmenities" class="flex flex-wrap gap-2"></div>
-                </div>
-
-                <div class="mb-6 bg-blue-50 p-4 rounded-lg">
-                    <h4 class="text-base sm:text-lg font-bold text-gray-900 mb-2">📍 Location</h4>
-                    <p id="modalLocation" class="text-sm sm:text-base text-gray-700 mb-2"></p>
-                    <p class="text-xs sm:text-sm text-gray-600">Coordinates: <span id="modalCoords"></span></p>
-                </div>
-
-                <div class="border-t pt-4">
-                    <p class="text-xs sm:text-sm text-gray-500 italic">For informational purposes only. Contact the resort directly for availability and booking details.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-   <!-- Footer Section -->
-    <footer class="bg-gray-800 text-gray-300 py-8 sm:py-12">
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 
-                <!-- Pansol Resorts Section -->
                 <div>
-                    <h3 class="text-lg sm:text-xl font-bold text-white mb-4">Pansol Resorts</h3>
-                    <p class="text-xs sm:text-sm text-gray-400 mb-4 leading-relaxed">
-                        Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna. Explore natural hot springs, family-friendly accommodations, and relaxing getaways.
+                    <h3 class="text-xl font-bold text-white mb-4">Pansol Resorts</h3>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna.
                     </p>
-                    <div class="flex items-start text-xs sm:text-sm">
-                        <svg class="w-5 h-5 mr-2 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-start text-sm">
+                        <svg class="w-5 h-5 mr-2 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        <span class="text-gray-400">Pansol, Calamba City, Laguna, Philippines</span>
+                        <span class="text-gray-400">Pansol, Calamba City, Laguna</span>
                     </div>
                 </div>
 
-                <!-- Visitor's Guide Section -->
                 <div>
-                    <h3 class="text-lg sm:text-xl font-bold text-white mb-4">Visitor's Guide</h3>
-                    <div class="space-y-3 text-xs sm:text-sm">
+                    <h3 class="text-xl font-bold text-white mb-4">Visitor's Guide</h3>
+                    <div class="space-y-3 text-sm">
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 mr-2 text-blue-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">Location:</span>
-                                <span class="text-gray-400"> Just 2 hours from Manila via South Luzon Expressway (SLEX)</span>
+                                <span class="text-gray-400"> 2 hours from Manila via SLEX</span>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 mr-2 text-blue-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                             <div>
-                                <span class="font-semibold text-gray-200">Best Time to Visit:</span>
-                                <span class="text-gray-400"> Year-round, especially during cooler months (November - February)</span>
+                                <span class="font-semibold text-gray-200">Best Time:</span>
+                                <span class="text-gray-400"> November to February</span>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                            <div>
-                                <span class="font-semibold text-gray-200">What to Bring:</span>
-                                <span class="text-gray-400"> Swimwear, towels, extra clothes, sunscreen, and toiletries</span>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 mr-2 text-blue-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">Tip:</span>
-                                <span class="text-gray-400"> Book in advance during weekends and holidays for better rates</span>
+                                <span class="text-gray-400"> Book in advance for weekends</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                 <!-- Contact Us Section -->
-                <div>
+                <div id="contact">
                     <h3 class="text-xl font-bold text-white mb-4">Contact Us</h3>
-                    <p class="text-sm text-gray-400 mb-4">For inquiries, reservations, or assistance:</p>
-                    <div class="space-y-3" id="contact">
+                    <p class="text-sm text-gray-400 mb-4">For inquiries and reservations:</p>
+                    <div class="space-y-3">
                         <div class="flex items-center text-sm">
-                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                             </svg>
-                            <a href="tel:+6490950496667" class="text-gray-300 hover:text-blue-400 transition">(+64) 909 504 9667</a>
+                            <a href="tel:+6490950496667" class="text-gray-300 hover:text-blue-400">(+64) 909 504 9667</a>
                         </div>
                         <div class="flex items-center text-sm">
-                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
-                            <a href="mailto:azriel.tizon07@gmail.com" class="text-gray-300 hover:text-blue-400 transition">azriel.tizon07@gmail.com</a>
+                            <a href="mailto:azriel.tizon07@gmail.com" class="text-gray-300 hover:text-blue-400">azriel.tizon07@gmail.com</a>
                         </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-gray-700">
-                        <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring resort for your relaxation and family bonding needs.</p>
                     </div>
                 </div>
 
             </div>
             
-            <!-- Copyright -->
-            <div class="mt-8 sm:mt-10 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
-                &copy; 2025 Pansol Resorts. All rights reserved. Information purposes only.
+            <div class="mt-10 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
+                &copy; 2025 Pansol Resorts. All rights reserved.
             </div>
         </div>
     </footer>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDoILyFqD0iuOe4DfA2YoyjNiu30Mzw_DM",
             authDomain: "resort-ec9b6.firebaseapp.com",
@@ -512,60 +351,28 @@
             measurementId: "G-12YD26J2E8"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Facilities images mapping
-        const facilityImages = {
-            'Swimming pools': 'https://placehold.co/80x80/0ea5e9/ffffff?text=Pool',
-            'Hot spring baths': 'https://placehold.co/80x80/f59e0b/ffffff?text=Hot+Spring',
-            'Cottages': 'https://placehold.co/80x80/10b981/ffffff?text=Cottage',
-            'Function halls': 'https://placehold.co/80x80/8b5cf6/ffffff?text=Hall',
-            'Restaurant': 'https://placehold.co/80x80/ef4444/ffffff?text=Food',
-            'Parking': 'https://placehold.co/80x80/6b7280/ffffff?text=Parking',
-            'Private pools': 'https://placehold.co/80x80/06b6d4/ffffff?text=Private',
-            'Event space': 'https://placehold.co/80x80/ec4899/ffffff?text=Event',
-            'Kitchen facilities': 'https://placehold.co/80x80/f97316/ffffff?text=Kitchen',
-            'Barbecue area': 'https://placehold.co/80x80/dc2626/ffffff?text=BBQ',
-            'Air-conditioned rooms': 'https://placehold.co/80x80/3b82f6/ffffff?text=AC',
-            'Karaoke': 'https://placehold.co/80x80/a855f7/ffffff?text=Karaoke',
-            'Videoke': 'https://placehold.co/80x80/a855f7/ffffff?text=Videoke',
-            'Outdoor grilling area': 'https://placehold.co/80x80/ea580c/ffffff?text=Grill',
-            'WiFi': 'https://placehold.co/80x80/0891b2/ffffff?text=WiFi',
-            'Heated pools': 'https://placehold.co/80x80/f59e0b/ffffff?text=Heated',
-            'Spa services': 'https://placehold.co/80x80/ec4899/ffffff?text=Spa',
-            'Gazebo': 'https://placehold.co/80x80/14b8a6/ffffff?text=Gazebo',
-            'Garden area': 'https://placehold.co/80x80/22c55e/ffffff?text=Garden',
-            'Outdoor dining': 'https://placehold.co/80x80/f59e0b/ffffff?text=Dining',
-            'Multiple swimming pools': 'https://placehold.co/80x80/0ea5e9/ffffff?text=Pools',
-            'Function hall': 'https://placehold.co/80x80/8b5cf6/ffffff?text=Hall',
-            'Playground': 'https://placehold.co/80x80/facc15/ffffff?text=Play'
-        };
-
-        // Resort data from Firebase
         let resorts = [];
         let activeFilter = 'all';
         let currentSort = 'name';
 
-        // Amenity icons mapping
         const amenityLabels = {
             'hot-spring': '🌊 Hot Spring',
             'aircon': '❄️ Air Conditioning',
             'kitchen': '🍳 Kitchen',
-            'karaoke': '🎤 Karaoke/Videoke',
+            'karaoke': '🎤 Karaoke',
             'wifi': '📶 WiFi',
             'parking': '🅿️ Parking'
         };
 
-        // Price badge colors
         const priceBadgeColors = {
             'budget': 'bg-green-100 text-green-800',
             'mid': 'bg-blue-100 text-blue-800',
             'premium': 'bg-purple-100 text-purple-800'
         };
 
-        // Mobile menu functions
         function openMobileMenu() {
             document.getElementById('mobileMenu').classList.add('active');
             document.getElementById('mobileOverlay').classList.add('active');
@@ -578,32 +385,17 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Get URL parameters
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                search: params.get('search') || '',
-                sort: params.get('sort') || 'name'
-            };
-        }
-
-        // Load resorts from Firebase
         function loadResortsFromFirebase() {
             const resortsRef = database.ref('resorts');
             
             resortsRef.once('value', (snapshot) => {
                 const data = snapshot.val();
-                if (data) {
-                    resorts = Object.values(data);
-                } else {
-                    resorts = [];
-                }
+                resorts = data ? Object.values(data) : [];
                 
-                // Hide loading overlay
                 document.getElementById('loadingOverlay').style.display = 'none';
-                
-                // Initialize page with loaded data
-                initializePageWithData();
+                applyFiltersAndSort();
+                setupSearch();
+                setupSort();
             }, (error) => {
                 console.error('Error loading resorts:', error);
                 document.getElementById('loadingOverlay').style.display = 'none';
@@ -611,32 +403,9 @@
             });
         }
 
-        // Initialize page with loaded data
-        function initializePageWithData() {
-            const urlParams = getUrlParams();
-            
-            // Set search input from URL
-            if (urlParams.search) {
-                document.getElementById('searchInput').value = urlParams.search;
-            }
-            
-            // Set sort dropdown from URL
-            if (urlParams.sort) {
-                document.getElementById('sortSelect').value = urlParams.sort;
-                currentSort = urlParams.sort;
-            }
-            
-            // Apply initial filters
-            applyFiltersAndSort();
-            setupSearch();
-            setupSort();
-        }
-
-        // Toggle filter
         function toggleFilter(filter) {
             activeFilter = filter;
             
-            // Update button styles
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 if (btn.dataset.filter === filter) {
                     btn.classList.remove('bg-gray-200', 'text-gray-700');
@@ -650,7 +419,6 @@
             applyFiltersAndSort();
         }
 
-        // Render resort cards
         function renderResorts(resortsToShow) {
             const grid = document.getElementById('resortsGrid');
             const noResults = document.getElementById('noResults');
@@ -667,76 +435,62 @@
             resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
 
             grid.innerHTML = resortsToShow.map(resort => `
-                <div class="resort-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="showResortDetails(${resort.id})">
+                <div class="resort-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="viewResort(${resort.id})">
                     <div class="relative">
-                        <img class="w-full h-48 sm:h-56 object-cover" src="${resort.image}" alt="${resort.name}">
-                        <span class="absolute top-3 sm:top-4 right-3 sm:right-4 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold ${priceBadgeColors[resort.price]} shadow-lg uppercase">${resort.price}</span>
+                        <img class="w-full h-56 object-cover" src="${resort.image}" alt="${resort.name}">
+                        <span class="absolute top-4 right-4 px-4 py-2 rounded-full text-xs font-bold ${priceBadgeColors[resort.price]} shadow-lg uppercase">${resort.price}</span>
                     </div>
-                    <div class="p-4 sm:p-6">
-                        <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">${resort.name}</h4>
-                        <p class="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 flex items-center">
-                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-gray-900 mb-3">${resort.name}</h4>
+                        <p class="text-sm text-gray-600 mb-3 flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                             </svg>
                             <span class="truncate">${resort.address}</span>
                         </p>
-                        <p class="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4 line-clamp-2">${resort.description}</p>
-                        <div class="flex justify-between items-center mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-gray-200">
-                            <div class="text-xs sm:text-sm text-gray-600 flex items-center">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <p class="text-sm text-gray-700 mb-4 line-clamp-2">${resort.description}</p>
+                        <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
+                            <div class="text-sm text-gray-600 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                                 </svg>
                                 ${resort.bedrooms} bedroom${resort.bedrooms > 1 ? 's' : ''}
                             </div>
-                            <div class="font-bold text-blue-600 text-lg sm:text-xl">
+                            <div class="font-bold text-blue-600 text-xl">
                                 ${resort.priceValue.split(' ')[0]}
                             </div>
                         </div>
-                        <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                        <div class="flex flex-wrap gap-2">
                             ${resort.amenities.slice(0, 3).map(amenity => `
-                                <span class="text-xs px-2 sm:px-3 py-1 sm:py-1.5 bg-blue-50 text-blue-700 rounded-full font-medium">${amenityLabels[amenity].split(' ')[0]}</span>
+                                <span class="text-xs px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full font-medium">${amenityLabels[amenity].split(' ')[0]}</span>
                             `).join('')}
-                            ${resort.amenities.length > 3 ? `<span class="text-xs px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 text-gray-700 rounded-full font-medium">+${resort.amenities.length - 3} more</span>` : ''}
+                            ${resort.amenities.length > 3 ? `<span class="text-xs px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full font-medium">+${resort.amenities.length - 3}</span>` : ''}
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Apply filters and sorting
         function applyFiltersAndSort() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             let filtered = resorts;
 
-            // Apply price filter
             if (activeFilter !== 'all') {
                 filtered = filtered.filter(resort => resort.price === activeFilter);
             }
 
-            // Apply search filter
             if (searchTerm) {
-                const exactMatch = filtered.filter(r => 
-                    r.name.toLowerCase() === searchTerm
+                filtered = filtered.filter(r => 
+                    r.name.toLowerCase().includes(searchTerm) ||
+                    r.description.toLowerCase().includes(searchTerm) ||
+                    r.facilities.some(f => f.toLowerCase().includes(searchTerm))
                 );
-                
-                if (exactMatch.length > 0) {
-                    filtered = exactMatch;
-                } else {
-                    filtered = filtered.filter(r => 
-                        r.name.toLowerCase().includes(searchTerm) ||
-                        r.description.toLowerCase().includes(searchTerm) ||
-                        r.facilities.some(f => f.toLowerCase().includes(searchTerm))
-                    );
-                }
             }
 
-            // Apply sorting
             filtered = sortResorts(filtered, currentSort);
-
             renderResorts(filtered);
         }
 
-        // Sort resorts
         function sortResorts(resortsArray, sortType) {
             const sorted = [...resortsArray];
             
@@ -753,42 +507,27 @@
             }
         }
 
-        // Setup search functionality
         function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', () => {
-                applyFiltersAndSort();
-            });
+            document.getElementById('searchInput').addEventListener('input', applyFiltersAndSort);
         }
 
-        // Setup sort functionality
         function setupSort() {
-            const sortSelect = document.getElementById('sortSelect');
-            sortSelect.addEventListener('change', (e) => {
+            document.getElementById('sortSelect').addEventListener('change', (e) => {
                 currentSort = e.target.value;
                 applyFiltersAndSort();
             });
         }
 
-        // Show resort details - redirects to details page
-        function showResortDetails(resortId) {
+        function viewResort(resortId) {
             window.location.href = `resort-details.html?id=${resortId}`;
         }
 
-        // Close modal
-        function closeModal() {
-            document.getElementById('resortModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // Reset all filters
         function resetFilters() {
             activeFilter = 'all';
             document.getElementById('searchInput').value = '';
             document.getElementById('sortSelect').value = 'name';
             currentSort = 'name';
             
-            // Reset filter buttons
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 if (btn.dataset.filter === 'all') {
                     btn.classList.remove('bg-gray-200', 'text-gray-700');
@@ -799,20 +538,9 @@
                 }
             });
             
-            // Clear URL parameters
-            window.history.replaceState({}, '', window.location.pathname);
-            
             applyFiltersAndSort();
         }
 
-        // Close modal when clicking outside
-        document.getElementById('resortModal').addEventListener('click', (e) => {
-            if (e.target.id === 'resortModal') {
-                closeModal();
-            }
-        });
-
-        // Initialize on page load
         loadResortsFromFirebase();
     </script>
 
