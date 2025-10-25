@@ -109,8 +109,9 @@
             </div>
 
             <nav class="space-x-4 md:space-x-8 text-sm font-semibold">
-                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
-                <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Featured Resorts</a>
+                <a href="1.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
+                <a href="2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Featured Resorts</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden sm:inline">About</a>
                 <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
             </nav>
         </div>
@@ -120,7 +121,7 @@
     <main id="mainContent" class="hidden">
         <!-- Back Button -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <a href="index2.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-all back-button">
+            <a href="2.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-all back-button">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
@@ -158,7 +159,13 @@
                     </div>
                     <div class="text-left lg:text-right">
                         <div class="text-5xl font-black text-blue-600 mb-2" id="resortPrice"></div>
-                        <div class="text-gray-600 text-lg">per night</div>
+                        <div class="text-gray-600 text-lg mb-4">per night</div>
+                        <a id="facebookButton" href="#" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            Visit Facebook Page
+                        </a>
                     </div>
                 </div>
             </div>
@@ -281,8 +288,8 @@
 
         // Function to get facility image based on resort ID and facility name
         function getFacilityImage(resortId, facilityName, facilityIndex) {
-            // Extract resort number from resortId (e.g., "resort1" -> "1")
-            const resortNumber = resortId ? resortId.replace('resort', '') : '1';
+            // Use resortId directly as it's already a number like "1", "2", etc.
+            const resortNumber = resortId;
             
             // Map facility names to their image numbers for each resort
             const facilityImageMap = {
@@ -333,7 +340,7 @@
                 const resort = snapshot.val();
                 
                 if (resort) {
-                    displayResortDetails(resort);
+                    displayResortDetails(resort, resortId);
                 } else {
                     showError();
                 }
@@ -344,7 +351,7 @@
         }
 
         // Display resort details
-        function displayResortDetails(resort) {
+        function displayResortDetails(resort, resortId) {
             // Update page title
             document.title = `${resort.name} - Resort Escapes`;
 
@@ -362,6 +369,18 @@
             document.getElementById('resortAddress').textContent = resort.address;
             document.getElementById('resortBedrooms').textContent = `${resort.bedrooms} Bedroom${resort.bedrooms > 1 ? 's' : ''}`;
             document.getElementById('resortPrice').textContent = resort.priceValue.split(' ')[0];
+
+            // Facebook button - Always visible version
+            const facebookButton = document.getElementById('facebookButton');
+            
+            if (resort.facebookUrl && resort.facebookUrl.trim() !== '') {
+                facebookButton.href = resort.facebookUrl;
+            } else {
+                // If no Facebook URL, link to Facebook search for the resort name
+                const searchQuery = encodeURIComponent(resort.name);
+                facebookButton.href = `https://www.facebook.com/search/top?q=${searchQuery}`;
+            }
+            facebookButton.style.display = 'inline-flex';
 
             // Amenities list (detailed section)
             const amenitiesListHtml = resort.amenities.map(amenity => {
@@ -381,7 +400,6 @@
             document.getElementById('resortDescription').textContent = resort.description;
 
             // Facilities with images
-            const resortId = getResortIdFromUrl();
             const facilitiesHtml = resort.facilities.map((facility, index) => `
                 <div class="facility-item">
                     <img src="${getFacilityImage(resortId, facility, index)}" 
