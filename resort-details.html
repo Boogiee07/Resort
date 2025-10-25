@@ -54,9 +54,15 @@
         }
 
         .hero-image {
-            height: 500px;
+            height: 300px;
             object-fit: cover;
             width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .hero-image {
+                height: 500px;
+            }
         }
 
         .facility-item {
@@ -81,6 +87,7 @@
 
         .amenity-item {
             transition: all 0.3s ease;
+            padding: 8px;
         }
 
         .amenity-item:hover {
@@ -89,8 +96,14 @@
 
         .star {
             color: #d1d5db;
-            font-size: 20px;
+            font-size: 18px;
             transition: color 0.2s ease;
+        }
+
+        @media (min-width: 768px) {
+            .star {
+                font-size: 20px;
+            }
         }
 
         .star.filled {
@@ -99,10 +112,10 @@
 
         .feedback-button {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             border-radius: 50%;
             display: flex;
@@ -112,6 +125,15 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
             transition: all 0.3s ease;
             z-index: 1000;
+        }
+
+        @media (min-width: 768px) {
+            .feedback-button {
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+            }
         }
 
         .feedback-button:hover {
@@ -130,7 +152,13 @@
             align-items: center;
             justify-content: center;
             z-index: 1001;
-            padding: 20px;
+            padding: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .feedback-modal {
+                padding: 20px;
+            }
         }
 
         .feedback-modal.active {
@@ -139,14 +167,21 @@
 
         .feedback-content {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 16px;
+            padding: 20px;
             max-width: 500px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
             animation: slideUp 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .feedback-content {
+                border-radius: 20px;
+                padding: 30px;
+            }
         }
 
         @keyframes slideUp {
@@ -162,8 +197,8 @@
 
         .close-modal {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 12px;
+            right: 12px;
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -175,6 +210,13 @@
             transition: all 0.2s ease;
         }
 
+        @media (min-width: 768px) {
+            .close-modal {
+                top: 15px;
+                right: 15px;
+            }
+        }
+
         .close-modal:hover {
             background: #e5e7eb;
             transform: rotate(90deg);
@@ -182,16 +224,28 @@
 
         .rating-stars {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
             margin: 20px 0;
         }
 
+        @media (min-width: 768px) {
+            .rating-stars {
+                gap: 10px;
+            }
+        }
+
         .rating-star {
-            font-size: 36px;
+            font-size: 32px;
             color: #d1d5db;
             cursor: pointer;
             transition: all 0.2s ease;
+        }
+
+        @media (min-width: 768px) {
+            .rating-star {
+                font-size: 36px;
+            }
         }
 
         .rating-star:hover,
@@ -202,13 +256,20 @@
 
         .feedback-textarea {
             width: 100%;
-            min-height: 120px;
-            padding: 15px;
+            min-height: 100px;
+            padding: 12px;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
             font-size: 14px;
             resize: vertical;
             transition: border-color 0.2s ease;
+        }
+
+        @media (min-width: 768px) {
+            .feedback-textarea {
+                min-height: 120px;
+                padding: 15px;
+            }
         }
 
         .feedback-textarea:focus {
@@ -218,7 +279,7 @@
 
         .submit-feedback {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
@@ -227,6 +288,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .submit-feedback {
+                padding: 14px;
+            }
         }
 
         .submit-feedback:hover {
@@ -244,16 +311,43 @@
             display: none;
             background: #10b981;
             color: white;
-            padding: 15px;
+            padding: 12px;
             border-radius: 12px;
             margin-top: 15px;
             text-align: center;
             font-weight: 600;
+            font-size: 14px;
+        }
+
+        @media (min-width: 768px) {
+            .success-message {
+                padding: 15px;
+                font-size: 16px;
+            }
         }
 
         .success-message.active {
             display: block;
             animation: slideUp 0.3s ease;
+        }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 767px) {
+            .section-padding {
+                padding: 16px;
+            }
+
+            .text-responsive-xl {
+                font-size: 28px;
+            }
+
+            .text-responsive-lg {
+                font-size: 20px;
+            }
+
+            .grid-responsive {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -263,25 +357,25 @@
     <div id="loadingOverlay" class="loading-overlay">
         <div class="text-center">
             <div class="loading-spinner mx-auto mb-4"></div>
-            <p class="text-gray-700 font-semibold">Loading resort details...</p>
+            <p class="text-gray-700 font-semibold text-sm md:text-base">Loading resort details...</p>
         </div>
     </div>
 
     <!-- Header & Navigation Bar -->
     <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <svg class="w-7 h-7 md:w-8 md:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <div>
-                    <h1 class="text-xl font-extrabold text-gray-900">Pansol Resorts</h1>
+                    <h1 class="text-lg md:text-xl font-extrabold text-gray-900">Pansol Resorts</h1>
                     <p class="text-xs text-gray-500 hidden sm:block">Pansol Hot Spring Resorts</p>
                 </div>
             </div>
 
-            <nav class="space-x-4 md:space-x-8 text-sm font-semibold">
+            <nav class="space-x-2 md:space-x-8 text-xs md:text-sm font-semibold">
                 <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
                 <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
             </nav>
         </div>
     </header>
@@ -289,9 +383,9 @@
     <!-- Main Content -->
     <main id="mainContent" class="hidden">
         <!-- Back Button -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <a href="index2.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-all back-button">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+            <a href="index2.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-all back-button text-sm md:text-base">
+                <svg class="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
                 Back to Resorts
@@ -301,40 +395,40 @@
         <!-- Hero Image -->
         <div class="relative">
             <img id="resortHeroImage" class="hero-image" src="" alt="Resort">
-            <div class="absolute top-6 right-6">
-                <span id="priceBadge" class="px-6 py-3 rounded-full text-sm font-bold shadow-lg uppercase"></span>
+            <div class="absolute top-4 right-4 md:top-6 md:right-6">
+                <span id="priceBadge" class="px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold shadow-lg uppercase"></span>
             </div>
         </div>
 
         <!-- Resort Information -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
             <!-- Title and Price Section -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-6">
-                    <div class="flex-1">
-                        <h1 id="resortName" class="text-4xl md:text-5xl font-black text-gray-900 mb-4"></h1>
-                        <div class="flex items-center text-lg text-gray-600 mb-2">
-                            <svg class="w-6 h-6 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+            <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6 md:mb-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 md:gap-6 mb-4 md:mb-6">
+                    <div class="flex-1 w-full">
+                        <h1 id="resortName" class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-3 md:mb-4"></h1>
+                        <div class="flex items-start md:items-center text-base md:text-lg text-gray-600 mb-2">
+                            <svg class="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-600 flex-shrink-0 mt-1 md:mt-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                             </svg>
-                            <span id="resortAddress"></span>
+                            <span id="resortAddress" class="leading-tight"></span>
                         </div>
                         <div class="flex items-center text-sm text-gray-500 mb-3">
-                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-4 h-4 md:w-5 md:h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                             </svg>
                             <span id="resortBedrooms"></span>
                         </div>
-                        <div class="flex items-center">
+                        <div class="flex items-center flex-wrap">
                             <div id="starRating" class="flex items-center mr-2"></div>
-                            <span id="ratingText" class="text-sm text-gray-600 font-medium"></span>
+                            <span id="ratingText" class="text-xs md:text-sm text-gray-600 font-medium"></span>
                         </div>
                     </div>
-                    <div class="text-left lg:text-right">
-                        <div class="text-5xl font-black text-blue-600 mb-2" id="resortPrice"></div>
-                        <div class="text-gray-600 text-lg mb-4">per night</div>
-                        <a id="facebookButton" href="#" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105">
-                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <div class="text-left lg:text-right w-full lg:w-auto">
+                        <div class="text-4xl md:text-5xl font-black text-blue-600 mb-2" id="resortPrice"></div>
+                        <div class="text-gray-600 text-base md:text-lg mb-4">per night</div>
+                        <a id="facebookButton" href="#" target="_blank" class="inline-flex items-center justify-center w-full lg:w-auto px-5 py-2.5 md:px-6 md:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 text-sm md:text-base">
+                            <svg class="w-4 h-4 md:w-5 md:h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                             </svg>
                             Visit Facebook Page
@@ -344,69 +438,64 @@
             </div>
 
             <!-- About Section -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4 flex items-center">
-                    <svg class="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6 md:mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4 flex items-center">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     About This Resort
                 </h2>
-                <p id="resortDescription" class="text-gray-700 text-lg leading-relaxed mb-6"></p>
+                <p id="resortDescription" class="text-gray-700 text-base md:text-lg leading-relaxed mb-4 md:mb-6"></p>
                 
                 <!-- Contact Information -->
-                <div id="contactInfo" class="mt-6 pt-6 border-t border-gray-200 space-y-4">
-                    <!-- Phone numbers will be inserted here -->
+                <div id="contactInfo" class="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-200 space-y-3 md:space-y-4">
                     <div id="phoneNumbers" class="space-y-2"></div>
-                    
-                    <!-- Email will be inserted here -->
                     <div id="emailAddress"></div>
-                    
-                    <!-- Location will be inserted here -->
                     <div id="locationLink"></div>
                 </div>
             </div>
 
             <!-- Amenities Section -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
-                    <svg class="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6 md:mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                     Amenities
                 </h2>
-                <div id="amenitiesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div id="amenitiesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                     <!-- Amenities will be dynamically inserted here -->
                 </div>
             </div>
 
             <!-- Facilities Section -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Facilities</h2>
-                <div id="facilitiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6 md:mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 md:mb-6">Our Facilities</h2>
+                <div id="facilitiesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     <!-- Facilities will be dynamically inserted here -->
                 </div>
             </div>
 
             <!-- Location Section -->
-            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-xl p-8 mb-8 border-2 border-blue-100">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4 flex items-center">
-                    <svg class="w-8 h-8 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6 md:mb-8 border-2 border-blue-100">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4 flex items-center">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                     </svg>
                     Location
                 </h2>
-                <p id="locationAddress" class="text-gray-800 text-lg mb-3"></p>
-                <div class="flex items-center text-gray-700">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <p id="locationAddress" class="text-gray-800 text-base md:text-lg mb-2 md:mb-3"></p>
+                <div class="flex items-center text-gray-700 text-sm md:text-base">
+                    <svg class="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
                     </svg>
-                    <span class="text-sm">Coordinates: <span id="locationCoords" class="font-mono"></span></span>
+                    <span class="text-xs md:text-sm">Coordinates: <span id="locationCoords" class="font-mono"></span></span>
                 </div>
             </div>
 
             <!-- Disclaimer -->
-            <div class="bg-gray-50 rounded-xl p-6 border-l-4 border-blue-600">
-                <p class="text-sm text-gray-600 italic">
+            <div class="bg-gray-50 rounded-lg md:rounded-xl p-4 md:p-6 border-l-4 border-blue-600">
+                <p class="text-xs md:text-sm text-gray-600 italic">
                     <strong>Note:</strong> This information is for reference purposes only. Please contact the resort directly for current availability, accurate pricing, and booking details. Prices and facilities may change without notice.
                 </p>
             </div>
@@ -414,96 +503,87 @@
     </main>
 
     <!-- Error Message -->
-    <div id="errorMessage" class="hidden max-w-4xl mx-auto px-4 py-20 text-center">
-        <svg class="w-24 h-24 mx-auto text-red-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div id="errorMessage" class="hidden max-w-4xl mx-auto px-4 py-12 md:py-20 text-center">
+        <svg class="w-16 h-16 md:w-24 md:h-24 mx-auto text-red-400 mb-4 md:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Resort Not Found</h2>
-        <p class="text-gray-600 mb-8">Sorry, we couldn't find the resort you're looking for.</p>
-        <a href="index.HTML" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4">Resort Not Found</h2>
+        <p class="text-gray-600 mb-6 md:mb-8 text-sm md:text-base">Sorry, we couldn't find the resort you're looking for.</p>
+        <a href="index.html" class="inline-block px-6 py-3 md:px-8 md:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm md:text-base">
             Browse All Resorts
         </a>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer class="bg-gray-800 text-white mt-12 md:mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 <!-- About Section -->
                 <div class="text-center md:text-left">
-                    <h5 class="text-xl font-bold mb-3">Pansol Resorts</h5>
-                    <p class="text-sm text-gray-400 leading-relaxed mb-3">Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna. Explore natural hot springs, family-friendly accommodations, and relaxing getaways.</p>
-                    <div class="flex items-start text-sm text-gray-400">
+                    <h5 class="text-lg md:text-xl font-bold mb-2 md:mb-3">Pansol Resorts</h5>
+                    <p class="text-xs md:text-sm text-gray-400 leading-relaxed mb-2 md:mb-3">Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna.</p>
+                    <div class="flex items-start justify-center md:justify-start text-xs md:text-sm text-gray-400">
                         <svg class="w-4 h-4 mr-2 mt-1 text-blue-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                         </svg>
-                        <span>Pansol, Calamba City, Laguna, Philippines</span>
+                        <span>Pansol, Calamba City, Laguna</span>
                     </div>
                 </div>
 
                 <!-- Guide Section -->
                 <div class="text-center md:text-left">
-                    <h6 class="font-semibold mb-3 text-lg">Visitor's Guide</h6>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li class="flex items-start">
+                    <h6 class="font-semibold mb-2 md:mb-3 text-base md:text-lg">Visitor's Guide</h6>
+                    <ul class="text-xs md:text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start justify-center md:justify-start">
                             <svg class="w-4 h-4 mr-2 mt-1 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
-                            <span><strong>Location:</strong> Just 2 hours from Manila via South Luzon Expressway (SLEX)</span>
+                            <span><strong>Location:</strong> 2 hours from Manila via SLEX</span>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-start justify-center md:justify-start">
                             <svg class="w-4 h-4 mr-2 mt-1 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
-                            <span><strong>Best Time to Visit:</strong> Year-round, especially during cooler months (November - February)</span>
+                            <span><strong>Best Time:</strong> November - February</span>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-start justify-center md:justify-start">
                             <svg class="w-4 h-4 mr-2 mt-1 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
-                            <span><strong>What to Bring:</strong> Swimwear, towels, extra clothes, sunscreen, and toiletries</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-4 h-4 mr-2 mt-1 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                            <span><strong>Tip:</strong> Book in advance during weekends and holidays for better rates</span>
+                            <span><strong>Tip:</strong> Book in advance for better rates</span>
                         </li>
                     </ul>
                 </div>
 
                 <!-- Contact Section -->
-                <div class="text-center md:text-left" id="contact">
-                    <h6 class="font-semibold mb-3 text-lg">Contact Us</h6>
-                    <p class="text-sm text-gray-400 mb-3">For inquiries, reservations, or assistance:</p>
+                <div class="text-center md:text-left">
+                    <h6 class="font-semibold mb-2 md:mb-3 text-base md:text-lg">Contact Us</h6>
+                    <p class="text-xs md:text-sm text-gray-400 mb-2 md:mb-3">For inquiries and assistance:</p>
                     <div class="space-y-2">
-                        <div class="flex items-center justify-center md:justify-start text-sm">
+                        <div class="flex items-center justify-center md:justify-start text-xs md:text-sm">
                             <svg class="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                             </svg>
                             <a href="tel:+6490950496667" class="text-gray-300 hover:text-blue-400 transition">(+64) 909 504 9667</a>
                         </div>
-                        <div class="flex items-center justify-center md:justify-start text-sm">
+                        <div class="flex items-center justify-center md:justify-start text-xs md:text-sm">
                             <svg class="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
-                            <a href="mailto:azriel.tizon07@gmail.com" class="text-gray-300 hover:text-blue-400 transition">azriel.tizon07@gmail.com</a>
+                            <a href="mailto:azriel.tizon07@gmail.com" class="text-gray-300 hover:text-blue-400 transition break-all">azriel.tizon07@gmail.com</a>
                         </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-700">
-                        <p class="text-xs text-gray-500 italic">We help you find the perfect hot spring resort for your relaxation and family bonding needs.</p>
                     </div>
                 </div>
             </div>
-            <div class="mt-8 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
-                &copy; 2025 Pansol Resorts. All rights reserved. Information purposes only.
+            <div class="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
+                &copy; 2025 Pansol Resorts. All rights reserved.
             </div>
         </div>
     </footer>
 
     <!-- Feedback Button -->
     <div class="feedback-button" id="feedbackButton" title="Send Feedback">
-        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
         </svg>
     </div>
@@ -517,8 +597,8 @@
                 </svg>
             </div>
             
-            <h2 class="text-2xl font-bold text-gray-900 mb-2 text-center">Send Us Feedback</h2>
-            <p class="text-gray-600 text-sm text-center mb-4">We'd love to hear your thoughts about this resort!</p>
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2 text-center">Send Us Feedback</h2>
+            <p class="text-gray-600 text-xs md:text-sm text-center mb-4">We'd love to hear your thoughts!</p>
             
             <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Your Rating</label>
@@ -533,13 +613,13 @@
 
             <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Your Name (Optional)</label>
-                <input type="text" id="feedbackName" class="feedback-textarea" style="min-height: 45px;" placeholder="Enter your name">
+                <input type="text" id="feedbackName" class="feedback-textarea" style="min-height: 42px;" placeholder="Enter your name">
             </div>
 
             <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Your Feedback</label>
-                <textarea id="feedbackText" class="feedback-textarea" placeholder="Tell us what you think about this resort..." maxlength="1000"></textarea>
-                <p class="text-xs text-gray-500 mt-1">Minimum 10 characters, maximum 1000 characters</p>
+                <textarea id="feedbackText" class="feedback-textarea" placeholder="Tell us what you think..." maxlength="1000"></textarea>
+                <p class="text-xs text-gray-500 mt-1">Min 10 characters, max 1000 characters</p>
             </div>
 
             <button class="submit-feedback" id="submitFeedback">
@@ -548,7 +628,7 @@
             </button>
 
             <div class="success-message" id="successMessage">
-                ✓ Thank you! Your feedback has been submitted successfully.
+                ✓ Thank you! Your feedback has been submitted.
             </div>
         </div>
     </div>
@@ -566,60 +646,54 @@
             measurementId: "G-12YD26J2E8"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const firestore = firebase.firestore();
 
-        // Resort-specific contact information
         const resortContactInfo = {
-            '4': { // Elysian Sourire Resort
+            '4': {
                 description: "Welcome to Elysian Sourire Resort. ELYSIAN is a Greek word that means beautiful or creative; divinely inspired; peaceful and perfect. SOURIRE is a French word for Smile 😊 A perfect place that will surely give you a beautiful Sourire.",
                 phones: ['0920 419 3551'],
                 email: null,
                 address: '758 Ilang-Ilang Street, Calamba, Philippines',
                 googleMapsQuery: '758 Ilang-Ilang Street, Calamba, Philippines'
             },
-            '2': { // Villa Mejia
-                description: "Experience comfort and relaxation at Villa Mejia. Our private resort offers a serene escape with natural hot spring pools, perfect for family gatherings and intimate celebrations. Enjoy modern amenities in a peaceful setting surrounded by lush greenery.",
+            '2': {
+                description: "Experience comfort and relaxation at Villa Mejia. Our private resort offers a serene escape with natural hot spring pools, perfect for family gatherings and intimate celebrations.",
                 phones: ['0963 633 7674'],
                 email: null,
-                address: '241 Purok 2, Brgy. Pansol, Calamba City, Laguna, Philippines',
-                googleMapsQuery: '241 Purok 2, Brgy. Pansol, Calamba City, Laguna, Philippines'
+                address: '241 Purok 2, Brgy. Pansol, Calamba City, Laguna',
+                googleMapsQuery: '241 Purok 2, Brgy. Pansol, Calamba City, Laguna'
             },
-            '3': { // Glennette's Haven Private Resort
-                description: "Welcome to Glennette's Haven Private Resort, your exclusive sanctuary for relaxation and rejuvenation. Our private resort features natural hot spring pools, comfortable accommodations, and exceptional service. Perfect for families, groups, and special occasions seeking privacy and tranquility.",
+            '3': {
+                description: "Welcome to Glennette's Haven Private Resort, your exclusive sanctuary for relaxation and rejuvenation. Perfect for families, groups, and special occasions.",
                 phones: ['0927 271 3040'],
                 email: 'glennette98@yahoo.com.ph',
-                address: 'Resurrection Street, Purok 5, Pansol, Calamba, Philippines',
-                googleMapsQuery: 'Resurrection Street, Purok 5, Pansol, Calamba, Philippines'
+                address: 'Resurrection Street, Purok 5, Pansol, Calamba',
+                googleMapsQuery: 'Resurrection Street, Purok 5, Pansol, Calamba'
             },
-            '1': { // Laguna Hot Spring Resort
-                description: "Established in 1949, Laguna Hot Spring Resort is one of Pansol's most trusted and longest-running hot spring destinations. With over 70 years of service, we continue to provide authentic hot spring experiences, combining traditional Filipino hospitality with modern comforts for your ultimate relaxation.",
+            '1': {
+                description: "Established in 1949, Laguna Hot Spring Resort is one of Pansol's most trusted hot spring destinations with over 70 years of service.",
                 phones: ['0956 458 4632', '(049) 545-2170'],
                 email: 'Lagunahotspringresortsince1949@gmail.com',
-                address: '315 Purok 3 Brgy. Pansol, Calamba, Philippines',
-                googleMapsQuery: '315 Purok 3 Brgy. Pansol, Calamba, Philippines'
+                address: '315 Purok 3 Brgy. Pansol, Calamba',
+                googleMapsQuery: '315 Purok 3 Brgy. Pansol, Calamba'
             },
-            '5': { // Villa Francesca Private Resort
-                description: "Villa Francesca Private Resort offers an exclusive getaway experience in the heart of Pansol. Our beautifully designed private resort combines elegance with comfort, featuring natural hot spring pools, spacious accommodations, and premium amenities. Perfect for intimate gatherings, family reunions, and special celebrations.",
+            '5': {
+                description: "Villa Francesca Private Resort offers an exclusive getaway experience combining elegance with comfort, featuring natural hot spring pools and premium amenities.",
                 phones: ['0936 114 4780'],
                 email: 'villafrancesca.privateresort@gmail.com',
-                address: '817 Ilang-Ilang St. Perpetual Help Subd. Pansol, Calamba, Philippines',
-                googleMapsQuery: '817 Ilang-Ilang St. Perpetual Help Subd. Pansol, Calamba, Philippines'
+                address: '817 Ilang-Ilang St. Perpetual Help Subd. Pansol, Calamba',
+                googleMapsQuery: '817 Ilang-Ilang St. Perpetual Help Subd. Pansol, Calamba'
             }
         };
 
-        // Get resort ID from URL
         function getResortIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
         }
 
-        // Function to get facility image based on resort ID and facility name
         function getFacilityImage(resortId, facilityName, facilityIndex) {
-            const resortNumber = resortId;
-            
             const facilityImageMap = {
                 'Natural Hot Spring Pools': 6,
                 'Swimming Pool': 7,
@@ -628,13 +702,10 @@
                 'Canteen': 10,
                 'Parking Area': 11
             };
-            
             const imageNum = facilityImageMap[facilityName] || (facilityIndex + 2);
-            
-            return `https://raw.githubusercontent.com/Boogiee07/Resort/main/PICTURE/${resortNumber}_resort/${imageNum}.jpg`;
+            return `https://raw.githubusercontent.com/Boogiee07/Resort/main/PICTURE/${resortId}_resort/${imageNum}.jpg`;
         }
 
-        // Amenity labels and icons
         const amenityDetails = {
             'hot-spring': { icon: '🌊', label: 'Hot Spring', color: 'bg-orange-100 text-orange-800 border-orange-200' },
             'aircon': { icon: '❄️', label: 'Air Conditioning', color: 'bg-blue-100 text-blue-800 border-blue-200' },
@@ -644,74 +715,57 @@
             'parking': { icon: '🅿️', label: 'Parking', color: 'bg-gray-100 text-gray-800 border-gray-200' }
         };
 
-        // Price badge colors
         const priceBadgeColors = {
             'budget': 'bg-green-100 text-green-800',
             'mid': 'bg-blue-100 text-blue-800',
             'premium': 'bg-purple-100 text-purple-800'
         };
 
-        // Function to generate star rating based on resort ID
         function generateStarRating(resortId) {
             const id = parseInt(resortId);
             const ratings = [4.5, 4.8, 4.3, 4.7, 4.6, 4.9, 4.4, 4.5, 4.7, 4.8];
-            const rating = ratings[(id - 1) % ratings.length] || 4.5;
-            return rating;
+            return ratings[(id - 1) % ratings.length] || 4.5;
         }
 
-        // Function to display star rating
         function displayStarRating(rating) {
             const starContainer = document.getElementById('starRating');
             const ratingText = document.getElementById('ratingText');
-            
             const fullStars = Math.floor(rating);
             const hasHalfStar = rating % 1 >= 0.5;
-            
             let starsHtml = '';
-            
             for (let i = 0; i < fullStars; i++) {
                 starsHtml += '<span class="star filled">★</span>';
             }
-            
             if (hasHalfStar) {
                 starsHtml += '<span class="star filled">★</span>';
             }
-            
             const emptyStars = 5 - Math.ceil(rating);
             for (let i = 0; i < emptyStars; i++) {
                 starsHtml += '<span class="star">★</span>';
             }
-            
             starContainer.innerHTML = starsHtml;
             ratingText.textContent = `${rating.toFixed(1)} out of 5`;
         }
 
-        // Function to format phone number for display and calling
         function formatPhoneNumber(phone) {
             const cleanPhone = phone.replace(/\s+/g, '');
             const telLink = cleanPhone.startsWith('0') ? '+63' + cleanPhone.substring(1) : cleanPhone;
             return { display: phone, link: telLink };
         }
 
-        // Function to create Google Maps link
         function createGoogleMapsLink(query) {
             return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
         }
 
-        // Load resort details
         function loadResortDetails() {
             const resortId = getResortIdFromUrl();
-            
             if (!resortId) {
                 showError();
                 return;
             }
-
             const resortRef = database.ref('resorts/' + resortId);
-            
             resortRef.once('value', (snapshot) => {
                 const resort = snapshot.val();
-                
                 if (resort) {
                     displayResortDetails(resort, resortId);
                 } else {
@@ -723,16 +777,14 @@
             });
         }
 
-        // Display resort details
         function displayResortDetails(resort, resortId) {
             document.title = `${resort.name} - Pansol Hot Spring Resorts`;
-
             document.getElementById('resortHeroImage').src = resort.image;
             document.getElementById('resortHeroImage').alt = resort.name;
 
             const badge = document.getElementById('priceBadge');
             badge.textContent = resort.price;
-            badge.className = `px-6 py-3 rounded-full text-sm font-bold shadow-lg uppercase ${priceBadgeColors[resort.price]}`;
+            badge.className = `px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold shadow-lg uppercase ${priceBadgeColors[resort.price]}`;
 
             document.getElementById('resortName').textContent = resort.name;
             document.getElementById('resortAddress').textContent = resort.address;
@@ -743,7 +795,6 @@
             displayStarRating(rating);
 
             const facebookButton = document.getElementById('facebookButton');
-            
             if (resort.facebookUrl && resort.facebookUrl.trim() !== '') {
                 facebookButton.href = resort.facebookUrl;
             } else {
@@ -756,56 +807,52 @@
                 const details = amenityDetails[amenity];
                 return `
                     <div class="amenity-item flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 mr-2 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
-                        <span class="font-normal text-gray-800">${details.label}</span>
+                        <span class="font-normal text-gray-800 text-sm md:text-base">${details.label}</span>
                     </div>
                 `;
             }).join('');
             document.getElementById('amenitiesList').innerHTML = amenitiesListHtml;
 
-            // Description with contact info
             const contactInfo = resortContactInfo[resortId];
             if (contactInfo) {
                 document.getElementById('resortDescription').textContent = contactInfo.description;
                 
-                // Phone numbers
                 const phonesHtml = contactInfo.phones.map(phone => {
                     const formatted = formatPhoneNumber(phone);
                     return `
                         <div class="flex items-center text-gray-700">
-                            <svg class="w-5 h-5 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 mr-2 md:mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                             </svg>
-                            <a href="tel:${formatted.link}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors">${formatted.display}</a>
+                            <a href="tel:${formatted.link}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors text-sm md:text-base">${formatted.display}</a>
                         </div>
                     `;
                 }).join('');
                 document.getElementById('phoneNumbers').innerHTML = phonesHtml;
                 
-                // Email
                 if (contactInfo.email) {
                     document.getElementById('emailAddress').innerHTML = `
                         <div class="flex items-center text-gray-700">
-                            <svg class="w-5 h-5 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 mr-2 md:mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
-                            <a href="mailto:${contactInfo.email}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors">${contactInfo.email}</a>
+                            <a href="mailto:${contactInfo.email}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors text-sm md:text-base break-all">${contactInfo.email}</a>
                         </div>
                     `;
                 }
                 
-                // Location with Google Maps link
                 const mapsLink = createGoogleMapsLink(contactInfo.googleMapsQuery);
                 document.getElementById('locationLink').innerHTML = `
                     <div class="flex items-start text-gray-700">
-                        <svg class="w-5 h-5 mr-3 text-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 mr-2 md:mr-3 text-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                         </svg>
-                        <a href="${mapsLink}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors flex items-center">
+                        <a href="${mapsLink}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors flex items-center text-sm md:text-base">
                             ${contactInfo.address}
-                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                             </svg>
                         </a>
@@ -820,8 +867,8 @@
                     <img src="${getFacilityImage(resortId, facility, index)}" 
                         alt="${facility}" 
                         onerror="this.src='https://placehold.co/400x300/94a3b8/ffffff?text=${encodeURIComponent(facility)}'"
-                        class="w-full h-48 object-cover rounded-lg mb-3">
-                    <h3 class="text-lg font-semibold text-gray-800 text-center">${facility}</h3>
+                        class="w-full h-40 md:h-48 object-cover rounded-lg mb-2 md:mb-3">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-800 text-center">${facility}</h3>
                 </div>
             `).join('');
             document.getElementById('facilitiesGrid').innerHTML = facilitiesHtml;
@@ -833,16 +880,13 @@
             document.getElementById('mainContent').classList.remove('hidden');
         }
 
-        // Show error message
         function showError() {
             document.getElementById('loadingOverlay').style.display = 'none';
             document.getElementById('errorMessage').classList.remove('hidden');
         }
 
-        // Load resort on page load
         loadResortDetails();
 
-        // Feedback Modal Functionality
         let selectedRating = 0;
         let currentResortId = '';
         let currentResortName = '';
@@ -905,12 +949,10 @@
                 alert('Please select a rating!');
                 return;
             }
-
             if (feedback === '') {
                 alert('Please write your feedback!');
                 return;
             }
-
             if (feedback.length < 10) {
                 alert('Feedback must be at least 10 characters long!');
                 return;
@@ -942,7 +984,6 @@
                 .then((docRef) => {
                     console.log('Feedback submitted with ID:', docRef.id);
                     document.getElementById('successMessage').classList.add('active');
-                    
                     setTimeout(() => {
                         closeFeedbackModal();
                         submitBtn.disabled = false;
@@ -952,19 +993,15 @@
                 })
                 .catch((error) => {
                     console.error('Error submitting feedback:', error);
-                    
                     let errorMessage = 'Error submitting feedback. ';
-                    
                     if (error.code === 'permission-denied') {
-                        errorMessage += 'Please check Firestore security rules. Make sure the "feedback" collection allows public writes.';
+                        errorMessage += 'Please check Firestore security rules.';
                     } else if (error.code === 'unavailable') {
-                        errorMessage += 'Network error. Please check your internet connection.';
+                        errorMessage += 'Network error. Please check your connection.';
                     } else {
                         errorMessage += error.message || 'Please try again.';
                     }
-                    
                     alert(errorMessage);
-                    
                     submitBtn.disabled = false;
                     document.getElementById('submitText').style.display = 'inline';
                     document.getElementById('submitLoading').style.display = 'none';
