@@ -125,11 +125,15 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        /* Mobile Menu */
         .mobile-menu {
             position: fixed;
             top: 0;
@@ -196,19 +200,22 @@
             transform: translateY(-9px) rotate(-45deg);
         }
 
-        /* Touch-friendly inputs */
-        input, select, button {
+        input,
+        select,
+        button {
             min-height: 48px;
-            font-size: 16px; /* Prevents zoom on iOS */
+            font-size: 16px;
         }
 
         @media (min-width: 768px) {
-            input, select, button {
+
+            input,
+            select,
+            button {
                 font-size: 1rem;
             }
         }
 
-        /* Responsive text */
         .hero-title {
             font-size: 2.5rem;
             line-height: 1.1;
@@ -235,6 +242,88 @@
                 font-size: 1.25rem;
             }
         }
+
+        /* Calendar Styles */
+        .calendar-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.75rem 0.5rem;
+            color: #6b7280;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .calendar-day:hover:not(.disabled):not(.other-month) {
+            background-color: #f3f4f6;
+        }
+
+        .calendar-day.disabled {
+            color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.other-month {
+            color: #d1d5db;
+        }
+
+        .calendar-day.selected {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day.in-range {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .calendar-day.range-start {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .calendar-day.range-end {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .calendar-day.single-day {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 8px;
+        }
     </style>
 </head>
 
@@ -250,14 +339,21 @@
                 <h2 class="text-xl font-bold text-gray-900">Menu</h2>
                 <button onclick="toggleMobileMenu()" class="p-2 hover:bg-gray-100 rounded-lg">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
             <ul class="space-y-4">
-                <li><a href="index.html" class="block py-3 px-4 text-lg text-gray-600 hover:bg-gray-100 rounded-lg transition">Home</a></li>
-                <li><a href="index2.html" class="block py-3 px-4 text-lg text-blue-600 font-semibold hover:bg-blue-50 rounded-lg transition">Resorts</a></li>
-                <li><a href="#contact" class="block py-3 px-4 text-lg text-gray-600 hover:bg-gray-100 rounded-lg transition">Contact</a></li>
+                <li><a href="index.html"
+                        class="block py-3 px-4 text-lg text-blue-600 font-semibold hover:bg-blue-50 rounded-lg transition">Home</a>
+                </li>
+                <li><a href="index2.html"
+                        class="block py-3 px-4 text-lg text-gray-600 hover:bg-gray-100 rounded-lg transition">Resorts</a>
+                </li>
+                <li><a href="#contact"
+                        class="block py-3 px-4 text-lg text-gray-600 hover:bg-gray-100 rounded-lg transition">Contact</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -279,8 +375,8 @@
 
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-8 text-sm font-semibold">
-                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
-                <a href="index2.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Resorts</a>
+                <a href="1.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
+                <a href="2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
                 <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
             </nav>
 
@@ -306,6 +402,32 @@
                 </p>
             </div>
             <div class="space-y-4 md:space-y-5">
+                <!-- Stay Type Toggle -->
+                <div class="flex gap-3 justify-center">
+                    <button id="overnightBtn" onclick="selectStayType('overnight')"
+                        class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg transition-all shadow-md">
+                        Overnight Stays
+                    </button>
+                    <button id="dayUseBtn" onclick="selectStayType('dayuse')"
+                        class="px-6 py-3 bg-white text-gray-700 font-semibold rounded-lg transition-all shadow-md">
+                        Day Use Stays
+                    </button>
+                </div>
+
+                <!-- Day Use Info Banner -->
+                <div id="dayUseInfo"
+                    class="hidden bg-pink-50 border border-pink-200 rounded-lg p-4 flex items-start gap-3">
+                    <svg class="w-6 h-6 text-pink-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="text-sm text-pink-900">
+                        <strong>Day Use Stays</strong> are inexpensive, 4-12 hour room rentals that are not overnight.
+                        Your check-in and check-out will be on the same date.
+                    </div>
+                </div>
+
                 <!-- Search Input with Dropdown -->
                 <div>
                     <div class="relative">
@@ -314,7 +436,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <input type="text" id="searchInput" placeholder="Search resorts..."
+                        <input type="text" id="searchInput" placeholder="Enter a destination or property"
                             class="w-full pl-12 md:pl-14 pr-4 md:pr-5 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                             onkeypress="handleEnterKey(event)" onfocus="showDropdown()" oninput="filterResorts()"
                             autocomplete="off">
@@ -324,6 +446,112 @@
                                 <div class="px-5 py-4 text-center text-gray-500">
                                     <div class="loading-spinner mx-auto"></div>
                                     <div class="mt-2 text-sm">Loading resorts...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date Inputs -->
+                <div id="dateInputsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Check-in Date -->
+                    <div class="relative">
+                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        <input type="text" id="checkInDate" readonly
+                            class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+                            placeholder="Check-in date" onclick="toggleCalendar('checkin')">
+                        <div class="absolute top-1/2 right-4 transform -translate-y-1/2 text-xs text-gray-500">
+                            <span id="checkInDay"></span>
+                        </div>
+                    </div>
+
+                    <!-- Check-out Date (Hidden for Day Use) -->
+                    <div id="checkOutContainer" class="relative">
+                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        <input type="text" id="checkOutDate" readonly
+                            class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+                            placeholder="Check-out date" onclick="toggleCalendar('checkout')">
+                        <div class="absolute top-1/2 right-4 transform -translate-y-1/2 text-xs text-gray-500">
+                            <span id="checkOutDay"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar -->
+                <div id="calendarContainer" class="hidden calendar-container">
+                    <div class="calendar-header">
+                        <button onclick="previousMonth()" class="p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="font-semibold text-lg" id="calendarMonth"></div>
+                        <button onclick="nextMonth()" class="p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="calendar-grid">
+                            <div class="calendar-day-header">Mo</div>
+                            <div class="calendar-day-header">Tu</div>
+                            <div class="calendar-day-header">We</div>
+                            <div class="calendar-day-header">Th</div>
+                            <div class="calendar-day-header">Fr</div>
+                            <div class="calendar-day-header">Sa</div>
+                            <div class="calendar-day-header">Su</div>
+                        </div>
+                        <div class="calendar-grid" id="calendarDays"></div>
+                    </div>
+                </div>
+
+                <!-- Guests -->
+                <div class="relative">
+                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
+                    </svg>
+                    <input type="text" id="guestsInput" readonly
+                        class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+                        value="2 adults, 1 room" onclick="toggleGuestsDropdown()">
+
+                    <!-- Guests Dropdown -->
+                    <div id="guestsDropdown"
+                        class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Adults</span>
+                                <div class="flex items-center gap-3">
+                                    <button onclick="changeGuests('adults', -1)"
+                                        class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">-</button>
+                                    <span id="adultsCount" class="w-8 text-center">2</span>
+                                    <button onclick="changeGuests('adults', 1)"
+                                        class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">+</button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Rooms</span>
+                                <div class="flex items-center gap-3">
+                                    <button onclick="changeGuests('rooms', -1)"
+                                        class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">-</button>
+                                    <span id="roomsCount" class="w-8 text-center">1</span>
+                                    <button onclick="changeGuests('rooms', 1)"
+                                        class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">+</button>
                                 </div>
                             </div>
                         </div>
@@ -341,21 +569,26 @@
         </div>
     </div>
 
-   <!-- Footer Section -->
+    <!-- Footer Section -->
     <footer class="bg-gray-800 text-gray-300 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                
+
                 <!-- Pansol Resorts Section -->
                 <div>
                     <h3 class="text-xl font-bold text-white mb-4">Pansol Resorts</h3>
                     <p class="text-sm text-gray-400 mb-4 leading-relaxed">
-                        Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna. Explore natural hot springs, family-friendly accommodations, and relaxing getaways.
+                        Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna.
+                        Explore natural hot springs, family-friendly accommodations, and relaxing getaways.
                     </p>
                     <div class="flex items-start text-sm">
-                        <svg class="w-5 h-5 mr-2 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <svg class="w-5 h-5 mr-2 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
                         <span class="text-gray-400">Pansol, Calamba City, Laguna, Philippines</span>
                     </div>
@@ -366,39 +599,51 @@
                     <h3 class="text-xl font-bold text-white mb-4">Visitor's Guide</h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">Location:</span>
-                                <span class="text-gray-400"> Just 2 hours from Manila via South Luzon Expressway (SLEX)</span>
+                                <span class="text-gray-400"> Just 2 hours from Manila via South Luzon Expressway
+                                    (SLEX)</span>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">Best Time to Visit:</span>
-                                <span class="text-gray-400"> Year-round, especially during cooler months (November - February)</span>
+                                <span class="text-gray-400"> Year-round, especially during cooler months (November -
+                                    February)</span>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">What to Bring:</span>
-                                <span class="text-gray-400"> Swimwear, towels, extra clothes, sunscreen, and toiletries</span>
+                                <span class="text-gray-400"> Swimwear, towels, extra clothes, sunscreen, and
+                                    toiletries</span>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">Tip:</span>
-                                <span class="text-gray-400"> Book in advance during weekends and holidays for better rates</span>
+                                <span class="text-gray-400"> Book in advance during weekends and holidays for better
+                                    rates</span>
                             </div>
                         </div>
                     </div>
@@ -410,31 +655,41 @@
                     <p class="text-sm text-gray-400 mb-4">For inquiries, reservations, or assistance:</p>
                     <div class="space-y-3" id="contact">
                         <div class="flex items-center text-sm">
-                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                </path>
                             </svg>
-                            <a href="tel:+6490950496667" class="text-gray-300 hover:text-blue-400 transition">(+64) 909 504 9667</a>
+                            <a href="tel:+6490950496667" class="text-gray-300 hover:text-blue-400 transition">(+64) 909
+                                504 9667</a>
                         </div>
                         <div class="flex items-center text-sm">
-                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
                             </svg>
-                            <a href="mailto:azriel.tizon07@gmail.com" class="text-gray-300 hover:text-blue-400 transition">azriel.tizon07@gmail.com</a>
+                            <a href="mailto:azriel.tizon07@gmail.com"
+                                class="text-gray-300 hover:text-blue-400 transition">azriel.tizon07@gmail.com</a>
                         </div>
                     </div>
                     <div class="mt-6 pt-4 border-t border-gray-700">
-                        <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring resort for your relaxation and family bonding needs.</p>
+                        <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring
+                            resort for your relaxation and family bonding needs.</p>
                     </div>
                 </div>
 
             </div>
-            
+
             <!-- Copyright -->
             <div class="mt-10 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
                 &copy; 2025 Pansol Resorts. All rights reserved. Information purposes only.
             </div>
         </div>
     </footer>
+
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -453,24 +708,271 @@
 
         let resorts = [];
         let resortsLoaded = false;
+        let stayType = 'overnight'; // 'overnight' or 'dayuse'
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let checkInDate = null;
+        let checkOutDate = null;
+        let selectingFor = null; // 'checkin' or 'checkout'
+        let adults = 2;
+        let rooms = 1;
 
         // Mobile Menu Toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             const overlay = document.getElementById('mobileMenuOverlay');
             const hamburger = document.getElementById('hamburger');
-            
+
             menu.classList.toggle('active');
             overlay.classList.toggle('active');
             hamburger.classList.toggle('active');
-            
-            // Prevent body scroll when menu is open
+
             if (menu.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
             } else {
                 document.body.style.overflow = '';
             }
         }
+
+        // Stay Type Selection
+        function selectStayType(type) {
+            stayType = type;
+            const overnightBtn = document.getElementById('overnightBtn');
+            const dayUseBtn = document.getElementById('dayUseBtn');
+            const dayUseInfo = document.getElementById('dayUseInfo');
+            const checkOutContainer = document.getElementById('checkOutContainer');
+            const dateInputsContainer = document.getElementById('dateInputsContainer');
+
+            if (type === 'overnight') {
+                overnightBtn.className = 'px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg transition-all shadow-md';
+                dayUseBtn.className = 'px-6 py-3 bg-white text-gray-700 font-semibold rounded-lg transition-all shadow-md';
+                dayUseInfo.classList.add('hidden');
+                checkOutContainer.classList.remove('hidden');
+                dateInputsContainer.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+            } else {
+                overnightBtn.className = 'px-6 py-3 bg-white text-gray-700 font-semibold rounded-lg transition-all shadow-md';
+                dayUseBtn.className = 'px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg transition-all shadow-md';
+                dayUseInfo.classList.remove('hidden');
+                checkOutContainer.classList.add('hidden');
+                dateInputsContainer.className = 'grid grid-cols-1 gap-4';
+                checkOutDate = null;
+                document.getElementById('checkOutDate').value = '';
+                document.getElementById('checkOutDay').textContent = '';
+            }
+
+            renderCalendar();
+        }
+
+        // Calendar Functions
+        function toggleCalendar(type) {
+            selectingFor = type;
+            const calendar = document.getElementById('calendarContainer');
+            calendar.classList.toggle('hidden');
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+
+            document.getElementById('calendarMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const prevLastDay = new Date(currentYear, currentMonth, 0);
+
+            const firstDayIndex = firstDay.getDay();
+            const lastDayDate = lastDay.getDate();
+            const prevLastDayDate = prevLastDay.getDate();
+
+            const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+            const daysContainer = document.getElementById('calendarDays');
+            daysContainer.innerHTML = '';
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Previous month days
+            for (let i = startDay; i > 0; i--) {
+                const day = prevLastDayDate - i + 1;
+                const cell = createDayCell(day, true, new Date(currentYear, currentMonth - 1, day));
+                daysContainer.appendChild(cell);
+            }
+
+            // Current month days
+            for (let day = 1; day <= lastDayDate; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const cell = createDayCell(day, false, date);
+                daysContainer.appendChild(cell);
+            }
+
+            // Next month days
+            const totalCells = daysContainer.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const cell = createDayCell(day, true, new Date(currentYear, currentMonth + 1, day));
+                daysContainer.appendChild(cell);
+            }
+        }
+
+        function createDayCell(day, isOtherMonth, date) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-day';
+            cell.textContent = day;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (isOtherMonth) {
+                cell.classList.add('other-month');
+            } else if (date < today) {
+                cell.classList.add('disabled');
+            } else {
+                cell.addEventListener('click', () => selectDate(date));
+
+                // Highlight selected dates
+                if (checkInDate && date.getTime() === checkInDate.getTime()) {
+                    if (stayType === 'dayuse' || !checkOutDate) {
+                        cell.classList.add('single-day');
+                    } else {
+                        cell.classList.add('range-start');
+                    }
+                }
+
+                if (checkOutDate && date.getTime() === checkOutDate.getTime()) {
+                    cell.classList.add('range-end');
+                }
+
+                // Highlight range
+                if (stayType === 'overnight' && checkInDate && checkOutDate) {
+                    if (date > checkInDate && date < checkOutDate) {
+                        cell.classList.add('in-range');
+                    }
+                }
+            }
+
+            return cell;
+        }
+
+        function selectDate(date) {
+            if (stayType === 'dayuse') {
+                checkInDate = date;
+                checkOutDate = null;
+                updateDateInputs();
+                document.getElementById('calendarContainer').classList.add('hidden');
+            } else {
+                if (selectingFor === 'checkin' || !checkInDate || (checkInDate && checkOutDate)) {
+                    checkInDate = date;
+                    checkOutDate = null;
+                    selectingFor = 'checkout';
+                } else if (selectingFor === 'checkout') {
+                    if (date > checkInDate) {
+                        checkOutDate = date;
+                        document.getElementById('calendarContainer').classList.add('hidden');
+                    } else {
+                        checkInDate = date;
+                        checkOutDate = null;
+                    }
+                }
+                updateDateInputs();
+            }
+            renderCalendar();
+        }
+
+        function updateDateInputs() {
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            if (checkInDate) {
+                const day = checkInDate.getDate();
+                const month = monthNames[checkInDate.getMonth()];
+                const year = checkInDate.getFullYear();
+                const dayName = dayNames[checkInDate.getDay()];
+
+                document.getElementById('checkInDate').value = `${day} ${month} ${year}`;
+                document.getElementById('checkInDay').textContent = dayName;
+            }
+
+            if (stayType === 'overnight' && checkOutDate) {
+                const day = checkOutDate.getDate();
+                const month = monthNames[checkOutDate.getMonth()];
+                const year = checkOutDate.getFullYear();
+                const dayName = dayNames[checkOutDate.getDay()];
+
+                document.getElementById('checkOutDate').value = `${day} ${month} ${year}`;
+                document.getElementById('checkOutDay').textContent = dayName;
+            } else if (stayType === 'dayuse') {
+                document.getElementById('checkOutDate').value = '';
+                document.getElementById('checkOutDay').textContent = '';
+            }
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        // Guests Dropdown
+        function toggleGuestsDropdown() {
+            const dropdown = document.getElementById('guestsDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function changeGuests(type, delta) {
+            if (type === 'adults') {
+                adults = Math.max(1, adults + delta);
+                document.getElementById('adultsCount').textContent = adults;
+            } else if (type === 'rooms') {
+                rooms = Math.max(1, Math.min(6, rooms + delta));
+                document.getElementById('roomsCount').textContent = rooms;
+            }
+            updateGuestsInput();
+        }
+
+        function updateGuestsInput() {
+            const adultsText = adults === 1 ? '1 adult' : `${adults} adults`;
+            const roomsText = rooms === 1 ? '1 room' : `${rooms} rooms`;
+            document.getElementById('guestsInput').value = `${adultsText}, ${roomsText}`;
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function (event) {
+            const searchInput = document.getElementById('searchInput');
+            const dropdown = document.getElementById('resortDropdown');
+            const guestsInput = document.getElementById('guestsInput');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const calendarContainer = document.getElementById('calendarContainer');
+            const checkInDate = document.getElementById('checkInDate');
+            const checkOutDate = document.getElementById('checkOutDate');
+
+            if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+
+            if (!guestsInput.contains(event.target) && !guestsDropdown.contains(event.target)) {
+                guestsDropdown.classList.add('hidden');
+            }
+
+            if (!calendarContainer.contains(event.target) &&
+                !checkInDate.contains(event.target) &&
+                !checkOutDate.contains(event.target)) {
+                calendarContainer.classList.add('hidden');
+            }
+        });
 
         // Initialize Firebase and load data
         function initializeFirebase() {
@@ -587,15 +1089,6 @@
             }
         }
 
-        document.addEventListener('click', function (event) {
-            const searchInput = document.getElementById('searchInput');
-            const dropdown = document.getElementById('resortDropdown');
-
-            if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
-
         function filterResorts() {
             if (!resortsLoaded) return;
 
@@ -604,19 +1097,33 @@
 
             let filteredResorts = resorts;
 
+            // Filter by search term
             if (searchTerm) {
                 filteredResorts = resorts.filter(resort =>
                     resort.name.toLowerCase().includes(searchTerm) ||
+                    resort.address.toLowerCase().includes(searchTerm) ||
                     resort.description.toLowerCase().includes(searchTerm) ||
                     resort.facilities.some(facility => facility.toLowerCase().includes(searchTerm)) ||
                     resort.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm))
                 );
             }
 
+            // Filter by number of rooms (bedrooms)
+            if (rooms > 0) {
+                filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
+            }
+
+            // Filter by stay type (if specific availability exists)
+            // This is a placeholder - you can add specific day use availability logic here
+            if (stayType === 'dayuse') {
+                // You could filter resorts that support day use if you have that data
+                // For now, showing all resorts
+            }
+
             if (filteredResorts.length === 0) {
                 dropdownContent.innerHTML = `
                     <div class="px-5 py-4 text-gray-500 text-sm">
-                        No resorts found
+                        No resorts found matching your criteria
                     </div>
                 `;
             } else {
@@ -643,14 +1150,23 @@
 
         function redirectToFeaturedResorts() {
             const searchTerm = document.getElementById('searchInput').value.trim();
-           
-
-            let url = 'index2.html';
+            let url = '2.html';
             const params = new URLSearchParams();
 
             if (searchTerm) {
                 params.append('search', searchTerm);
             }
+            if (stayType) {
+                params.append('stayType', stayType);
+            }
+            if (checkInDate) {
+                params.append('checkIn', checkInDate.toISOString());
+            }
+            if (checkOutDate) {
+                params.append('checkOut', checkOutDate.toISOString());
+            }
+            params.append('adults', adults);
+            params.append('rooms', rooms); // This is the key parameter for filtering
 
             const queryString = params.toString();
             if (queryString) {
@@ -668,14 +1184,15 @@
 
         // Initialize Firebase on page load
         initializeFirebase();
+        renderCalendar();
 
         // Close mobile menu when window is resized to desktop
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             if (window.innerWidth >= 768) {
                 const menu = document.getElementById('mobileMenu');
                 const overlay = document.getElementById('mobileMenuOverlay');
                 const hamburger = document.getElementById('hamburger');
-                
+
                 menu.classList.remove('active');
                 overlay.classList.remove('active');
                 hamburger.classList.remove('active');
