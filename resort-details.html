@@ -352,7 +352,19 @@
                     </svg>
                     About This Resort
                 </h2>
-                <p id="resortDescription" class="text-gray-700 text-lg leading-relaxed"></p>
+                <p id="resortDescription" class="text-gray-700 text-lg leading-relaxed mb-6"></p>
+                
+                <!-- Contact Information -->
+                <div id="contactInfo" class="mt-6 pt-6 border-t border-gray-200 space-y-4">
+                    <!-- Phone numbers will be inserted here -->
+                    <div id="phoneNumbers" class="space-y-2"></div>
+                    
+                    <!-- Email will be inserted here -->
+                    <div id="emailAddress"></div>
+                    
+                    <!-- Location will be inserted here -->
+                    <div id="locationLink"></div>
+                </div>
             </div>
 
             <!-- Amenities Section -->
@@ -560,6 +572,45 @@
         const database = firebase.database();
         const firestore = firebase.firestore();
 
+        // Resort-specific contact information
+        const resortContactInfo = {
+            '1': { // Elysian Sourire Resort
+                description: "Welcome to Elysian Sourire Resort. ELYSIAN is a Greek word that means beautiful or creative; divinely inspired; peaceful and perfect. SOURIRE is a French word for Smile 😊 A perfect place that will surely give you a beautiful Sourire.",
+                phones: ['0920 419 3551'],
+                email: null,
+                address: '758 Ilang-Ilang Street, Calamba, Philippines',
+                googleMapsQuery: '758 Ilang-Ilang Street, Calamba, Philippines'
+            },
+            '2': { // Villa Mejia
+                description: "Experience comfort and relaxation at Villa Mejia. Our private resort offers a serene escape with natural hot spring pools, perfect for family gatherings and intimate celebrations. Enjoy modern amenities in a peaceful setting surrounded by lush greenery.",
+                phones: ['0963 633 7674'],
+                email: null,
+                address: '241 Purok 2, Brgy. Pansol, Calamba City, Laguna, Philippines',
+                googleMapsQuery: '241 Purok 2, Brgy. Pansol, Calamba City, Laguna, Philippines'
+            },
+            '3': { // Glennette's Haven Private Resort
+                description: "Welcome to Glennette's Haven Private Resort, your exclusive sanctuary for relaxation and rejuvenation. Our private resort features natural hot spring pools, comfortable accommodations, and exceptional service. Perfect for families, groups, and special occasions seeking privacy and tranquility.",
+                phones: ['0927 271 3040'],
+                email: 'glennette98@yahoo.com.ph',
+                address: 'Resurrection Street, Purok 5, Pansol, Calamba, Philippines',
+                googleMapsQuery: 'Resurrection Street, Purok 5, Pansol, Calamba, Philippines'
+            },
+            '4': { // Laguna Hot Spring Resort
+                description: "Established in 1949, Laguna Hot Spring Resort is one of Pansol's most trusted and longest-running hot spring destinations. With over 70 years of service, we continue to provide authentic hot spring experiences, combining traditional Filipino hospitality with modern comforts for your ultimate relaxation.",
+                phones: ['0956 458 4632', '(049) 545-2170'],
+                email: 'Lagunahotspringresortsince1949@gmail.com',
+                address: '315 Purok 3 Brgy. Pansol, Calamba, Philippines',
+                googleMapsQuery: '315 Purok 3 Brgy. Pansol, Calamba, Philippines'
+            },
+            '5': { // Villa Francesca Private Resort
+                description: "Villa Francesca Private Resort offers an exclusive getaway experience in the heart of Pansol. Our beautifully designed private resort combines elegance with comfort, featuring natural hot spring pools, spacious accommodations, and premium amenities. Perfect for intimate gatherings, family reunions, and special celebrations.",
+                phones: ['0936 114 4780'],
+                email: 'villafrancesca.privateresort@gmail.com',
+                address: '817 Ilang-Ilang St. Perpetual Help Subd. Pansol, Calamba, Philippines',
+                googleMapsQuery: '817 Ilang-Ilang St. Perpetual Help Subd. Pansol, Calamba, Philippines'
+            }
+        };
+
         // Get resort ID from URL
         function getResortIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
@@ -603,14 +654,9 @@
 
         // Function to generate star rating based on resort ID
         function generateStarRating(resortId) {
-            // Convert resortId to number and use it to determine rating
             const id = parseInt(resortId);
-            
-            // Rating pattern: cycles through ratings based on ID
-            // You can customize this logic as needed
             const ratings = [4.5, 4.8, 4.3, 4.7, 4.6, 4.9, 4.4, 4.5, 4.7, 4.8];
             const rating = ratings[(id - 1) % ratings.length] || 4.5;
-            
             return rating;
         }
 
@@ -624,17 +670,14 @@
             
             let starsHtml = '';
             
-            // Add full stars
             for (let i = 0; i < fullStars; i++) {
                 starsHtml += '<span class="star filled">★</span>';
             }
             
-            // Add half star if needed
             if (hasHalfStar) {
                 starsHtml += '<span class="star filled">★</span>';
             }
             
-            // Add empty stars to make 5 total
             const emptyStars = 5 - Math.ceil(rating);
             for (let i = 0; i < emptyStars; i++) {
                 starsHtml += '<span class="star">★</span>';
@@ -642,6 +685,18 @@
             
             starContainer.innerHTML = starsHtml;
             ratingText.textContent = `${rating.toFixed(1)} out of 5`;
+        }
+
+        // Function to format phone number for display and calling
+        function formatPhoneNumber(phone) {
+            const cleanPhone = phone.replace(/\s+/g, '');
+            const telLink = cleanPhone.startsWith('0') ? '+63' + cleanPhone.substring(1) : cleanPhone;
+            return { display: phone, link: telLink };
+        }
+
+        // Function to create Google Maps link
+        function createGoogleMapsLink(query) {
+            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
         }
 
         // Load resort details
@@ -671,29 +726,23 @@
 
         // Display resort details
         function displayResortDetails(resort, resortId) {
-            // Update page title
             document.title = `${resort.name} - Pansol Hot Spring Resorts`;
 
-            // Hero image
             document.getElementById('resortHeroImage').src = resort.image;
             document.getElementById('resortHeroImage').alt = resort.name;
 
-            // Price badge
             const badge = document.getElementById('priceBadge');
             badge.textContent = resort.price;
             badge.className = `px-6 py-3 rounded-full text-sm font-bold shadow-lg uppercase ${priceBadgeColors[resort.price]}`;
 
-            // Resort name and basic info
             document.getElementById('resortName').textContent = resort.name;
             document.getElementById('resortAddress').textContent = resort.address;
             document.getElementById('resortBedrooms').textContent = `${resort.bedrooms} Bedroom${resort.bedrooms > 1 ? 's' : ''}`;
             document.getElementById('resortPrice').textContent = resort.priceValue.split(' ')[0];
 
-            // Display star rating
             const rating = generateStarRating(resortId);
             displayStarRating(rating);
 
-            // Facebook button
             const facebookButton = document.getElementById('facebookButton');
             
             if (resort.facebookUrl && resort.facebookUrl.trim() !== '') {
@@ -704,7 +753,6 @@
             }
             facebookButton.style.display = 'inline-flex';
 
-            // Amenities list
             const amenitiesListHtml = resort.amenities.map(amenity => {
                 const details = amenityDetails[amenity];
                 return `
@@ -718,10 +766,56 @@
             }).join('');
             document.getElementById('amenitiesList').innerHTML = amenitiesListHtml;
 
-            // Description
-            document.getElementById('resortDescription').textContent = resort.description;
+            // Description with contact info
+            const contactInfo = resortContactInfo[resortId];
+            if (contactInfo) {
+                document.getElementById('resortDescription').textContent = contactInfo.description;
+                
+                // Phone numbers
+                const phonesHtml = contactInfo.phones.map(phone => {
+                    const formatted = formatPhoneNumber(phone);
+                    return `
+                        <div class="flex items-center text-gray-700">
+                            <svg class="w-5 h-5 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                            <a href="tel:${formatted.link}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors">${formatted.display}</a>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('phoneNumbers').innerHTML = phonesHtml;
+                
+                // Email
+                if (contactInfo.email) {
+                    document.getElementById('emailAddress').innerHTML = `
+                        <div class="flex items-center text-gray-700">
+                            <svg class="w-5 h-5 mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            <a href="mailto:${contactInfo.email}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors">${contactInfo.email}</a>
+                        </div>
+                    `;
+                }
+                
+                // Location with Google Maps link
+                const mapsLink = createGoogleMapsLink(contactInfo.googleMapsQuery);
+                document.getElementById('locationLink').innerHTML = `
+                    <div class="flex items-start text-gray-700">
+                        <svg class="w-5 h-5 mr-3 text-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <a href="${mapsLink}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors flex items-center">
+                            ${contactInfo.address}
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
+                    </div>
+                `;
+            } else {
+                document.getElementById('resortDescription').textContent = resort.description;
+            }
 
-            // Facilities with images
             const facilitiesHtml = resort.facilities.map((facility, index) => `
                 <div class="facility-item">
                     <img src="${getFacilityImage(resortId, facility, index)}" 
@@ -733,11 +827,9 @@
             `).join('');
             document.getElementById('facilitiesGrid').innerHTML = facilitiesHtml;
 
-            // Location
             document.getElementById('locationAddress').textContent = resort.address;
             document.getElementById('locationCoords').textContent = `${resort.lat.toFixed(6)}, ${resort.lng.toFixed(6)}`;
 
-            // Hide loading, show content
             document.getElementById('loadingOverlay').style.display = 'none';
             document.getElementById('mainContent').classList.remove('hidden');
         }
@@ -756,7 +848,6 @@
         let currentResortId = '';
         let currentResortName = '';
 
-        // Open feedback modal
         document.getElementById('feedbackButton').addEventListener('click', function() {
             currentResortId = getResortIdFromUrl();
             const resortNameElement = document.getElementById('resortName');
@@ -764,12 +855,10 @@
             document.getElementById('feedbackModal').classList.add('active');
         });
 
-        // Close feedback modal
         document.getElementById('closeModal').addEventListener('click', function() {
             closeFeedbackModal();
         });
 
-        // Close modal when clicking outside
         document.getElementById('feedbackModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeFeedbackModal();
@@ -791,7 +880,6 @@
             document.getElementById('successMessage').classList.remove('active');
         }
 
-        // Rating stars functionality - Click only (no hover)
         const ratingStars = document.querySelectorAll('.rating-star');
         ratingStars.forEach(star => {
             star.addEventListener('click', function() {
@@ -810,7 +898,6 @@
             });
         }
 
-        // Submit feedback
         document.getElementById('submitFeedback').addEventListener('click', function() {
             const name = document.getElementById('feedbackName').value.trim();
             const feedback = document.getElementById('feedbackText').value.trim();
@@ -830,13 +917,11 @@
                 return;
             }
 
-            // Disable button and show loading
             const submitBtn = document.getElementById('submitFeedback');
             submitBtn.disabled = true;
             document.getElementById('submitText').style.display = 'none';
             document.getElementById('submitLoading').style.display = 'inline';
 
-            // Prepare feedback data
             const feedbackData = {
                 resortId: currentResortId,
                 resortName: currentResortName,
@@ -854,14 +939,11 @@
                 })
             };
 
-            // Save to Firestore
             firestore.collection('feedback').add(feedbackData)
                 .then((docRef) => {
                     console.log('Feedback submitted with ID:', docRef.id);
-                    // Show success message
                     document.getElementById('successMessage').classList.add('active');
                     
-                    // Reset form after 2 seconds
                     setTimeout(() => {
                         closeFeedbackModal();
                         submitBtn.disabled = false;
@@ -872,7 +954,6 @@
                 .catch((error) => {
                     console.error('Error submitting feedback:', error);
                     
-                    // More detailed error message
                     let errorMessage = 'Error submitting feedback. ';
                     
                     if (error.code === 'permission-denied') {
