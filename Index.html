@@ -643,17 +643,13 @@
 
         function redirectToFeaturedResorts() {
             const searchTerm = document.getElementById('searchInput').value.trim();
-            const sortValue = document.getElementById('sortSelect').value;
+           
 
             let url = 'index2.html';
             const params = new URLSearchParams();
 
             if (searchTerm) {
                 params.append('search', searchTerm);
-            }
-
-            if (sortValue && sortValue !== 'name') {
-                params.append('sort', sortValue);
             }
 
             const queryString = params.toString();
