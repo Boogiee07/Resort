@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,14 +15,14 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background-color: #f7f7f7;
             color: #1f2937;
             line-height: 1.6;
         }
-        
+
         html {
             scroll-behavior: smooth;
         }
@@ -49,8 +50,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .hero-image {
@@ -72,7 +78,7 @@
         }
 
         .facility-item:hover img {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
 
         .back-button:hover {
@@ -154,6 +160,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -257,6 +264,7 @@
         }
     </style>
 </head>
+
 <body class="antialiased">
 
     <!-- Loading Overlay -->
@@ -271,7 +279,11 @@
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                    </path>
+                </svg>
                 <div>
                     <h1 class="text-xl font-extrabold text-gray-900">Pansol Resorts</h1>
                     <p class="text-xs text-gray-500 hidden sm:block">Pansol Hot Spring Resorts</p>
@@ -280,8 +292,10 @@
 
             <nav class="space-x-4 md:space-x-8 text-sm font-semibold">
                 <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
-                <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Featured Resorts</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
+                <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Featured
+                    Resorts</a>
+                <a href="#"
+                    class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
             </nav>
         </div>
     </header>
@@ -290,7 +304,8 @@
     <main id="mainContent" class="hidden">
         <!-- Back Button -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <a href="index2.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-all back-button">
+            <a href="index2.html"
+                class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-all back-button">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
@@ -315,13 +330,17 @@
                         <h1 id="resortName" class="text-4xl md:text-5xl font-black text-gray-900 mb-4"></h1>
                         <div class="flex items-center text-lg text-gray-600 mb-2">
                             <svg class="w-6 h-6 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                <path fill-rule="evenodd"
+                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                    clip-rule="evenodd"></path>
                             </svg>
                             <span id="resortAddress"></span>
                         </div>
                         <div class="flex items-center text-sm text-gray-500 mb-3">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                <path
+                                    d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
+                                </path>
                             </svg>
                             <span id="resortBedrooms"></span>
                         </div>
@@ -333,9 +352,11 @@
                     <div class="text-left lg:text-right">
                         <div class="text-5xl font-black text-blue-600 mb-2" id="resortPrice"></div>
                         <div class="text-gray-600 text-lg mb-4">per night</div>
-                        <a id="facebookButton" href="#" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105">
+                        <a id="facebookButton" href="#" target="_blank"
+                            class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                             </svg>
                             Visit Facebook Page
                         </a>
@@ -347,7 +368,8 @@
             <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
                 <h2 class="text-3xl font-bold text-gray-900 mb-4 flex items-center">
                     <svg class="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     About This Resort
                 </h2>
@@ -376,17 +398,22 @@
             </div>
 
             <!-- Location Section -->
-            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-xl p-8 mb-8 border-2 border-blue-100">
+            <div
+                class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-xl p-8 mb-8 border-2 border-blue-100">
                 <h2 class="text-3xl font-bold text-gray-900 mb-4 flex items-center">
                     <svg class="w-8 h-8 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd"
+                            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                            clip-rule="evenodd"></path>
                     </svg>
                     Location
                 </h2>
                 <p id="locationAddress" class="text-gray-800 text-lg mb-3"></p>
                 <div class="flex items-center text-gray-700">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7">
+                        </path>
                     </svg>
                     <span class="text-sm">Coordinates: <span id="locationCoords" class="font-mono"></span></span>
                 </div>
@@ -395,7 +422,9 @@
             <!-- Disclaimer -->
             <div class="bg-gray-50 rounded-xl p-6 border-l-4 border-blue-600">
                 <p class="text-sm text-gray-600 italic">
-                    <strong>Note:</strong> This information is for reference purposes only. Please contact the resort directly for current availability, accurate pricing, and booking details. Prices and facilities may change without notice.
+                    <strong>Note:</strong> This information is for reference purposes only. Please contact the resort
+                    directly for current availability, accurate pricing, and booking details. Prices and facilities may
+                    change without notice.
                 </p>
             </div>
         </div>
@@ -404,42 +433,40 @@
     <!-- Error Message -->
     <div id="errorMessage" class="hidden max-w-4xl mx-auto px-4 py-20 text-center">
         <svg class="w-24 h-24 mx-auto text-red-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
         <h2 class="text-3xl font-bold text-gray-900 mb-4">Resort Not Found</h2>
         <p class="text-gray-600 mb-8">Sorry, we couldn't find the resort you're looking for.</p>
-        <a href="index.HTML" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+        <a href="index.HTML"
+            class="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
             Browse All Resorts
         </a>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col md:flex-row justify-between items-center md:items-start">
-                <div class="mb-4 md:mb-0 text-center md:text-left">
-                    <h5 class="text-xl font-bold mb-1">Pansol Resorts</h5>
-                    <p class="text-sm text-gray-400">Your guide to Pansol hot spring resorts.</p>
-                </div>
-                <div class="text-center">
-                    <h6 class="font-semibold mb-2">Quick Links</h6>
-                    <ul class="text-sm space-y-1 text-gray-400">
-                        <li><a href="#" class="hover:text-blue-400">About Pansol</a></li>
-                        <li><a href="#" class="hover:text-blue-400">Travel Tips</a></li>
-                        <li><a href="#" class="hover:text-blue-400">Contact Us</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="mt-8 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
-                &copy; 2025 Pansol Resorts. All rights reserved. Information purposes only.
+    <div class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <p>For inquiries and reservations, please contact us:</p>
+            <div class="contact-info">
+                <p><i class="fas fa-phone"></i> Phone: (+64)909 504 9667</p>
+                <p><i class="fas fa-envelope"></i> Email: info@lagunahotspringresort.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> **Address:** Pansol, Calamba City, Laguna, Philippines</p>
             </div>
         </div>
+    </div>
+    <div class="mt-8 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
+        &copy; 2025 Pansol Resorts. All rights reserved. Information purposes only.
+    </div>
+    </div>
     </footer>
 
     <!-- Feedback Button -->
     <div class="feedback-button" id="feedbackButton" title="Send Feedback">
         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
+            </path>
         </svg>
     </div>
 
@@ -448,13 +475,14 @@
         <div class="feedback-content">
             <div class="close-modal" id="closeModal">
                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
             </div>
-            
+
             <h2 class="text-2xl font-bold text-gray-900 mb-2 text-center">Send Us Feedback</h2>
             <p class="text-gray-600 text-sm text-center mb-4">We'd love to hear your thoughts about this resort!</p>
-            
+
             <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Your Rating</label>
                 <div class="rating-stars" id="ratingStars">
@@ -468,12 +496,14 @@
 
             <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Your Name (Optional)</label>
-                <input type="text" id="feedbackName" class="feedback-textarea" style="min-height: 45px;" placeholder="Enter your name">
+                <input type="text" id="feedbackName" class="feedback-textarea" style="min-height: 45px;"
+                    placeholder="Enter your name">
             </div>
 
             <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Your Feedback</label>
-                <textarea id="feedbackText" class="feedback-textarea" placeholder="Tell us what you think about this resort..." maxlength="1000"></textarea>
+                <textarea id="feedbackText" class="feedback-textarea"
+                    placeholder="Tell us what you think about this resort..." maxlength="1000"></textarea>
                 <p class="text-xs text-gray-500 mt-1">Minimum 10 characters, maximum 1000 characters</p>
             </div>
 
@@ -515,7 +545,7 @@
         // Function to get facility image based on resort ID and facility name
         function getFacilityImage(resortId, facilityName, facilityIndex) {
             const resortNumber = resortId;
-            
+
             const facilityImageMap = {
                 'Natural Hot Spring Pools': 6,
                 'Swimming Pool': 7,
@@ -524,9 +554,9 @@
                 'Canteen': 10,
                 'Parking Area': 11
             };
-            
+
             const imageNum = facilityImageMap[facilityName] || (facilityIndex + 2);
-            
+
             return `https://raw.githubusercontent.com/Boogiee07/Resort/main/PICTURE/${resortNumber}_resort/${imageNum}.jpg`;
         }
 
@@ -551,12 +581,12 @@
         function generateStarRating(resortId) {
             // Convert resortId to number and use it to determine rating
             const id = parseInt(resortId);
-            
+
             // Rating pattern: cycles through ratings based on ID
             // You can customize this logic as needed
             const ratings = [4.5, 4.8, 4.3, 4.7, 4.6, 4.9, 4.4, 4.5, 4.7, 4.8];
             const rating = ratings[(id - 1) % ratings.length] || 4.5;
-            
+
             return rating;
         }
 
@@ -564,28 +594,28 @@
         function displayStarRating(rating) {
             const starContainer = document.getElementById('starRating');
             const ratingText = document.getElementById('ratingText');
-            
+
             const fullStars = Math.floor(rating);
             const hasHalfStar = rating % 1 >= 0.5;
-            
+
             let starsHtml = '';
-            
+
             // Add full stars
             for (let i = 0; i < fullStars; i++) {
                 starsHtml += '<span class="star filled">★</span>';
             }
-            
+
             // Add half star if needed
             if (hasHalfStar) {
                 starsHtml += '<span class="star filled">★</span>';
             }
-            
+
             // Add empty stars to make 5 total
             const emptyStars = 5 - Math.ceil(rating);
             for (let i = 0; i < emptyStars; i++) {
                 starsHtml += '<span class="star">★</span>';
             }
-            
+
             starContainer.innerHTML = starsHtml;
             ratingText.textContent = `${rating.toFixed(1)} out of 5`;
         }
@@ -593,17 +623,17 @@
         // Load resort details
         function loadResortDetails() {
             const resortId = getResortIdFromUrl();
-            
+
             if (!resortId) {
                 showError();
                 return;
             }
 
             const resortRef = database.ref('resorts/' + resortId);
-            
+
             resortRef.once('value', (snapshot) => {
                 const resort = snapshot.val();
-                
+
                 if (resort) {
                     displayResortDetails(resort, resortId);
                 } else {
@@ -641,7 +671,7 @@
 
             // Facebook button
             const facebookButton = document.getElementById('facebookButton');
-            
+
             if (resort.facebookUrl && resort.facebookUrl.trim() !== '') {
                 facebookButton.href = resort.facebookUrl;
             } else {
@@ -703,7 +733,7 @@
         let currentResortName = '';
 
         // Open feedback modal
-        document.getElementById('feedbackButton').addEventListener('click', function() {
+        document.getElementById('feedbackButton').addEventListener('click', function () {
             currentResortId = getResortIdFromUrl();
             const resortNameElement = document.getElementById('resortName');
             currentResortName = resortNameElement ? resortNameElement.textContent : 'Unknown Resort';
@@ -711,12 +741,12 @@
         });
 
         // Close feedback modal
-        document.getElementById('closeModal').addEventListener('click', function() {
+        document.getElementById('closeModal').addEventListener('click', function () {
             closeFeedbackModal();
         });
 
         // Close modal when clicking outside
-        document.getElementById('feedbackModal').addEventListener('click', function(e) {
+        document.getElementById('feedbackModal').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeFeedbackModal();
             }
@@ -740,7 +770,7 @@
         // Rating stars functionality - Click only (no hover)
         const ratingStars = document.querySelectorAll('.rating-star');
         ratingStars.forEach(star => {
-            star.addEventListener('click', function() {
+            star.addEventListener('click', function () {
                 selectedRating = parseInt(this.getAttribute('data-rating'));
                 updateStarDisplay();
             });
@@ -757,7 +787,7 @@
         }
 
         // Submit feedback
-        document.getElementById('submitFeedback').addEventListener('click', function() {
+        document.getElementById('submitFeedback').addEventListener('click', function () {
             const name = document.getElementById('feedbackName').value.trim();
             const feedback = document.getElementById('feedbackText').value.trim();
 
@@ -791,9 +821,9 @@
                 feedback: feedback,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 createdAt: new Date().toISOString(),
-                date: new Date().toLocaleString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
+                date: new Date().toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit'
@@ -806,7 +836,7 @@
                     console.log('Feedback submitted with ID:', docRef.id);
                     // Show success message
                     document.getElementById('successMessage').classList.add('active');
-                    
+
                     // Reset form after 2 seconds
                     setTimeout(() => {
                         closeFeedbackModal();
@@ -817,10 +847,10 @@
                 })
                 .catch((error) => {
                     console.error('Error submitting feedback:', error);
-                    
+
                     // More detailed error message
                     let errorMessage = 'Error submitting feedback. ';
-                    
+
                     if (error.code === 'permission-denied') {
                         errorMessage += 'Please check Firestore security rules. Make sure the "feedback" collection allows public writes.';
                     } else if (error.code === 'unavailable') {
@@ -828,9 +858,9 @@
                     } else {
                         errorMessage += error.message || 'Please try again.';
                     }
-                    
+
                     alert(errorMessage);
-                    
+
                     submitBtn.disabled = false;
                     document.getElementById('submitText').style.display = 'inline';
                     document.getElementById('submitLoading').style.display = 'none';
@@ -839,4 +869,5 @@
     </script>
 
 </body>
+
 </html>
