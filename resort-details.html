@@ -808,10 +808,7 @@
                 </div>
             `).join('');
             document.getElementById('facilitiesGrid').innerHTML = facilitiesHtml;
-
-            document.getElementById('locationAddress').textContent = resort.address;
             document.getElementById('locationCoords').textContent = `${resort.lat.toFixed(6)}, ${resort.lng.toFixed(6)}`;
-
             document.getElementById('loadingOverlay').style.display = 'none';
             document.getElementById('mainContent').classList.remove('hidden');
         }
