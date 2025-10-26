@@ -324,6 +324,82 @@
             color: white;
             border-radius: 8px;
         }
+
+        /* Price Range Slider Styles */
+        .price-slider-container {
+            padding: 1.5rem;
+        }
+
+        .price-slider-track {
+            position: relative;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+        }
+
+        .price-slider-range {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, #ec4899, #ef4444);
+            border-radius: 3px;
+        }
+
+        .price-slider-thumb {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 4px solid #e5e7eb;
+            border-radius: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s;
+        }
+
+        .price-slider-thumb:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .price-slider-thumb:active {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .price-input-box {
+            display: flex;
+            align-items: center;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            background: #f8fafc;
+        }
+
+        .price-input-box input {
+            border: none;
+            background: transparent;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            width: 100%;
+            min-height: auto;
+        }
+
+        .price-input-box input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .price-label {
+            background: #1e293b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: inline-block;
+        }
     </style>
 </head>
 
@@ -452,9 +528,9 @@
                     </div>
                 </div>
 
-                <!-- Date Inputs -->
-                <div id="dateInputsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Check-in Date -->
+                <!-- Date Range and Price Slider -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Date Range Picker -->
                     <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -462,28 +538,25 @@
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                             </path>
                         </svg>
-                        <input type="text" id="checkInDate" readonly
+                        <input type="text" id="dateRangeInput" readonly
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-                            placeholder="Check-in date" onclick="toggleCalendar('checkin')">
+                            placeholder="Select dates" onclick="toggleCalendar()">
                         <div class="absolute top-1/2 right-4 transform -translate-y-1/2 text-xs text-gray-500">
-                            <span id="checkInDay"></span>
+                            <span id="dateRangeDay"></span>
                         </div>
                     </div>
 
-                    <!-- Check-out Date (Hidden for Day Use) -->
-                    <div id="checkOutContainer" class="relative">
+                    <!-- Price Range Button -->
+                    <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
                             </path>
                         </svg>
-                        <input type="text" id="checkOutDate" readonly
+                        <input type="text" id="priceRangeInput" readonly
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-                            placeholder="Check-out date" onclick="toggleCalendar('checkout')">
-                        <div class="absolute top-1/2 right-4 transform -translate-y-1/2 text-xs text-gray-500">
-                            <span id="checkOutDay"></span>
-                        </div>
+                            value="₱700 - ₱3000" onclick="togglePriceSlider()">
                     </div>
                 </div>
 
@@ -515,6 +588,42 @@
                             <div class="calendar-day-header">Su</div>
                         </div>
                         <div class="calendar-grid" id="calendarDays"></div>
+                    </div>
+                </div>
+
+                <!-- Price Range Slider -->
+                <div id="priceSliderContainer" class="hidden bg-white rounded-lg shadow-lg">
+                    <div class="price-slider-container">
+                        <h3 class="text-lg font-bold text-gray-900 mb-6 text-center">Price Range Slider</h3>
+                        
+                        <!-- Price Labels -->
+                        <div class="flex justify-between items-center mb-8">
+                            <div class="price-label">₱<span id="minPriceLabel">700</span></div>
+                            <div class="price-label">₱<span id="maxPriceLabel">3000</span></div>
+                        </div>
+
+                        <!-- Slider Track -->
+                        <div class="relative mb-8">
+                            <div class="price-slider-track">
+                                <div class="price-slider-range" id="priceRange"></div>
+                                <div class="price-slider-thumb" id="minThumb" style="left: 0%"></div>
+                                <div class="price-slider-thumb" id="maxThumb" style="left: 100%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Price Input Boxes -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="price-input-box">
+                                <span class="text-xl font-bold text-gray-600 mr-2">₱</span>
+                                <input type="number" id="minPriceInput" value="700" min="0" max="20000" 
+                                    onchange="updatePriceFromInput('min')">
+                            </div>
+                            <div class="price-input-box">
+                                <span class="text-xl font-bold text-gray-600 mr-2">₱</span>
+                                <input type="number" id="maxPriceInput" value="3000" min="0" max="20000"
+                                    onchange="updatePriceFromInput('max')">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -708,14 +817,18 @@
 
         let resorts = [];
         let resortsLoaded = false;
-        let stayType = 'overnight'; // 'overnight' or 'dayuse'
+        let stayType = 'overnight';
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         let checkInDate = null;
         let checkOutDate = null;
-        let selectingFor = null; // 'checkin' or 'checkout'
+        let selectingFor = 'checkin';
         let adults = 2;
         let rooms = 1;
+        let minPrice = 700;
+        let maxPrice = 3000;
+        let isDragging = false;
+        let activeThumb = null;
 
         // Mobile Menu Toggle
         function toggleMobileMenu() {
@@ -740,33 +853,27 @@
             const overnightBtn = document.getElementById('overnightBtn');
             const dayUseBtn = document.getElementById('dayUseBtn');
             const dayUseInfo = document.getElementById('dayUseInfo');
-            const checkOutContainer = document.getElementById('checkOutContainer');
-            const dateInputsContainer = document.getElementById('dateInputsContainer');
 
             if (type === 'overnight') {
                 overnightBtn.className = 'px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg transition-all shadow-md';
                 dayUseBtn.className = 'px-6 py-3 bg-white text-gray-700 font-semibold rounded-lg transition-all shadow-md';
                 dayUseInfo.classList.add('hidden');
-                checkOutContainer.classList.remove('hidden');
-                dateInputsContainer.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
             } else {
                 overnightBtn.className = 'px-6 py-3 bg-white text-gray-700 font-semibold rounded-lg transition-all shadow-md';
                 dayUseBtn.className = 'px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg transition-all shadow-md';
                 dayUseInfo.classList.remove('hidden');
-                checkOutContainer.classList.add('hidden');
-                dateInputsContainer.className = 'grid grid-cols-1 gap-4';
                 checkOutDate = null;
-                document.getElementById('checkOutDate').value = '';
-                document.getElementById('checkOutDay').textContent = '';
             }
 
+            updateDateRangeInput();
             renderCalendar();
         }
 
         // Calendar Functions
-        function toggleCalendar(type) {
-            selectingFor = type;
+        function toggleCalendar() {
             const calendar = document.getElementById('calendarContainer');
+            const priceSlider = document.getElementById('priceSliderContainer');
+            priceSlider.classList.add('hidden');
             calendar.classList.toggle('hidden');
             renderCalendar();
         }
@@ -859,7 +966,7 @@
             if (stayType === 'dayuse') {
                 checkInDate = date;
                 checkOutDate = null;
-                updateDateInputs();
+                updateDateRangeInput();
                 document.getElementById('calendarContainer').classList.add('hidden');
             } else {
                 if (selectingFor === 'checkin' || !checkInDate || (checkInDate && checkOutDate)) {
@@ -870,41 +977,42 @@
                     if (date > checkInDate) {
                         checkOutDate = date;
                         document.getElementById('calendarContainer').classList.add('hidden');
+                        selectingFor = 'checkin';
                     } else {
                         checkInDate = date;
                         checkOutDate = null;
                     }
                 }
-                updateDateInputs();
+                updateDateRangeInput();
             }
             renderCalendar();
         }
 
-        function updateDateInputs() {
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        function updateDateRangeInput() {
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
             if (checkInDate) {
-                const day = checkInDate.getDate();
-                const month = monthNames[checkInDate.getMonth()];
-                const year = checkInDate.getFullYear();
-                const dayName = dayNames[checkInDate.getDay()];
+                const checkInDay = checkInDate.getDate();
+                const checkInMonth = monthNames[checkInDate.getMonth()];
+                const checkInYear = checkInDate.getFullYear();
 
-                document.getElementById('checkInDate').value = `${day} ${month} ${year}`;
-                document.getElementById('checkInDay').textContent = dayName;
-            }
+                if (stayType === 'overnight' && checkOutDate) {
+                    const checkOutDay = checkOutDate.getDate();
+                    const checkOutMonth = monthNames[checkOutDate.getMonth()];
+                    const checkOutYear = checkOutDate.getFullYear();
 
-            if (stayType === 'overnight' && checkOutDate) {
-                const day = checkOutDate.getDate();
-                const month = monthNames[checkOutDate.getMonth()];
-                const year = checkOutDate.getFullYear();
-                const dayName = dayNames[checkOutDate.getDay()];
-
-                document.getElementById('checkOutDate').value = `${day} ${month} ${year}`;
-                document.getElementById('checkOutDay').textContent = dayName;
-            } else if (stayType === 'dayuse') {
-                document.getElementById('checkOutDate').value = '';
-                document.getElementById('checkOutDay').textContent = '';
+                    document.getElementById('dateRangeInput').value = 
+                        `${checkInDay} ${checkInMonth} ${checkInYear} - ${checkOutDay} ${checkOutMonth} ${checkOutYear}`;
+                    
+                    const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                    document.getElementById('dateRangeDay').textContent = `${nights} night${nights > 1 ? 's' : ''}`;
+                } else {
+                    document.getElementById('dateRangeInput').value = `${checkInDay} ${checkInMonth} ${checkInYear}`;
+                    document.getElementById('dateRangeDay').textContent = stayType === 'dayuse' ? 'Day Use' : '';
+                }
+            } else {
+                document.getElementById('dateRangeInput').value = '';
+                document.getElementById('dateRangeDay').textContent = '';
             }
         }
 
@@ -926,6 +1034,114 @@
             renderCalendar();
         }
 
+        // Price Slider Functions
+        function togglePriceSlider() {
+            const priceSlider = document.getElementById('priceSliderContainer');
+            const calendar = document.getElementById('calendarContainer');
+            calendar.classList.add('hidden');
+            priceSlider.classList.toggle('hidden');
+        }
+
+        function updatePriceSlider() {
+            const minThumb = document.getElementById('minThumb');
+            const maxThumb = document.getElementById('maxThumb');
+            const priceRange = document.getElementById('priceRange');
+            
+            const minPercent = ((minPrice - 0) / (20000 - 0)) * 100;
+            const maxPercent = ((maxPrice - 0) / (20000 - 0)) * 100;
+            
+            minThumb.style.left = minPercent + '%';
+            maxThumb.style.left = maxPercent + '%';
+            priceRange.style.left = minPercent + '%';
+            priceRange.style.width = (maxPercent - minPercent) + '%';
+            
+            document.getElementById('minPriceLabel').textContent = minPrice;
+            document.getElementById('maxPriceLabel').textContent = maxPrice;
+            document.getElementById('minPriceInput').value = minPrice;
+            document.getElementById('maxPriceInput').value = maxPrice;
+            document.getElementById('priceRangeInput').value = `₱${minPrice} - ₱${maxPrice}`;
+        }
+
+        function updatePriceFromInput(type) {
+            if (type === 'min') {
+                minPrice = Math.max(0, Math.min(parseInt(document.getElementById('minPriceInput').value) || 0, maxPrice - 100));
+            } else {
+                maxPrice = Math.max(minPrice + 100, Math.min(parseInt(document.getElementById('maxPriceInput').value) || 20000, 20000));
+            }
+            updatePriceSlider();
+        }
+
+        // Price Slider Drag Events
+        document.getElementById('minThumb').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            activeThumb = 'min';
+            e.preventDefault();
+        });
+
+        document.getElementById('maxThumb').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            activeThumb = 'max';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const track = document.querySelector('.price-slider-track');
+            const rect = track.getBoundingClientRect();
+            const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+            const value = Math.round((percent / 100) * 20000);
+            
+            if (activeThumb === 'min') {
+                minPrice = Math.min(value, maxPrice - 100);
+            } else {
+                maxPrice = Math.max(value, minPrice + 100);
+            }
+            
+            updatePriceSlider();
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            activeThumb = null;
+        });
+
+        // Touch events for mobile
+        document.getElementById('minThumb').addEventListener('touchstart', (e) => {
+            isDragging = true;
+            activeThumb = 'min';
+            e.preventDefault();
+        });
+
+        document.getElementById('maxThumb').addEventListener('touchstart', (e) => {
+            isDragging = true;
+            activeThumb = 'max';
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const track = document.querySelector('.price-slider-track');
+            const rect = track.getBoundingClientRect();
+            const touch = e.touches[0];
+            const percent = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
+            const value = Math.round((percent / 100) * 20000);
+            
+            if (activeThumb === 'min') {
+                minPrice = Math.min(value, maxPrice - 100);
+            } else {
+                maxPrice = Math.max(value, minPrice + 100);
+            }
+            
+            updatePriceSlider();
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+            activeThumb = null;
+        });
+
         // Guests Dropdown
         function toggleGuestsDropdown() {
             const dropdown = document.getElementById('guestsDropdown');
@@ -937,7 +1153,7 @@
                 adults = Math.max(1, adults + delta);
                 document.getElementById('adultsCount').textContent = adults;
             } else if (type === 'rooms') {
-                rooms = Math.max(1, Math.min(6, rooms + delta));
+                rooms = Math.max(1, Math.min(14, rooms + delta));
                 document.getElementById('roomsCount').textContent = rooms;
             }
             updateGuestsInput();
@@ -956,8 +1172,9 @@
             const guestsInput = document.getElementById('guestsInput');
             const guestsDropdown = document.getElementById('guestsDropdown');
             const calendarContainer = document.getElementById('calendarContainer');
-            const checkInDate = document.getElementById('checkInDate');
-            const checkOutDate = document.getElementById('checkOutDate');
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const dateRangeInput = document.getElementById('dateRangeInput');
+            const priceRangeInput = document.getElementById('priceRangeInput');
 
             if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
                 dropdown.classList.add('hidden');
@@ -967,10 +1184,12 @@
                 guestsDropdown.classList.add('hidden');
             }
 
-            if (!calendarContainer.contains(event.target) &&
-                !checkInDate.contains(event.target) &&
-                !checkOutDate.contains(event.target)) {
+            if (!calendarContainer.contains(event.target) && !dateRangeInput.contains(event.target)) {
                 calendarContainer.classList.add('hidden');
+            }
+
+            if (!priceSliderContainer.contains(event.target) && !priceRangeInput.contains(event.target)) {
+                priceSliderContainer.classList.add('hidden');
             }
         });
 
@@ -1003,7 +1222,7 @@
                     facilities: ["Swimming pools", "Hot spring baths", "Cottages", "Function halls", "Restaurant", "Parking"],
                     lat: 14.179855690866304,
                     lng: 121.1837820447193,
-                    bedrooms: 3,
+                    bedrooms: 4,
                     price: "budget",
                     amenities: ["hot-spring", "parking", "kitchen", "wifi"],
                     priceValue: "₱3,000 per night",
@@ -1018,7 +1237,7 @@
                     facilities: ["Private pools", "Event space", "Kitchen facilities", "Barbecue area", "Air-conditioned rooms"],
                     lat: 14.179350807676604,
                     lng: 121.18485773727306,
-                    bedrooms: 4,
+                    bedrooms: 14,
                     price: "premium",
                     amenities: ["aircon", "kitchen", "parking"],
                     priceValue: "₱12,000 per night",
@@ -1033,7 +1252,7 @@
                     facilities: ["Hot spring baths", "Karaoke", "Videoke", "Outdoor grilling area", "WiFi"],
                     lat: 14.179889853295485,
                     lng: 121.1861350014737,
-                    bedrooms: 2,
+                    bedrooms: 4,
                     price: "mid",
                     amenities: ["hot-spring", "karaoke", "wifi"],
                     priceValue: "₱7,000 per night",
@@ -1109,16 +1328,12 @@
             }
 
             // Filter by number of rooms (bedrooms)
-            if (rooms > 0) {
-                filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
-            }
+            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
 
-            // Filter by stay type (if specific availability exists)
-            // This is a placeholder - you can add specific day use availability logic here
-            if (stayType === 'dayuse') {
-                // You could filter resorts that support day use if you have that data
-                // For now, showing all resorts
-            }
+            // Filter by price range
+            filteredResorts = filteredResorts.filter(resort => 
+                resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
+            );
 
             if (filteredResorts.length === 0) {
                 dropdownContent.innerHTML = `
@@ -1166,7 +1381,9 @@
                 params.append('checkOut', checkOutDate.toISOString());
             }
             params.append('adults', adults);
-            params.append('rooms', rooms); // This is the key parameter for filtering
+            params.append('rooms', rooms);
+            params.append('minPrice', minPrice);
+            params.append('maxPrice', maxPrice);
 
             const queryString = params.toString();
             if (queryString) {
@@ -1185,6 +1402,7 @@
         // Initialize Firebase on page load
         initializeFirebase();
         renderCalendar();
+        updatePriceSlider();
 
         // Close mobile menu when window is resized to desktop
         window.addEventListener('resize', function () {
