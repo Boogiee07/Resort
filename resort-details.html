@@ -67,6 +67,9 @@
 
         .facility-item {
             transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .facility-item:hover {
@@ -79,6 +82,32 @@
 
         .facility-item:hover img {
             box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transform: scale(1.05);
+        }
+
+        .facility-item::after {
+            content: '🔍 Click to view';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .facility-item:hover::after {
+            opacity: 1;
+        }
+
+        .facility-item.hidden-facility {
+            display: none;
         }
 
         .back-button:hover {
@@ -331,7 +360,304 @@
             animation: slideUp 0.3s ease;
         }
 
-        /* Mobile-specific adjustments */
+        /* Enhanced Lightbox Modal Styles */
+        .image-gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.96);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .image-gallery-modal.active {
+            display: flex;
+        }
+
+        .gallery-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 70px 15px 15px;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-content {
+                padding: 90px 40px 20px;
+            }
+        }
+
+        .gallery-main-image {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 15px;
+            min-height: 0;
+        }
+
+        .gallery-main-image img {
+            max-width: 85%;
+            max-height: 85%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            animation: zoomIn 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (min-width: 768px) {
+            .gallery-main-image img {
+                max-width: 75%;
+                max-height: 75%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .gallery-main-image img {
+                max-width: 65%;
+                max-height: 70%;
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .image-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .image-loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        .gallery-nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .gallery-nav-button:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-nav-button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .gallery-nav-button.prev {
+            left: 10px;
+        }
+
+        .gallery-nav-button.next {
+            right: 10px;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-nav-button {
+                width: 56px;
+                height: 56px;
+            }
+
+            .gallery-nav-button.prev {
+                left: 20px;
+            }
+
+            .gallery-nav-button.next {
+                right: 20px;
+            }
+        }
+
+        .gallery-close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-close-button {
+                top: 20px;
+                right: 20px;
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        .gallery-close-button:hover {
+            background: white;
+            transform: rotate(90deg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-close-button:active {
+            transform: rotate(90deg) scale(0.95);
+        }
+
+        .gallery-thumbnails {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+            max-height: 90px;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-thumbnails {
+                gap: 10px;
+                padding: 10px 0;
+            }
+        }
+
+        .gallery-thumbnails::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .gallery-thumbnails::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .gallery-thumbnails::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+        }
+
+        .gallery-thumbnail {
+            flex-shrink: 0;
+            width: 80px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-thumbnail {
+                width: 100px;
+                height: 75px;
+            }
+        }
+
+        .gallery-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-thumbnail:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .gallery-thumbnail.active {
+            border-color: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .gallery-image-info {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-image-info {
+                bottom: 15px;
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+
+        .gallery-image-title {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            max-width: 90%;
+            text-align: center;
+            z-index: 5;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-image-title {
+                font-size: 16px;
+                top: 95px;
+                padding: 8px 20px;
+            }
+        }
+
         @media (max-width: 767px) {
             .section-padding {
                 padding: 16px;
@@ -375,7 +701,7 @@
             <nav class="space-x-2 md:space-x-8 text-xs md:text-sm font-semibold">
                 <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
                 <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
+                <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
             </nav>
         </div>
     </header>
@@ -470,29 +796,21 @@
 
             <!-- Facilities Section -->
             <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6 md:mb-8">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 md:mb-6">Our Facilities</h2>
-                <div id="facilitiesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6 gap-3">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Our Facilities</h2>
+                </div>
+                <div id="facilitiesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-4">
                     <!-- Facilities will be dynamically inserted here -->
                 </div>
-            </div>
-
-            <!-- Location Section -->
-            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6 md:mb-8 border-2 border-blue-100">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4 flex items-center">
-                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                    </svg>
-                    Location
-                </h2>
-                <p id="locationAddress" class="text-gray-800 text-base md:text-lg mb-2 md:mb-3"></p>
-                <div class="flex items-center text-gray-700 text-sm md:text-base">
-                    <svg class="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                    </svg>
-                    <span class="text-xs md:text-sm">Coordinates: <span id="locationCoords" class="font-mono"></span></span>
+                <div id="viewMoreContainer" class="text-center hidden">
+                    <button id="viewMoreBtn" class="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg shadow-md transition-all duration-300 text-sm md:text-base">
+                        <span id="viewMoreText">View More Facilities</span>
+                        <svg id="viewMoreIcon" class="w-5 h-5 ml-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
-
             <!-- Disclaimer -->
             <div class="bg-gray-50 rounded-lg md:rounded-xl p-4 md:p-6 border-l-4 border-blue-600">
                 <p class="text-xs md:text-sm text-gray-600 italic">
@@ -556,7 +874,7 @@
                 </div>
 
                 <!-- Contact Section -->
-                <div class="text-center md:text-left">
+                <div class="text-center md:text-left" id="contact">
                     <h6 class="font-semibold mb-2 md:mb-3 text-base md:text-lg">Contact Us</h6>
                     <p class="text-xs md:text-sm text-gray-400 mb-2 md:mb-3">For inquiries and assistance:</p>
                     <div class="space-y-2">
@@ -633,6 +951,43 @@
         </div>
     </div>
 
+    <!-- Enhanced Image Gallery Modal -->
+    <div class="image-gallery-modal" id="imageGalleryModal">
+        <div class="gallery-content">
+            <div class="gallery-close-button" id="galleryCloseButton">
+                <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </div>
+
+            <div class="gallery-image-title" id="galleryImageTitle">Facility Name</div>
+
+            <div class="gallery-main-image">
+                <div class="image-loading" id="imageLoading" style="display: none;">
+                    <div class="image-loading-spinner"></div>
+                </div>
+                <img id="galleryMainImage" src="" alt="Facility" style="display: none;">
+                <div class="gallery-image-info" id="galleryImageInfo">1/6</div>
+                
+                <div class="gallery-nav-button prev" id="galleryPrevButton">
+                    <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </div>
+                
+                <div class="gallery-nav-button next" id="galleryNextButton">
+                    <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="gallery-thumbnails" id="galleryThumbnails">
+                <!-- Thumbnails will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -688,6 +1043,11 @@
             }
         };
 
+        let facilitiesExpanded = false;
+        const INITIAL_FACILITIES_COUNT = 6;
+        let galleryImages = [];
+        let currentGalleryIndex = 0;
+
         function getResortIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
@@ -698,12 +1058,53 @@
                 'Natural Hot Spring Pools': 6,
                 'Swimming Pool': 7,
                 'Function Pavilions': 8,
-                'Garden Areas': 9,
+                'Bedrooms': 9,
                 'Canteen': 10,
-                'Parking Area': 11
+                'Parking Area': 4
             };
             const imageNum = facilityImageMap[facilityName] || (facilityIndex + 2);
             return `https://raw.githubusercontent.com/Boogiee07/Resort/main/PICTURE/${resortId}_resort/${imageNum}.jpg`;
+        }
+        // Get all additional gallery images (hidden from facility grid)
+        // Only add images that actually exist
+        function getAdditionalGalleryImages(resortId, facilityCount) {
+            const additionalImages = [];
+            const startNum = 12;
+            const endNum = 30; // Check up to image 30
+            
+            for (let i = startNum; i <= endNum; i++) {
+                additionalImages.push({
+                    src: `https://raw.githubusercontent.com/Boogiee07/Resort/main/PICTURE/${resortId}_resort/${i}.jpg`,
+                    name: `Gallery Image ${i - 11}`,
+                    isHidden: true,
+                    imageNum: i
+                });
+            }
+            return additionalImages;
+        }
+
+        // Check if image exists and filter gallery
+        function filterExistingImages(images, callback) {
+            let loadedCount = 0;
+            const validImages = [];
+            
+            images.forEach((img, index) => {
+                const testImg = new Image();
+                testImg.onload = function() {
+                    validImages.push(img);
+                    loadedCount++;
+                    if (loadedCount === images.length) {
+                        callback(validImages);
+                    }
+                };
+                testImg.onerror = function() {
+                    loadedCount++;
+                    if (loadedCount === images.length) {
+                        callback(validImages);
+                    }
+                };
+                testImg.src = img.src;
+            });
         }
 
         const amenityDetails = {
@@ -755,6 +1156,121 @@
 
         function createGoogleMapsLink(query) {
             return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+        }
+
+        // Enhanced lightbox functions
+        function openImageGallery(index) {
+            currentGalleryIndex = index;
+            document.getElementById('imageGalleryModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            updateGalleryDisplay();
+        }
+
+        function updateGalleryDisplay() {
+            const mainImage = document.getElementById('galleryMainImage');
+            const imageInfo = document.getElementById('galleryImageInfo');
+            const imageTitle = document.getElementById('galleryImageTitle');
+            const imageLoading = document.getElementById('imageLoading');
+            
+            // Show loading spinner
+            imageLoading.style.display = 'block';
+            mainImage.style.display = 'none';
+            
+            // Update image source
+            const currentImage = galleryImages[currentGalleryIndex];
+            mainImage.src = currentImage.src;
+            mainImage.alt = currentImage.name;
+            imageTitle.textContent = currentImage.name;
+            imageInfo.textContent = `${currentGalleryIndex + 1}/${galleryImages.length}`;
+
+            // Hide loading and show image when loaded
+            mainImage.onload = function() {
+                imageLoading.style.display = 'none';
+                mainImage.style.display = 'block';
+            };
+
+            mainImage.onerror = function() {
+                imageLoading.style.display = 'none';
+                mainImage.style.display = 'block';
+                mainImage.src = 'https://placehold.co/800x600/94a3b8/ffffff?text=' + encodeURIComponent(currentImage.name);
+            };
+
+            // Update thumbnails
+            document.querySelectorAll('.gallery-thumbnail').forEach((thumb, idx) => {
+                if (idx === currentGalleryIndex) {
+                    thumb.classList.add('active');
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+
+            // Scroll active thumbnail into view
+            const activeThumbnail = document.querySelector('.gallery-thumbnail.active');
+            if (activeThumbnail) {
+                activeThumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        function navigateGallery(direction) {
+            if (direction === 'next') {
+                currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
+            } else {
+                currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
+            }
+            updateGalleryDisplay();
+        }
+
+        function closeImageGallery() {
+            document.getElementById('imageGalleryModal').classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Gallery event listeners
+        document.getElementById('galleryCloseButton').addEventListener('click', closeImageGallery);
+        document.getElementById('galleryPrevButton').addEventListener('click', () => navigateGallery('prev'));
+        document.getElementById('galleryNextButton').addEventListener('click', () => navigateGallery('next'));
+
+        document.getElementById('imageGalleryModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageGallery();
+            }
+        });
+
+        // Keyboard navigation for lightbox
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('imageGalleryModal');
+            if (modal.classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    closeImageGallery();
+                } else if (e.key === 'ArrowLeft') {
+                    navigateGallery('prev');
+                } else if (e.key === 'ArrowRight') {
+                    navigateGallery('next');
+                }
+            }
+        });
+
+        // Touch swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.getElementById('galleryMainImage').addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.getElementById('galleryMainImage').addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                navigateGallery('next');
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                navigateGallery('prev');
+            }
         }
 
         function loadResortDetails() {
@@ -862,19 +1378,50 @@
                 document.getElementById('resortDescription').textContent = resort.description;
             }
 
-            const facilitiesHtml = resort.facilities.map((facility, index) => `
-                <div class="facility-item">
-                    <img src="${getFacilityImage(resortId, facility, index)}" 
-                        alt="${facility}" 
-                        onerror="this.src='https://placehold.co/400x300/94a3b8/ffffff?text=${encodeURIComponent(facility)}'"
-                        class="w-full h-40 md:h-48 object-cover rounded-lg mb-2 md:mb-3">
-                    <h3 class="text-base md:text-lg font-semibold text-gray-800 text-center">${facility}</h3>
-                </div>
-            `).join('');
+            // Prepare gallery images - facility images + additional hidden images
+            const facilityImages = resort.facilities.map((facility, index) => ({
+                src: getFacilityImage(resortId, facility, index),
+                name: facility,
+                isHidden: false
+            }));
+
+            const additionalImages = getAdditionalGalleryImages(resortId, resort.facilities.length);
+            
+            // Filter to only show images that exist
+            const allPotentialImages = [...facilityImages, ...additionalImages];
+            
+            filterExistingImages(allPotentialImages, function(validImages) {
+                galleryImages = validImages;
+                
+                // Create gallery thumbnails (only for existing images)
+                const thumbnailsHtml = galleryImages.map((img, index) => `
+                    <div class="gallery-thumbnail ${index === 0 ? 'active' : ''}" onclick="currentGalleryIndex = ${index}; updateGalleryDisplay();">
+                        <img src="${img.src}" alt="${img.name}">
+                    </div>
+                `).join('');
+                document.getElementById('galleryThumbnails').innerHTML = thumbnailsHtml;
+                
+                console.log(`Resort ${resortId}: Loaded ${galleryImages.length} images`);
+            });
+
+            // Display facilities with click handlers
+            const facilitiesHtml = resort.facilities.map((facility, index) => {
+                const isHidden = index >= INITIAL_FACILITIES_COUNT;
+                const galleryIndex = index; // Use same image as facility
+                return `
+                    <div class="facility-item ${isHidden ? 'hidden-facility' : ''}" onclick="openImageGallery(${galleryIndex})">
+                        <img src="${getFacilityImage(resortId, facility, index)}" 
+                            alt="${facility}" 
+                            onerror="this.src='https://placehold.co/400x300/94a3b8/ffffff?text=${encodeURIComponent(facility)}'"
+                            class="w-full h-40 md:h-48 object-cover rounded-lg">
+                    </div>
+                `;
+            }).join('');
             document.getElementById('facilitiesGrid').innerHTML = facilitiesHtml;
 
-            document.getElementById('locationAddress').textContent = resort.address;
-            document.getElementById('locationCoords').textContent = `${resort.lat.toFixed(6)}, ${resort.lng.toFixed(6)}`;
+            if (resort.facilities.length > INITIAL_FACILITIES_COUNT) {
+                document.getElementById('viewMoreContainer').classList.remove('hidden');
+            }
 
             document.getElementById('loadingOverlay').style.display = 'none';
             document.getElementById('mainContent').classList.remove('hidden');
@@ -885,8 +1432,31 @@
             document.getElementById('errorMessage').classList.remove('hidden');
         }
 
+        document.getElementById('viewMoreBtn').addEventListener('click', function() {
+            facilitiesExpanded = !facilitiesExpanded;
+            const hiddenFacilities = document.querySelectorAll('.hidden-facility');
+            const viewMoreText = document.getElementById('viewMoreText');
+            const viewMoreIcon = document.getElementById('viewMoreIcon');
+            
+            if (facilitiesExpanded) {
+                hiddenFacilities.forEach(facility => {
+                    facility.style.display = 'block';
+                });
+                viewMoreText.textContent = 'View Less Facilities';
+                viewMoreIcon.style.transform = 'rotate(180deg)';
+            } else {
+                hiddenFacilities.forEach(facility => {
+                    facility.style.display = 'none';
+                });
+                viewMoreText.textContent = 'View More Facilities';
+                viewMoreIcon.style.transform = 'rotate(0deg)';
+                document.querySelector('.bg-white.rounded-xl').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+
         loadResortDetails();
 
+        // Feedback functionality
         let selectedRating = 0;
         let currentResortId = '';
         let currentResortName = '';
