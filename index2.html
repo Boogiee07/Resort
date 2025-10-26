@@ -530,6 +530,7 @@
                 </div>
 
                 <!-- Contact Us Section -->
+                <!-- Contact Us Section -->
                 <div>
                     <h3 class="text-lg sm:text-xl font-bold text-white mb-4" id="contact">Contact Us</h3>
                     <p class="text-xs sm:text-sm text-gray-400 mb-4">For inquiries, reservations, or assistance:</p>
@@ -558,6 +559,8 @@
                     <div class="mt-6 pt-4 border-t border-gray-700">
                         <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring
                             resort for your relaxation and family bonding needs.</p>
+                        <a href="admin.html"
+                            class="text-xs text-blue-400 hover:text-blue-300 transition mt-2 inline-block">Dev</a>
                     </div>
                 </div>
 
@@ -860,7 +863,7 @@
             // ✅ FIXED: Apply room/bedroom filter from URL parameters
             if (urlParams.rooms) {
                 const requestedRooms = urlParams.rooms;
-                
+
                 filtered = filtered.filter(resort => {
                     // Show resorts that have at least the requested number of bedrooms
                     return resort.bedrooms >= requestedRooms;
