@@ -1594,6 +1594,8 @@
                 await signOut(auth);
                 console.log("User signed out");
                 dashboardInstance = null;
+                // Redirect to index.html after successful sign out
+                window.location.href = 'index.html';
             } catch (error) {
                 console.error("Sign out error:", error);
                 alert('Failed to sign out. Please try again.');
