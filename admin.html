@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,6 +76,25 @@
             padding: 40px;
             border-radius: 16px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #3b82f6;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 24px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: #eff6ff;
+            color: #2563eb;
         }
 
         .login-title {
@@ -765,6 +785,10 @@
     <!-- Login Container -->
     <div id="login-container" class="login-wrapper">
         <div class="login-box">
+            <a href="index.html" class="back-link">
+                <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+                <span>Back to Home</span>
+            </a>
             <h2 class="login-title">Admin Login</h2>
             <form id="login-form">
                 <div class="form-group">
@@ -980,7 +1004,6 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
