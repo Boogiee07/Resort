@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,19 +9,19 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
-         * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background-color: #f7f7f7;
             color: #1f2937;
             line-height: 1.6;
         }
-        
+
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -28,20 +29,20 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         html {
             scroll-behavior: smooth;
         }
-        
+
         .resort-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .resort-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        
+
         .modal {
             display: none;
             position: fixed;
@@ -54,51 +55,54 @@
             background-color: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(4px);
         }
-        
+
         .modal.active {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
         }
-        
+
         @keyframes modalFadeIn {
             from {
                 opacity: 0;
                 transform: scale(0.95);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1);
             }
         }
-        
-        .modal.active > div {
+
+        .modal.active>div {
             animation: modalFadeIn 0.3s ease;
         }
-        
+
         ::-webkit-scrollbar {
             width: 10px;
         }
-        
+
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
-        
+
         ::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 5px;
         }
-        
+
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
-        
-        button, a {
+
+        button,
+        a {
             transition: all 0.2s ease;
         }
-        
-        input:focus, select:focus {
+
+        input:focus,
+        select:focus {
             outline: none;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
@@ -142,8 +146,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Mobile menu styles */
@@ -179,7 +188,7 @@
         .mobile-overlay.active {
             display: block;
         }
-        
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -200,18 +209,20 @@
                 align-items: flex-start;
             }
 
-            .modal.active > div {
+            .modal.active>div {
                 border-radius: 0;
                 max-height: 100vh;
                 margin: 0;
                 width: 100%;
             }
+
             .hero-bg {
                 background-attachment: scroll;
             }
         }
     </style>
 </head>
+
 <body class="antialiased">
 
     <!-- Loading Overlay -->
@@ -232,14 +243,18 @@
                 <h2 class="text-xl font-bold text-gray-900">Menu</h2>
                 <button onclick="closeMobileMenu()" class="p-2 hover:bg-gray-100 rounded-lg">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
             <nav class="space-y-4">
-                <a href="index.html" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
-                <a href="index2.html" class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
+                <a href="index.html"
+                    class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
+                <a href="index2.html"
+                    class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
+                <a href="#contact"
+                    class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
             </nav>
         </div>
     </div>
@@ -248,7 +263,11 @@
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <svg class="w-7 h-7 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <svg class="w-7 h-7 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                    </path>
+                </svg>
                 <div>
                     <h1 class="text-lg sm:text-xl font-extrabold text-gray-900">Pansol Resorts</h1>
                     <p class="text-xs text-gray-500 hidden sm:block">Pansol Hot Spring Resorts</p>
@@ -265,7 +284,8 @@
             <!-- Mobile Menu Button -->
             <button onclick="openMobileMenu()" class="md:hidden p-2 hover:bg-gray-100 rounded-lg">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
                 </svg>
             </button>
         </div>
@@ -294,31 +314,37 @@
                 <!-- Search Bar -->
                 <div class="w-full">
                     <div class="relative">
-                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="Search resorts..." 
-                            class="w-full pl-12 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                        >
+                        <input type="text" id="searchInput" placeholder="Search resorts..."
+                            class="w-full pl-12 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
                     </div>
                 </div>
 
                 <!-- Filter Chips - Scrollable on mobile -->
                 <div class="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
                     <div class="flex gap-2 min-w-max sm:min-w-0 sm:flex-wrap">
-                        <button onclick="toggleFilter('all')" class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-blue-600 text-white whitespace-nowrap" data-filter="all">
+                        <button onclick="toggleFilter('all')"
+                            class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-blue-600 text-white whitespace-nowrap"
+                            data-filter="all">
                             All Resorts
                         </button>
-                        <button onclick="toggleFilter('budget')" class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap" data-filter="budget">
+                        <button onclick="toggleFilter('budget')"
+                            class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap"
+                            data-filter="budget">
                             Budget
                         </button>
-                        <button onclick="toggleFilter('mid')" class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap" data-filter="mid">
+                        <button onclick="toggleFilter('mid')"
+                            class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap"
+                            data-filter="mid">
                             Mid-Range
                         </button>
-                        <button onclick="toggleFilter('premium')" class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap" data-filter="premium">
+                        <button onclick="toggleFilter('premium')"
+                            class="filter-chip px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gray-200 text-gray-700 whitespace-nowrap"
+                            data-filter="premium">
                             Premium
                         </button>
                     </div>
@@ -326,7 +352,8 @@
 
                 <!-- Sort Dropdown -->
                 <div class="w-full sm:w-auto">
-                    <select id="sortSelect" class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-xs sm:text-sm">
+                    <select id="sortSelect"
+                        class="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-xs sm:text-sm">
                         <option value="name">Sort by Name</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
@@ -352,12 +379,15 @@
 
             <!-- No Results Message -->
             <div id="noResults" class="hidden text-center py-12 sm:py-16">
-                <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <svg class="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <p class="text-xl sm:text-2xl font-bold text-gray-600 mb-2">No resorts found</p>
                 <p class="text-sm sm:text-base text-gray-500 mb-6">Try adjusting your filters or search terms</p>
-                <button onclick="resetFilters()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm sm:text-base">
+                <button onclick="resetFilters()"
+                    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm sm:text-base">
                     Clear All Filters
                 </button>
             </div>
@@ -366,11 +396,14 @@
 
     <!-- Modal for Resort Details -->
     <div id="resortModal" class="modal">
-        <div class="bg-white rounded-xl sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] sm:max-h-[90vh] overflow-y-auto m-0 sm:m-4">
+        <div
+            class="bg-white rounded-xl sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] sm:max-h-[90vh] overflow-y-auto m-0 sm:m-4">
             <div class="relative">
-                <button onclick="closeModal()" class="absolute top-2 sm:top-4 right-2 sm:right-4 z-10 bg-white rounded-full p-1.5 sm:p-2 shadow-lg hover:bg-gray-100 transition">
+                <button onclick="closeModal()"
+                    class="absolute top-2 sm:top-4 right-2 sm:right-4 z-10 bg-white rounded-full p-1.5 sm:p-2 shadow-lg hover:bg-gray-100 transition">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
                 <img id="modalImage" class="w-full h-48 sm:h-64 object-cover" src="" alt="">
@@ -409,27 +442,33 @@
                 </div>
 
                 <div class="border-t pt-4">
-                    <p class="text-xs sm:text-sm text-gray-500 italic">For informational purposes only. Contact the resort directly for availability and booking details.</p>
+                    <p class="text-xs sm:text-sm text-gray-500 italic">For informational purposes only. Contact the
+                        resort directly for availability and booking details.</p>
                 </div>
             </div>
         </div>
     </div>
 
-   <!-- Footer Section -->
+    <!-- Footer Section -->
     <footer class="bg-gray-800 text-gray-300 py-8 sm:py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                
+
                 <!-- Pansol Resorts Section -->
                 <div>
                     <h3 class="text-lg sm:text-xl font-bold text-white mb-4">Pansol Resorts</h3>
                     <p class="text-xs sm:text-sm text-gray-400 mb-4 leading-relaxed">
-                        Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna. Explore natural hot springs, family-friendly accommodations, and relaxing getaways.
+                        Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna.
+                        Explore natural hot springs, family-friendly accommodations, and relaxing getaways.
                     </p>
                     <div class="flex items-start text-xs sm:text-sm">
-                        <svg class="w-5 h-5 mr-2 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <svg class="w-5 h-5 mr-2 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
                         <span class="text-gray-400">Pansol, Calamba City, Laguna, Philippines</span>
                     </div>
@@ -440,39 +479,51 @@
                     <h3 class="text-lg sm:text-xl font-bold text-white mb-4">Visitor's Guide</h3>
                     <div class="space-y-3 text-xs sm:text-sm">
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">Location:</span>
-                                <span class="text-gray-400"> Just 2 hours from Manila via South Luzon Expressway (SLEX)</span>
+                                <span class="text-gray-400"> Just 2 hours from Manila via South Luzon Expressway
+                                    (SLEX)</span>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">Best Time to Visit:</span>
-                                <span class="text-gray-400"> Year-round, especially during cooler months (November - February)</span>
+                                <span class="text-gray-400"> Year-round, especially during cooler months (November -
+                                    February)</span>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">What to Bring:</span>
-                                <span class="text-gray-400"> Swimwear, towels, extra clothes, sunscreen, and toiletries</span>
+                                <span class="text-gray-400"> Swimwear, towels, extra clothes, sunscreen, and
+                                    toiletries</span>
                             </div>
                         </div>
                         <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
                             </svg>
                             <div>
                                 <span class="font-semibold text-gray-200">Tip:</span>
-                                <span class="text-gray-400"> Book in advance during weekends and holidays for better rates</span>
+                                <span class="text-gray-400"> Book in advance during weekends and holidays for better
+                                    rates</span>
                             </div>
                         </div>
                     </div>
@@ -484,25 +535,34 @@
                     <p class="text-xs sm:text-sm text-gray-400 mb-4">For inquiries, reservations, or assistance:</p>
                     <div class="space-y-3">
                         <div class="flex items-center text-xs sm:text-sm">
-                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                </path>
                             </svg>
-                            <a href="tel:+6490950496667" class="text-gray-300 hover:text-blue-400 transition break-all">(+64) 909 504 9667</a>
+                            <a href="tel:+6490950496667"
+                                class="text-gray-300 hover:text-blue-400 transition break-all">(+64) 909 504 9667</a>
                         </div>
                         <div class="flex items-center text-xs sm:text-sm">
-                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
                             </svg>
-                            <a href="mailto:azriel.tizon07@gmail.com" class="text-gray-300 hover:text-blue-400 transition break-all">azriel.tizon07@gmail.com</a>
+                            <a href="mailto:azriel.tizon07@gmail.com"
+                                class="text-gray-300 hover:text-blue-400 transition break-all">azriel.tizon07@gmail.com</a>
                         </div>
                     </div>
                     <div class="mt-6 pt-4 border-t border-gray-700">
-                        <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring resort for your relaxation and family bonding needs.</p>
+                        <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring
+                            resort for your relaxation and family bonding needs.</p>
                     </div>
                 </div>
 
             </div>
-            
+
             <!-- Copyright -->
             <div class="mt-8 sm:mt-10 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
                 &copy; 2025 Pansol Resorts. All rights reserved. Information purposes only.
@@ -589,7 +649,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Get URL parameters - UPDATED TO INCLUDE ROOMS
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
@@ -599,25 +658,28 @@
                 stayType: params.get('stayType') || '',
                 checkIn: params.get('checkIn') || '',
                 checkOut: params.get('checkOut') || '',
-                adults: params.get('adults') || ''
+                adults: params.get('adults') || '',
+                minPrice: params.get('minPrice') ? parseInt(params.get('minPrice')) : null,
+                maxPrice: params.get('maxPrice') ? parseInt(params.get('maxPrice')) : null,
+                amenities: params.get('amenities') ? params.get('amenities').split(',') : []
             };
         }
 
-        // Load resorts from Firebase
         function loadResortsFromFirebase() {
             const resortsRef = database.ref('resorts');
-            
+
             resortsRef.once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    resorts = Object.values(data);
+                    resorts = validateResortData(Object.values(data)); // Add validation here
+                    console.log('Loaded resorts:', resorts);
                 } else {
                     resorts = [];
                 }
-                
+
                 // Hide loading overlay
                 document.getElementById('loadingOverlay').style.display = 'none';
-                
+
                 // Initialize page with loaded data
                 initializePageWithData();
             }, (error) => {
@@ -630,50 +692,69 @@
         // Initialize page with loaded data - UPDATED TO SHOW FILTER INFO
         function initializePageWithData() {
             const urlParams = getUrlParams();
-            
+
             // Set search input from URL
             if (urlParams.search) {
                 document.getElementById('searchInput').value = urlParams.search;
             }
-            
+
             // Set sort dropdown from URL
             if (urlParams.sort) {
                 document.getElementById('sortSelect').value = urlParams.sort;
                 currentSort = urlParams.sort;
             }
-            
-            // Display filter info if rooms parameter exists
-            if (urlParams.rooms || urlParams.adults || urlParams.stayType) {
+
+            if (urlParams.rooms || urlParams.adults || urlParams.stayType ||
+                urlParams.minPrice || urlParams.maxPrice ||
+                (urlParams.amenities && urlParams.amenities.length > 0)) {
                 displayFilterInfo(urlParams);
             }
-            
+
             // Apply initial filters
             applyFiltersAndSort();
             setupSearch();
             setupSort();
         }
-
-        // NEW FUNCTION - Display filter information banner
         function displayFilterInfo(params) {
             const filterSection = document.querySelector('.filter-section .max-w-7xl');
-            
+
             let filterInfoHTML = '<div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">';
             filterInfoHTML += '<svg class="w-6 h-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">';
             filterInfoHTML += '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
             filterInfoHTML += '</svg>';
             filterInfoHTML += '<div class="flex-1"><div class="font-semibold text-blue-900 mb-1">Active Filters:</div>';
             filterInfoHTML += '<div class="text-sm text-blue-800">';
-            
+
             const filters = [];
-            if (params.rooms) filters.push(`${params.rooms} bedroom${params.rooms > 1 ? 's' : ''} or more`);
+            if (params.rooms) filters.push(`${params.rooms} room${params.rooms > 1 ? 's' : ''}`);
             if (params.adults) filters.push(`${params.adults} adult${params.adults > 1 ? 's' : ''}`);
             if (params.stayType) filters.push(params.stayType === 'overnight' ? 'Overnight stay' : 'Day use');
-            
+
+            // Better price range display
+            if (params.minPrice !== null || params.maxPrice !== null) {
+                const min = params.minPrice !== null ? params.minPrice : 700;
+                const max = params.maxPrice !== null ? params.maxPrice : 20000;
+
+                // Format numbers with comma separator
+                const formattedMin = min.toLocaleString();
+                const formattedMax = max.toLocaleString();
+
+                filters.push(`Price: ₱${formattedMin} - ₱${formattedMax}`);
+            }
+
+            if (params.amenities && params.amenities.length > 0) {
+                filters.push(`${params.amenities.length} amenity filter${params.amenities.length > 1 ? 's' : ''}`);
+            }
+
+            if (filters.length === 0) {
+                filters.push('All resorts');
+            }
+
             filterInfoHTML += filters.join(' • ');
             filterInfoHTML += '</div></div>';
             filterInfoHTML += '<button onclick="clearSearchFilters()" class="text-blue-600 hover:text-blue-800 font-semibold text-sm whitespace-nowrap">Clear Filters</button>';
             filterInfoHTML += '</div>';
-            
+
             filterSection.insertAdjacentHTML('afterbegin', filterInfoHTML);
         }
 
@@ -681,7 +762,7 @@
         function clearSearchFilters() {
             // Remove URL parameters
             window.history.replaceState({}, '', window.location.pathname);
-            
+
             // Reload the page to reset everything
             window.location.reload();
         }
@@ -689,7 +770,7 @@
         // Toggle filter
         function toggleFilter(filter) {
             activeFilter = filter;
-            
+
             // Update button styles
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 if (btn.dataset.filter === filter) {
@@ -700,26 +781,26 @@
                     btn.classList.add('bg-gray-200', 'text-gray-700');
                 }
             });
-            
+
             applyFiltersAndSort();
         }
 
         function renderResorts(resortsToShow) {
-    const grid = document.getElementById('resortsGrid');
-    const noResults = document.getElementById('noResults');
-    const resultsCount = document.getElementById('resultsCount');
+            const grid = document.getElementById('resortsGrid');
+            const noResults = document.getElementById('noResults');
+            const resultsCount = document.getElementById('resultsCount');
 
-    if (resortsToShow.length === 0) {
-        grid.innerHTML = '';
-        noResults.classList.remove('hidden');
-        resultsCount.textContent = 'No resorts found';
-        return;
-    }
+            if (resortsToShow.length === 0) {
+                grid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                resultsCount.textContent = 'No resorts found';
+                return;
+            }
 
-    noResults.classList.add('hidden');
-    resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
+            noResults.classList.add('hidden');
+            resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
 
-    grid.innerHTML = resortsToShow.map(resort => `
+            grid.innerHTML = resortsToShow.map(resort => `
         <div class="resort-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="showResortDetails(${resort.id})">
             <div class="relative">
                 <img class="w-full h-48 sm:h-56 object-cover" src="${resort.image}" alt="${resort.name}">
@@ -762,52 +843,120 @@
             </div>
         </div>
     `).join('');
-}
+        }
 
-        // Apply filters and sorting - UPDATED TO INCLUDE ROOM FILTERING
         function applyFiltersAndSort() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const urlParams = getUrlParams();
             let filtered = resorts;
 
-            // Apply price filter
+            console.log('Starting filter with', filtered.length, 'resorts');
+            console.log('URL Params:', urlParams);
+
+            // Apply price category filter (budget/mid/premium buttons)
             if (activeFilter !== 'all') {
                 filtered = filtered.filter(resort => resort.price === activeFilter);
+                console.log('After category filter:', filtered.length, 'resorts');
             }
 
-            // Apply room/bedroom filter from URL parameters - THIS IS THE KEY ADDITION
             if (urlParams.rooms) {
-                filtered = filtered.filter(resort => resort.bedrooms >= urlParams.rooms);
+                const requestedRooms = urlParams.rooms;
+
+                filtered = filtered.filter(resort => {
+                    // Show resorts that have at least the requested number of bedrooms
+                    return resort.bedrooms >= requestedRooms;
+                });
+                console.log('After bedroom filter:', filtered.length, 'resorts');
+            }
+
+            // UPDATED - Apply price range filter with better logic
+            if (urlParams.minPrice !== null || urlParams.maxPrice !== null) {
+                const min = urlParams.minPrice !== null ? urlParams.minPrice : 0;
+                const max = urlParams.maxPrice !== null ? urlParams.maxPrice : 999999;
+
+                console.log('Filtering by price range:', min, '-', max);
+
+                filtered = filtered.filter(resort => {
+                    // Make sure priceNumeric exists and is a number
+                    const resortPrice = resort.priceNumeric || 0;
+                    const inRange = resortPrice >= min && resortPrice <= max;
+
+                    console.log(`Resort: ${resort.name}, Price: ${resortPrice}, In Range: ${inRange}`);
+
+                    return inRange;
+                });
+
+                console.log('After price filter:', filtered.length, 'resorts');
+            }
+
+            // Apply amenities filter from URL
+            if (urlParams.amenities && urlParams.amenities.length > 0) {
+                filtered = filtered.filter(resort => {
+                    // Make sure resort has amenities array
+                    const resortAmenities = resort.amenities || [];
+                    return urlParams.amenities.every(amenity =>
+                        resortAmenities.includes(amenity)
+                    );
+                });
+                console.log('After amenities filter:', filtered.length, 'resorts');
             }
 
             // Apply search filter
             if (searchTerm) {
-                const exactMatch = filtered.filter(r => 
+                const exactMatch = filtered.filter(r =>
                     r.name.toLowerCase() === searchTerm
                 );
-                
+
                 if (exactMatch.length > 0) {
                     filtered = exactMatch;
                 } else {
-                    filtered = filtered.filter(r => 
+                    filtered = filtered.filter(r =>
                         r.name.toLowerCase().includes(searchTerm) ||
                         r.description.toLowerCase().includes(searchTerm) ||
-                        r.facilities.some(f => f.toLowerCase().includes(searchTerm))
+                        (r.facilities && r.facilities.some(f => f.toLowerCase().includes(searchTerm)))
                     );
                 }
+                console.log('After search filter:', filtered.length, 'resorts');
             }
 
             // Apply sorting
             filtered = sortResorts(filtered, currentSort);
 
+            console.log('Final filtered resorts:', filtered.length);
             renderResorts(filtered);
+        }
+
+        // Add this function to ensure all resorts have proper numeric prices
+        function validateResortData(resortsArray) {
+            return resortsArray.map(resort => {
+                // If priceNumeric is missing, try to extract from priceValue
+                if (!resort.priceNumeric && resort.priceValue) {
+                    const match = resort.priceValue.match(/₱?(\d+,?\d*)/);
+                    if (match) {
+                        resort.priceNumeric = parseInt(match[1].replace(/,/g, ''));
+                    }
+                }
+
+                // Ensure priceNumeric is a valid number
+                if (!resort.priceNumeric || isNaN(resort.priceNumeric)) {
+                    console.warn(`Resort ${resort.name} has invalid priceNumeric, setting to 0`);
+                    resort.priceNumeric = 0;
+                }
+
+                // Ensure amenities is an array
+                if (!resort.amenities) {
+                    resort.amenities = [];
+                }
+
+                return resort;
+            });
         }
 
         // Sort resorts
         function sortResorts(resortsArray, sortType) {
             const sorted = [...resortsArray];
-            
-            switch(sortType) {
+
+            switch (sortType) {
                 case 'price-low':
                     return sorted.sort((a, b) => a.priceNumeric - b.priceNumeric);
                 case 'price-high':
@@ -854,7 +1003,7 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('sortSelect').value = 'name';
             currentSort = 'name';
-            
+
             // Reset filter buttons
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 if (btn.dataset.filter === 'all') {
@@ -865,10 +1014,10 @@
                     btn.classList.add('bg-gray-200', 'text-gray-700');
                 }
             });
-            
+
             // Clear URL parameters
             window.history.replaceState({}, '', window.location.pathname);
-            
+
             applyFiltersAndSort();
         }
 
@@ -884,4 +1033,5 @@
     </script>
 
 </body>
+
 </html>
