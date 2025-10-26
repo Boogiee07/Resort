@@ -367,7 +367,6 @@
             animation: slideUp 0.3s ease;
         }
 
-        /* Enhanced Lightbox Modal Styles */
         .image-gallery-modal {
             position: fixed;
             top: 0;
@@ -1068,7 +1067,6 @@
         const database = firebase.database();
         const firestore = firebase.firestore();
 
-
         const resortContactInfo = {
             '4': {
                 description: "Welcome to Elysian Sourire Resort. ELYSIAN is a Greek word that means beautiful or creative; divinely inspired; peaceful and perfect. SOURIRE is a French word for Smile 😊 A perfect place that will surely give you a beautiful Sourire.",
@@ -1129,12 +1127,11 @@
             const imageNum = facilityImageMap[facilityName] || (facilityIndex + 2);
             return `https://raw.githubusercontent.com/Boogiee07/Resort/main/PICTURE/${resortId}_resort/${imageNum}.jpg`;
         }
-        // Get all additional gallery images (hidden from facility grid)
-        // Only add images that actually exist
+
         function getAdditionalGalleryImages(resortId, facilityCount) {
             const additionalImages = [];
             const startNum = 12;
-            const endNum = 30; // Check up to image 30
+            const endNum = 30;
 
             for (let i = startNum; i <= endNum; i++) {
                 additionalImages.push({
@@ -1147,7 +1144,6 @@
             return additionalImages;
         }
 
-        // Check if image exists and filter gallery
         function filterExistingImages(images, callback) {
             let loadedCount = 0;
             const validImages = [];
@@ -1171,7 +1167,7 @@
             });
         }
 
-           const amenityDetails = {
+        const amenityDetails = {
             'hot-spring': { icon: '♨', label: 'Hot Spring', color: 'bg-orange-100 text-orange-800 border-orange-200' },
             'aircon': { icon: '❄️', label: 'Air Conditioning', color: 'bg-blue-100 text-blue-800 border-blue-200' },
             'Air Conditioning': { icon: '❄️', label: 'Air Conditioning', color: 'bg-blue-100 text-blue-800 border-blue-200' },
@@ -1196,15 +1192,25 @@
             'premium': 'bg-purple-100 text-purple-800'
         };
 
-        function generateStarRating(resortId) {
-            const id = parseInt(resortId);
-            const ratings = [4.5, 4.8, 4.3, 4.7, 4.6, 4.9, 4.4, 4.5, 4.7, 4.8];
-            return ratings[(id - 1) % ratings.length] || 4.5;
+        function calculateAverageRating(feedbackList) {
+            if (!feedbackList || feedbackList.length === 0) {
+                return { average: 0, count: 0 };
+            }
+            const totalRating = feedbackList.reduce((sum, feedback) => sum + feedback.rating, 0);
+            const average = totalRating / feedbackList.length;
+            return { average: average, count: feedbackList.length };
         }
 
-        function displayStarRating(rating) {
+        function displayStarRating(rating, count) {
             const starContainer = document.getElementById('starRating');
             const ratingText = document.getElementById('ratingText');
+            
+            if (count === 0) {
+                starContainer.innerHTML = '<span class="text-sm text-gray-500">No ratings yet</span>';
+                ratingText.textContent = 'Be the first to rate!';
+                return;
+            }
+            
             const fullStars = Math.floor(rating);
             const hasHalfStar = rating % 1 >= 0.5;
             let starsHtml = '';
@@ -1219,7 +1225,7 @@
                 starsHtml += '<span class="star">★</span>';
             }
             starContainer.innerHTML = starsHtml;
-            ratingText.textContent = `${rating.toFixed(1)} out of 5`;
+            ratingText.textContent = `${rating.toFixed(1)} out of 5 (${count} ${count === 1 ? 'review' : 'reviews'})`;
         }
 
         function formatPhoneNumber(phone) {
@@ -1232,11 +1238,10 @@
             return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
         }
 
-        // Enhanced lightbox functions
         function openImageGallery(index) {
             currentGalleryIndex = index;
             document.getElementById('imageGalleryModal').classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
             updateGalleryDisplay();
         }
 
@@ -1246,18 +1251,15 @@
             const imageTitle = document.getElementById('galleryImageTitle');
             const imageLoading = document.getElementById('imageLoading');
 
-            // Show loading spinner
             imageLoading.style.display = 'block';
             mainImage.style.display = 'none';
 
-            // Update image source
             const currentImage = galleryImages[currentGalleryIndex];
             mainImage.src = currentImage.src;
             mainImage.alt = currentImage.name;
             imageTitle.textContent = currentImage.name;
             imageInfo.textContent = `${currentGalleryIndex + 1}/${galleryImages.length}`;
 
-            // Hide loading and show image when loaded
             mainImage.onload = function () {
                 imageLoading.style.display = 'none';
                 mainImage.style.display = 'block';
@@ -1269,7 +1271,6 @@
                 mainImage.src = 'https://placehold.co/800x600/94a3b8/ffffff?text=' + encodeURIComponent(currentImage.name);
             };
 
-            // Update thumbnails
             document.querySelectorAll('.gallery-thumbnail').forEach((thumb, idx) => {
                 if (idx === currentGalleryIndex) {
                     thumb.classList.add('active');
@@ -1278,7 +1279,6 @@
                 }
             });
 
-            // Scroll active thumbnail into view
             const activeThumbnail = document.querySelector('.gallery-thumbnail.active');
             if (activeThumbnail) {
                 activeThumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -1296,10 +1296,9 @@
 
         function closeImageGallery() {
             document.getElementById('imageGalleryModal').classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
+            document.body.style.overflow = '';
         }
 
-        // Gallery event listeners
         document.getElementById('galleryCloseButton').addEventListener('click', closeImageGallery);
         document.getElementById('galleryPrevButton').addEventListener('click', () => navigateGallery('prev'));
         document.getElementById('galleryNextButton').addEventListener('click', () => navigateGallery('next'));
@@ -1310,7 +1309,6 @@
             }
         });
 
-        // Keyboard navigation for lightbox
         document.addEventListener('keydown', function (e) {
             const modal = document.getElementById('imageGalleryModal');
             if (modal.classList.contains('active')) {
@@ -1324,7 +1322,6 @@
             }
         });
 
-        // Touch swipe support for mobile
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -1381,8 +1378,29 @@
             document.getElementById('resortBedrooms').textContent = `${resort.bedrooms} Bedroom${resort.bedrooms > 1 ? 's' : ''}`;
             document.getElementById('resortPrice').textContent = resort.priceValue.split(' ')[0];
 
-            const rating = generateStarRating(resortId);
-            displayStarRating(rating);
+            // Fetch feedback from Firestore to calculate real ratings
+            firestore.collection('feedback')
+                .where('resortId', '==', resortId)
+                .get()
+                .then((querySnapshot) => {
+                    const feedbackList = [];
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        if (data.rating) {
+                            feedbackList.push(data);
+                        }
+                    });
+                    
+                    const ratingData = calculateAverageRating(feedbackList);
+                    displayStarRating(ratingData.average, ratingData.count);
+                    
+                    console.log(`Resort ${resortId}: ${ratingData.count} reviews, average ${ratingData.average.toFixed(1)} stars`);
+                })
+                .catch((error) => {
+                    console.error('Error fetching ratings:', error);
+                    // Show no ratings if error
+                    displayStarRating(0, 0);
+                });
 
             const facebookButton = document.getElementById('facebookButton');
             if (resort.facebookUrl && resort.facebookUrl.trim() !== '') {
@@ -1452,7 +1470,6 @@
                 document.getElementById('resortDescription').textContent = resort.description;
             }
 
-            // Prepare gallery images - facility images + additional hidden images
             const facilityImages = resort.facilities.map((facility, index) => ({
                 src: getFacilityImage(resortId, facility, index),
                 name: facility,
@@ -1460,14 +1477,11 @@
             }));
 
             const additionalImages = getAdditionalGalleryImages(resortId, resort.facilities.length);
-
-            // Filter to only show images that exist
             const allPotentialImages = [...facilityImages, ...additionalImages];
 
             filterExistingImages(allPotentialImages, function (validImages) {
                 galleryImages = validImages;
 
-                // Create gallery thumbnails (only for existing images)
                 const thumbnailsHtml = galleryImages.map((img, index) => `
                     <div class="gallery-thumbnail ${index === 0 ? 'active' : ''}" onclick="currentGalleryIndex = ${index}; updateGalleryDisplay();">
                         <img src="${img.src}" alt="${img.name}">
@@ -1478,27 +1492,25 @@
                 console.log(`Resort ${resortId}: Loaded ${galleryImages.length} images`);
             });
 
-            // Display facilities with click handlers
             const facilitiesHtml = resort.facilities.map((facility, index) => {
                 const isHidden = index >= INITIAL_FACILITIES_COUNT;
-                const galleryIndex = index; // Use same image as facility
+                const galleryIndex = index;
 
                 return `
-    <div class="facility-item ${isHidden ? 'hidden-facility' : ''}" onclick="openImageGallery(${galleryIndex})">
-      <div class="relative">
-        <img 
-          src="${getFacilityImage(resortId, facility, index)}" 
-          alt="${facility}" 
-          onerror="this.src='https://placehold.co/400x300/94a3b8/ffffff?text=${encodeURIComponent(facility)}'"
-          class="w-full h-40 md:h-48 object-cover rounded-lg"
-          onload="this.nextElementSibling.textContent = this.naturalWidth + ' x ' + this.naturalHeight"
-        >
-        <div class="absolute bottom-1 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded">
-          Loading...
-        </div>
-      </div>
-    </div>
-  `;
+                    <div class="facility-item ${isHidden ? 'hidden-facility' : ''}" onclick="openImageGallery(${galleryIndex})">
+                        <div class="relative">
+                            <img 
+                                src="${getFacilityImage(resortId, facility, index)}" 
+                                alt="${facility}" 
+                                onerror="this.src='https://placehold.co/400x300/94a3b8/ffffff?text=${encodeURIComponent(facility)}'"
+                                class="w-full h-40 md:h-48 object-cover rounded-lg"
+                            >
+                            <div class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                ${facility}
+                            </div>
+                        </div>
+                    </div>
+                `;
             }).join('');
             document.getElementById('facilitiesGrid').innerHTML = facilitiesHtml;
 
@@ -1539,7 +1551,6 @@
 
         loadResortDetails();
 
-        // Feedback functionality
         let selectedRating = 0;
         let currentResortId = '';
         let currentResortName = '';
@@ -1637,7 +1648,10 @@
                 .then((docRef) => {
                     console.log('Feedback submitted with ID:', docRef.id);
                     document.getElementById('successMessage').classList.add('active');
+                    
+                    // Reload ratings after successful feedback submission
                     setTimeout(() => {
+                        loadResortDetails();
                         closeFeedbackModal();
                         submitBtn.disabled = false;
                         document.getElementById('submitText').style.display = 'inline';
