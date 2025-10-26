@@ -631,7 +631,7 @@
                 <div id="priceSliderContainer" class="hidden bg-white rounded-lg shadow-lg">
                     <div class="price-slider-container">
                         <h3 class="text-lg font-bold text-gray-900 mb-6 text-center">Price Range Slider</h3>
-                        
+
                         <!-- Price Labels -->
                         <div class="flex justify-between items-center mb-8">
                             <div class="price-label">₱<span id="minPriceLabel">700</span></div>
@@ -651,7 +651,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="price-input-box">
                                 <span class="text-xl font-bold text-gray-600 mr-2">₱</span>
-                                <input type="number" id="minPriceInput" value="700" min="0" max="20000" 
+                                <input type="number" id="minPriceInput" value="700" min="0" max="20000"
                                     onchange="updatePriceFromInput('min')">
                             </div>
                             <div class="price-input-box">
@@ -725,76 +725,96 @@
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="hot-spring" onchange="toggleAmenity('hot-spring')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                     </svg>
                                     <span>Hot Spring</span>
                                 </label>
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="wifi" onchange="toggleAmenity('wifi')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0">
+                                        </path>
                                     </svg>
                                     <span>WiFi</span>
                                 </label>
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="parking" onchange="toggleAmenity('parking')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                                        </path>
                                     </svg>
                                     <span>Parking</span>
                                 </label>
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="kitchen" onchange="toggleAmenity('kitchen')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                                        </path>
                                     </svg>
                                     <span>Kitchen</span>
                                 </label>
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="aircon" onchange="toggleAmenity('aircon')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
                                     </svg>
                                     <span>Air Conditioning</span>
                                 </label>
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="karaoke" onchange="toggleAmenity('karaoke')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3">
+                                        </path>
                                     </svg>
                                     <span>Karaoke</span>
                                 </label>
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="smoking" onchange="toggleAmenity('smoking')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                        </path>
                                     </svg>
                                     <span>Smoking Allowed</span>
                                 </label>
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="no-smoking" onchange="toggleAmenity('no-smoking')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                        </path>
                                     </svg>
                                     <span>No Smoking</span>
                                 </label>
                                 <label class="amenity-chip">
-                                    <input type="checkbox" value="pet-friendly" onchange="toggleAmenity('pet-friendly')">
+                                    <input type="checkbox" value="pet-friendly"
+                                        onchange="toggleAmenity('pet-friendly')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                        </path>
                                     </svg>
                                     <span>Pet Friendly</span>
                                 </label>
                                 <label class="amenity-chip">
                                     <input type="checkbox" value="no-pets" onchange="toggleAmenity('no-pets')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                        </path>
                                     </svg>
                                     <span>No Pets Allowed</span>
                                 </label>
                             </div>
-                            <button onclick="clearAmenities()" 
+                            <button onclick="clearAmenities()"
                                 class="mt-4 w-full py-2 text-sm text-blue-600 hover:text-blue-700 font-semibold">
                                 Clear All Filters
                             </button>
@@ -960,8 +980,8 @@
         let selectingFor = 'checkin';
         let adults = 2;
         let rooms = 1;
-        let minPrice = 700;
-        let maxPrice = 3000;
+        let minPrice = 0;
+        let maxPrice = 20000;
         let isDragging = false;
         let activeThumb = null;
         let selectedAmenities = [];
@@ -1011,7 +1031,7 @@
             const calendarContainer = document.getElementById('calendarContainer');
             const priceSliderContainer = document.getElementById('priceSliderContainer');
             const guestsDropdown = document.getElementById('guestsDropdown');
-            
+
             calendarContainer.classList.add('hidden');
             priceSliderContainer.classList.add('hidden');
             guestsDropdown.classList.add('hidden');
@@ -1077,7 +1097,7 @@
             const priceSlider = document.getElementById('priceSliderContainer');
             const guestsDropdown = document.getElementById('guestsDropdown');
             const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-            
+
             priceSlider.classList.add('hidden');
             guestsDropdown.classList.add('hidden');
             amenitiesDropdown.classList.add('hidden');
@@ -1208,9 +1228,9 @@
                     const checkOutMonth = monthNames[checkOutDate.getMonth()];
                     const checkOutYear = checkOutDate.getFullYear();
 
-                    document.getElementById('dateRangeInput').value = 
+                    document.getElementById('dateRangeInput').value =
                         `${checkInDay} ${checkInMonth} ${checkInYear} - ${checkOutDay} ${checkOutMonth} ${checkOutYear}`;
-                    
+
                     const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
                     document.getElementById('dateRangeDay').textContent = `${nights} night${nights > 1 ? 's' : ''}`;
                 } else {
@@ -1247,7 +1267,7 @@
             const calendar = document.getElementById('calendarContainer');
             const guestsDropdown = document.getElementById('guestsDropdown');
             const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-            
+
             calendar.classList.add('hidden');
             guestsDropdown.classList.add('hidden');
             amenitiesDropdown.classList.add('hidden');
@@ -1258,15 +1278,15 @@
             const minThumb = document.getElementById('minThumb');
             const maxThumb = document.getElementById('maxThumb');
             const priceRange = document.getElementById('priceRange');
-            
+
             const minPercent = ((minPrice - 0) / (20000 - 0)) * 100;
             const maxPercent = ((maxPrice - 0) / (20000 - 0)) * 100;
-            
+
             minThumb.style.left = minPercent + '%';
             maxThumb.style.left = maxPercent + '%';
             priceRange.style.left = minPercent + '%';
             priceRange.style.width = (maxPercent - minPercent) + '%';
-            
+
             document.getElementById('minPriceLabel').textContent = minPrice;
             document.getElementById('maxPriceLabel').textContent = maxPrice;
             document.getElementById('minPriceInput').value = minPrice;
@@ -1299,18 +1319,18 @@
 
         document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
-            
+
             const track = document.querySelector('.price-slider-track');
             const rect = track.getBoundingClientRect();
             const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
             const value = Math.round((percent / 100) * 20000);
-            
+
             if (activeThumb === 'min') {
                 minPrice = Math.min(value, maxPrice - 100);
             } else {
                 maxPrice = Math.max(value, minPrice + 100);
             }
-            
+
             updatePriceSlider();
         });
 
@@ -1337,19 +1357,19 @@
 
         document.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
-            
+
             const track = document.querySelector('.price-slider-track');
             const rect = track.getBoundingClientRect();
             const touch = e.touches[0];
             const percent = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
             const value = Math.round((percent / 100) * 20000);
-            
+
             if (activeThumb === 'min') {
                 minPrice = Math.min(value, maxPrice - 100);
             } else {
                 maxPrice = Math.max(value, minPrice + 100);
             }
-            
+
             updatePriceSlider();
         });
 
@@ -1367,7 +1387,7 @@
             const calendarContainer = document.getElementById('calendarContainer');
             const priceSliderContainer = document.getElementById('priceSliderContainer');
             const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-            
+
             calendarContainer.classList.add('hidden');
             priceSliderContainer.classList.add('hidden');
             amenitiesDropdown.classList.add('hidden');
@@ -1385,6 +1405,8 @@
             updateGuestsInput();
             filterResorts();
         }
+
+        let maxRooms = 14; // Add this line
 
         function updateGuestsInput() {
             const adultsText = adults === 1 ? '1 adult' : `${adults} adults`;
@@ -1564,7 +1586,7 @@
             filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
 
             // Filter by price range
-            filteredResorts = filteredResorts.filter(resort => 
+            filteredResorts = filteredResorts.filter(resort =>
                 resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
             );
 
@@ -1624,6 +1646,7 @@
             params.append('rooms', rooms);
             params.append('minPrice', minPrice);
             params.append('maxPrice', maxPrice);
+
             if (selectedAmenities.length > 0) {
                 params.append('amenities', selectedAmenities.join(','));
             }
