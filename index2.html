@@ -104,7 +104,7 @@
         }
 
         .hero-bg {
-            background-image: url('picture/R.jpg');
+            background-image: url('R.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -704,58 +704,65 @@
             applyFiltersAndSort();
         }
 
-        // Render resort cards
         function renderResorts(resortsToShow) {
-            const grid = document.getElementById('resortsGrid');
-            const noResults = document.getElementById('noResults');
-            const resultsCount = document.getElementById('resultsCount');
+    const grid = document.getElementById('resortsGrid');
+    const noResults = document.getElementById('noResults');
+    const resultsCount = document.getElementById('resultsCount');
 
-            if (resortsToShow.length === 0) {
-                grid.innerHTML = '';
-                noResults.classList.remove('hidden');
-                resultsCount.textContent = 'No resorts found';
-                return;
-            }
+    if (resortsToShow.length === 0) {
+        grid.innerHTML = '';
+        noResults.classList.remove('hidden');
+        resultsCount.textContent = 'No resorts found';
+        return;
+    }
 
-            noResults.classList.add('hidden');
-            resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
+    noResults.classList.add('hidden');
+    resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
 
-            grid.innerHTML = resortsToShow.map(resort => `
-                <div class="resort-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="showResortDetails(${resort.id})">
-                    <div class="relative">
-                        <img class="w-full h-48 sm:h-56 object-cover" src="${resort.image}" alt="${resort.name}">
-                        <span class="absolute top-3 sm:top-4 right-3 sm:right-4 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold ${priceBadgeColors[resort.price]} shadow-lg uppercase">${resort.price}</span>
+    grid.innerHTML = resortsToShow.map(resort => `
+        <div class="resort-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" onclick="showResortDetails(${resort.id})">
+            <div class="relative">
+                <img class="w-full h-48 sm:h-56 object-cover" src="${resort.image}" alt="${resort.name}">
+                <span class="absolute top-3 sm:top-4 right-3 sm:right-4 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold ${priceBadgeColors[resort.price]} shadow-lg uppercase">
+                    ${resort.price}
+                </span>
+            </div>
+            <div class="p-4 sm:p-6">
+                <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">${resort.name}</h4>
+                <p class="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 flex items-center">
+                    <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="truncate">${resort.address}</span>
+                </p>
+                <p class="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4 line-clamp-2">${resort.description}</p>
+                <div class="flex justify-between items-center mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-gray-200">
+                    <div class="text-xs sm:text-sm text-gray-600 flex items-center">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                        </svg>
+                        ${resort.bedrooms} bedroom${resort.bedrooms > 1 ? 's' : ''}
                     </div>
-                    <div class="p-4 sm:p-6">
-                        <h4 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">${resort.name}</h4>
-                        <p class="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 flex items-center">
-                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="truncate">${resort.address}</span>
-                        </p>
-                        <p class="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4 line-clamp-2">${resort.description}</p>
-                        <div class="flex justify-between items-center mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-gray-200">
-                            <div class="text-xs sm:text-sm text-gray-600 flex items-center">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                                </svg>
-                                ${resort.bedrooms} bedroom${resort.bedrooms > 1 ? 's' : ''}
-                            </div>
-                            <div class="font-bold text-blue-600 text-lg sm:text-xl">
-                                ${resort.priceValue.split(' ')[0]}
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap gap-1.5 sm:gap-2">
-                            ${resort.amenities.slice(0, 3).map(amenity => `
-                                <span class="text-xs px-2 sm:px-3 py-1 sm:py-1.5 bg-blue-50 text-blue-700 rounded-full font-medium">${amenityLabels[amenity].split(' ')[0]}</span>
-                            `).join('')}
-                            ${resort.amenities.length > 3 ? `<span class="text-xs px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 text-gray-700 rounded-full font-medium">+${resort.amenities.length - 3} more</span>` : ''}
-                        </div>
+                    <div class="font-bold text-blue-600 text-lg sm:text-xl">
+                        ${resort.priceValue.split(' ')[0]}
                     </div>
                 </div>
-            `).join('');
-        }
+                <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                    ${resort.amenities.slice(0, 3).map(amenity => `
+                        <span class="text-xs px-2 sm:px-3 py-1 sm:py-1.5 bg-blue-50 text-blue-700 rounded-full font-medium">
+                            ${amenityLabels[amenity] ? amenityLabels[amenity].split(' ')[0] : amenity}
+                        </span>
+                    `).join('')}
+                    ${resort.amenities.length > 3 ? `
+                        <span class="text-xs px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 text-gray-700 rounded-full font-medium">
+                            +${resort.amenities.length - 3} more
+                        </span>
+                    ` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
 
         // Apply filters and sorting - UPDATED TO INCLUDE ROOM FILTERING
         function applyFiltersAndSort() {
