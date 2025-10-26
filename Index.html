@@ -353,7 +353,7 @@
             border-radius: 3px;
         }
 
-        .price-slider-thumb {
+       .price-slider-thumb {
             position: absolute;
             width: 60px;
             height: 60px;
@@ -364,20 +364,16 @@
             transform: translate(-50%, -50%);
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            /* transition: all 0.2s; - REMOVED TO FIX DELAY DURING DRAGGING */
+            
         }
 
         .price-slider-thumb:hover {
             border-color: #3b82f6;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            /* ADDED TRANSITION FOR VISUAL EFFECTS */
-            transition: box-shadow 0.2s ease, border-color 0.2s ease;
         }
 
         .price-slider-thumb:active {
             transform: translate(-50%, -50%) scale(1.1);
-            /* ADDED TRANSITION FOR SCALE EFFECT */
-            transition: transform 0.1s ease;
         }
 
         .price-input-box {
@@ -445,8 +441,10 @@
 
 <body class="antialiased">
 
+    <!-- Mobile Menu Overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
 
+    <!-- Mobile Menu -->
     <nav class="mobile-menu" id="mobileMenu">
         <div class="p-6">
             <div class="flex justify-between items-center mb-8">
@@ -472,6 +470,7 @@
         </div>
     </nav>
 
+    <!-- Header & Navigation Bar -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
@@ -486,12 +485,14 @@
                 </div>
             </div>
 
+            <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-8 text-sm font-semibold">
                 <a href="index.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
                 <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
                 <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
             </nav>
 
+            <!-- Mobile Hamburger -->
             <button class="md:hidden hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
@@ -500,8 +501,10 @@
         </div>
     </header>
 
+    <!-- Hero Section with Search -->
     <div class="hero-background">
         <div class="hero-content w-full max-w-5xl">
+            <!-- Hero Text -->
             <div class="text-center mb-6 md:mb-8">
                 <h2 class="text-4xl sm:text-5xl md:text-6xl font-black mb-6 drop-shadow-2xl inline-block">
                     Discover the Beauty of Pansol
@@ -511,6 +514,7 @@
                 </p>
             </div>
             <div class="space-y-4 md:space-y-5">
+                <!-- Stay Type Toggle -->
                 <div class="flex gap-3 justify-center">
                     <button id="overnightBtn" onclick="selectStayType('overnight')"
                         class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg transition-all shadow-md">
@@ -522,6 +526,7 @@
                     </button>
                 </div>
 
+                <!-- Day Use Info Banner -->
                 <div id="dayUseInfo"
                     class="hidden bg-pink-50 border border-pink-200 rounded-lg p-4 flex items-start gap-3">
                     <svg class="w-6 h-6 text-pink-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
@@ -535,10 +540,10 @@
                     </div>
                 </div>
 
+                <!-- Search Input with Dropdown -->
                 <div>
                     <div class="relative">
-                        <svg class="absolute 
-left-4 md:left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-gray-400 z-10 pointer-events-none"
+                        <svg class="absolute left-4 md:left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-gray-400 z-10 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -575,6 +580,7 @@ left-4 md:left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-g
                         </div>
                     </div>
 
+                    <!-- Price Range Button -->
                     <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -583,8 +589,7 @@ left-4 md:left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-g
                             </path>
                         </svg>
                         <input type="text" id="priceRangeInput" readonly
-                            class="w-full pl-12 pr-4 py-3 md:py-4 border 
-border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+                            class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
                             value="₱0 - ₱20000" onclick="togglePriceSlider()">
                     </div>
                 </div>
@@ -606,8 +611,7 @@ border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 b
                         </button>
                     </div>
                     <div class="p-2">
-                        <div 
-class="calendar-grid">
+                        <div class="calendar-grid">
                             <div class="calendar-day-header">Mo</div>
                             <div class="calendar-day-header">Tu</div>
                             <div class="calendar-day-header">We</div>
@@ -620,15 +624,18 @@ class="calendar-grid">
                     </div>
                 </div>
 
+                <!-- Price Range Slider -->
                 <div id="priceSliderContainer" class="hidden bg-white rounded-lg shadow-lg">
                     <div class="price-slider-container">
                         <h3 class="text-lg font-bold text-gray-900 mb-6 text-center">Price Range Slider</h3>
 
+                        <!-- Price Labels -->
                         <div class="flex justify-between items-center mb-8">
                             <div class="price-label">₱<span id="minPriceLabel">0</span></div>
                             <div class="price-label">₱<span id="maxPriceLabel">20000</span></div>
                         </div>
 
+                        <!-- Slider Track -->
                         <div class="relative mb-8">
                             <div class="price-slider-track">
                                 <div class="price-slider-range" id="priceRange"></div>
@@ -637,6 +644,7 @@ class="calendar-grid">
                             </div>
                         </div>
 
+                        <!-- Price Input Boxes -->
                         <div class="grid grid-cols-2 gap-4">
                             <div class="price-input-box">
                                 <span class="text-xl font-bold text-gray-600 mr-2">₱</span>
@@ -652,7 +660,9 @@ class="calendar-grid">
                     </div>
                 </div>
 
+                <!-- Guests and Amenities Row -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Guests -->
                     <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -664,9 +674,9 @@ class="calendar-grid">
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
                             value="2 adults, 1 room" onclick="toggleGuestsDropdown()">
 
+                        <!-- Guests Dropdown -->
                         <div id="guestsDropdown"
-                            class="hidden absolute 
-w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
+                            class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-700">Adults</span>
@@ -692,6 +702,7 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                         </div>
                     </div>
 
+                    <!-- Amenities Filter -->
                     <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -703,6 +714,7 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
                             value="All amenities" onclick="toggleAmenitiesDropdown()">
 
+                        <!-- Amenities Dropdown -->
                         <div id="amenitiesDropdown"
                             class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20 max-h-80 overflow-y-auto">
                             <h4 class="font-semibold text-gray-900 mb-3">Filter by Amenities</h4>
@@ -780,7 +792,8 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                                     <span>No Smoking</span>
                                 </label>
                                 <label class="amenity-chip">
-                                    <input type="checkbox" value="pet-friendly" onchange="toggleAmenity('pet-friendly')">
+                                    <input type="checkbox" value="pet-friendly"
+                                        onchange="toggleAmenity('pet-friendly')">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
@@ -799,16 +812,19 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                                 </label>
                             </div>
                             <button onclick="clearAmenities()"
-                                class="mt-4 w-full py-2 text-sm text-blue-600 hover:text-blue-700 font-semibold"> Clear
-                                All Filters </button>
+                                class="mt-4 w-full py-2 text-sm text-blue-600 hover:text-blue-700 font-semibold">
+                                Clear All Filters
+                            </button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Search Button -->
                 <div>
                     <button onclick="redirectToFeaturedResorts()"
                         class="w-full px-6 py-3 md:py-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-lg transition-all shadow-md hover:shadow-lg tracking-wide touch-manipulation">
-                        SEARCH </button>
+                        SEARCH
+                    </button>
                 </div>
             </div>
         </div>
@@ -937,9 +953,8 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
         </div>
     </footer>
 
-
     <script>
-
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDoILyFqD0iuOe4DfA2YoyjNiu30Mzw_DM",
             authDomain: "resort-ec9b6.firebaseapp.com",
@@ -949,56 +964,28 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
             appId: "1:1034701877647:web:e14e3e791b9d7780e15bfa",
             measurementId: "G-12YD26J2E8"
         };
-        
-        // --- CALENDAR VARIABLES ---
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let resorts = [];
+        let resortsLoaded = false;
+        let stayType = 'overnight';
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
-        let selectedStartDate = null;
-        let selectedEndDate = null;
-        let stayType = 'overnight'; // Default is overnight
-        const dateRangeInput = document.getElementById('dateRangeInput');
-        const dateRangeDaySpan = document.getElementById('dateRangeDay');
-        const calendarContainer = document.getElementById('calendarContainer');
-        const dayUseInfo = document.getElementById('dayUseInfo');
-        const overnightBtn = document.getElementById('overnightBtn');
-        const dayUseBtn = document.getElementById('dayUseBtn');
-
-        // --- PRICE SLIDER VARIABLES ---
-        const minThumb = document.getElementById('minThumb');
-        const maxThumb = document.getElementById('maxThumb');
-        const priceRange = document.getElementById('priceRange');
-        const minPriceInput = document.getElementById('minPriceInput');
-        const maxPriceInput = document.getElementById('maxPriceInput');
-        const minPriceLabel = document.getElementById('minPriceLabel');
-        const maxPriceLabel = document.getElementById('maxPriceLabel');
-        const priceSliderContainer = document.getElementById('priceSliderContainer');
-
-        const MIN_PRICE_LIMIT = 0;
-        const MAX_PRICE_LIMIT = 20000;
-        const PRICE_RANGE_MAX = 20000;
-
-        let isDraggingMin = false;
-        let isDraggingMax = false;
-
-        // --- GUESTS VARIABLES ---
-        const guestsInput = document.getElementById('guestsInput');
-        const guestsDropdown = document.getElementById('guestsDropdown');
-        const adultsCountSpan = document.getElementById('adultsCount');
-        const roomsCountSpan = document.getElementById('roomsCount');
+        let checkInDate = null;
+        let checkOutDate = null;
+        let selectingFor = 'checkin';
         let adults = 2;
         let rooms = 1;
-
-        // --- AMENITIES VARIABLES ---
+        let minPrice = 0;
+        let maxPrice = 20000;
+        let isDragging = false;
+        let activeThumb = null;
         let selectedAmenities = [];
 
-        // --- UTILITY FUNCTIONS ---
-        function formatDate(date) {
-            return date.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric'
-            });
-        }
-
+        // Mobile Menu Toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             const overlay = document.getElementById('mobileMenuOverlay');
@@ -1015,418 +1002,46 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
             }
         }
 
-        // --- STAY TYPE LOGIC ---
+        // Stay Type Selection
         function selectStayType(type) {
             stayType = type;
-            renderCalendar();
-            // Clear dates when changing type
-            selectedStartDate = null;
-            selectedEndDate = null;
-            updateDateRangeInput();
-            
+            const overnightBtn = document.getElementById('overnightBtn');
+            const dayUseBtn = document.getElementById('dayUseBtn');
+            const dayUseInfo = document.getElementById('dayUseInfo');
+
             if (type === 'overnight') {
+                overnightBtn.className = 'px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg transition-all shadow-md';
+                dayUseBtn.className = 'px-6 py-3 bg-white text-gray-700 font-semibold rounded-lg transition-all shadow-md';
                 dayUseInfo.classList.add('hidden');
-                overnightBtn.classList.add('bg-blue-600', 'text-white');
-                overnightBtn.classList.remove('bg-white', 'text-gray-700');
-                dayUseBtn.classList.remove('bg-blue-600', 'text-white');
-                dayUseBtn.classList.add('bg-white', 'text-gray-700');
             } else {
+                overnightBtn.className = 'px-6 py-3 bg-white text-gray-700 font-semibold rounded-lg transition-all shadow-md';
+                dayUseBtn.className = 'px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg transition-all shadow-md';
                 dayUseInfo.classList.remove('hidden');
-                dayUseBtn.classList.add('bg-blue-600', 'text-white');
-                dayUseBtn.classList.remove('bg-white', 'text-gray-700');
-                overnightBtn.classList.remove('bg-blue-600', 'text-white');
-                overnightBtn.classList.add('bg-white', 'text-gray-700');
+                checkOutDate = null;
             }
-        }
-
-        // --- DATE RANGE & CALENDAR LOGIC ---
-
-        function toggleCalendar() {
-            calendarContainer.classList.toggle('hidden');
-            // Ensure other dropdowns/sliders are closed
-            priceSliderContainer.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-            
-            // Re-render to ensure current month is displayed
-            if (!calendarContainer.classList.contains('hidden')) {
-                renderCalendar();
-            }
-        }
-
-        function previousMonth() {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
+            selectedDates = [];
+            updateDateRangeInput();
             renderCalendar();
         }
 
-        function nextMonth() {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            renderCalendar();
-        }
-
-        function getDaysInMonth(month, year) {
-            return new Date(year, month + 1, 0).getDate();
-        }
-
-        function getFirstDayOfMonth(month, year) {
-            // Monday is 0, Tuesday is 1, ..., Sunday is 6
-            let day = new Date(year, month, 1).getDay();
-            return (day === 0) ? 6 : day - 1; // Convert Sunday (0) to 6 (end of week)
-        }
-
-        function isDateDisabled(date) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            return date.getTime() < today.getTime();
-        }
-
-        function isDateSelected(date) {
-            return selectedStartDate && date.getTime() === selectedStartDate.getTime();
-        }
-
-        function isDateInRange(date) {
-            if (!selectedStartDate || !selectedEndDate) return false;
-            if (selectedStartDate.getTime() === selectedEndDate.getTime()) return false;
-            return date.getTime() > selectedStartDate.getTime() && date.getTime() < selectedEndDate.getTime();
-        }
-
-        function isRangeStart(date) {
-            return selectedStartDate && date.getTime() === selectedStartDate.getTime() && selectedEndDate !== null;
-        }
-
-        function isRangeEnd(date) {
-            return selectedEndDate && date.getTime() === selectedEndDate.getTime() && selectedStartDate !== null;
-        }
-
-        function isSingleDay(date) {
-            return selectedStartDate && selectedEndDate && selectedStartDate.getTime() === selectedEndDate.getTime() && date.getTime() === selectedStartDate.getTime();
-        }
-
-        function renderCalendar() {
-            const calendarMonthDiv = document.getElementById('calendarMonth');
-            const calendarDaysDiv = document.getElementById('calendarDays');
-            calendarDaysDiv.innerHTML = '';
-
-            const monthName = new Date(currentYear, currentMonth).toLocaleDateString('en-US', {
-                month: 'long',
-                year: 'numeric'
-            });
-            calendarMonthDiv.textContent = monthName;
-
-            const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-            const firstDayIndex = getFirstDayOfMonth(currentMonth, currentYear);
-
-            // Calculate days from previous month to fill the first row
-            const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-            const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-            const daysInPrevMonth = getDaysInMonth(prevMonth, prevYear);
-
-            for (let i = firstDayIndex - 1; i >= 0; i--) {
-                const day = daysInPrevMonth - i;
-                const date = new Date(prevYear, prevMonth, day);
-                appendDayElement(calendarDaysDiv, day, date.toISOString().split('T')[0], true);
-            }
-
-            // Days of the current month
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(currentYear, currentMonth, day);
-                const dateString = date.toISOString().split('T')[0];
-
-                appendDayElement(calendarDaysDiv, day, dateString, false);
-            }
-        }
-
-        function appendDayElement(container, day, dateString, isOtherMonth) {
-            const dayElement = document.createElement('div');
-            dayElement.className = 'calendar-day';
-            dayElement.textContent = day;
-            dayElement.dataset.date = dateString;
-            dayElement.onclick = () => calendarDayClicked(dateString);
-
-            const date = new Date(dateString);
-            date.setHours(0, 0, 0, 0);
-
-            if (isOtherMonth) {
-                dayElement.classList.add('other-month');
-                dayElement.onclick = null; // Disable clicking on other month's days
-            }
-
-            if (isDateDisabled(date)) {
-                dayElement.classList.add('disabled');
-                dayElement.onclick = null;
-            }
-
-            if (isSingleDay(date)) {
-                dayElement.classList.add('single-day');
-            } else if (isRangeStart(date)) {
-                dayElement.classList.add('range-start');
-            } else if (isRangeEnd(date)) {
-                dayElement.classList.add('range-end');
-            } else if (isDateInRange(date)) {
-                dayElement.classList.add('in-range');
-            } else if (isDateSelected(date)) {
-                dayElement.classList.add('selected');
-            }
-
-            container.appendChild(dayElement);
-        }
-
-        function calendarDayClicked(date) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            const clickedDate = new Date(date);
-            clickedDate.setHours(0, 0, 0, 0);
-
-            // Prevent selection of past dates
-            if (clickedDate.getTime() < today.getTime()) {
-                return;
-            }
-
-            if (stayType === 'dayuse') {
-                // Day Use: Single selection
-                selectedStartDate = clickedDate;
-                selectedEndDate = clickedDate;
-                updateDateRangeInput();
-                calendarContainer.classList.add('hidden'); // Close calendar after single select
-            } else { // Overnight Stay Logic (Date Range)
-                if (!selectedStartDate || selectedEndDate) {
-                    // First click or reset after a range selection
-                    selectedStartDate = clickedDate;
-                    selectedEndDate = null;
-                } else if (clickedDate.getTime() > selectedStartDate.getTime()) {
-                    // Second click, valid check-out date
-                    selectedEndDate = clickedDate;
-                    updateDateRangeInput();
-                    // FIX: Close the calendar after a valid two-date range is selected.
-                    calendarContainer.classList.add('hidden'); 
-                } else if (clickedDate.getTime() <= selectedStartDate.getTime()) {
-                    // Second click is earlier than or same as the start date (invalid range or re-selection of start date)
-                    selectedStartDate = clickedDate;
-                    selectedEndDate = null;
-                }
-            }
-
-            renderCalendar();
-        }
-
-        function updateDateRangeInput() {
-            if (selectedStartDate && selectedEndDate) {
-                const formattedStart = formatDate(selectedStartDate);
-                const formattedEnd = formatDate(selectedEndDate);
-
-                if (selectedStartDate.getTime() === selectedEndDate.getTime()) {
-                    // Single day stay (Day Use)
-                    dateRangeInput.value = `${formattedStart}`;
-                    dateRangeDaySpan.textContent = '1 day';
-                } else {
-                    // Overnight stay (Date Range)
-                    dateRangeInput.value = `${formattedStart} - ${formattedEnd}`;
-
-                    const diffTime = Math.abs(selectedEndDate.getTime() - selectedStartDate.getTime());
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    dateRangeDaySpan.textContent = `${diffDays} days`;
-                }
-            } else if (selectedStartDate) {
-                // Only start date is selected (in the middle of range selection)
-                dateRangeInput.value = `${formatDate(selectedStartDate)} - ?`;
-                dateRangeDaySpan.textContent = '';
-            } else {
-                // No dates selected
-                dateRangeInput.value = '';
-                dateRangeDaySpan.textContent = '';
-            }
-        }
-
-        // --- PRICE SLIDER LOGIC ---
-
-        function togglePriceSlider() {
-            priceSliderContainer.classList.toggle('hidden');
-            // Ensure other dropdowns/sliders are closed
-            calendarContainer.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-        }
-
-        function getPriceFromPercent(percent) {
-            return Math.round((percent / 100) * PRICE_RANGE_MAX);
-        }
-
-        function getPercentFromPrice(price) {
-            return (price / PRICE_RANGE_MAX) * 100;
-        }
-
-        function updatePriceSlider(source) {
-            let minPrice = parseInt(minPriceInput.value);
-            let maxPrice = parseInt(maxPriceInput.value);
-
-            // Clamp values
-            minPrice = Math.min(Math.max(minPrice, MIN_PRICE_LIMIT), maxPrice);
-            maxPrice = Math.max(Math.min(maxPrice, MAX_PRICE_LIMIT), minPrice);
-
-            // Update inputs and labels
-            minPriceInput.value = minPrice;
-            maxPriceInput.value = maxPrice;
-            minPriceLabel.textContent = minPrice.toLocaleString('en-US');
-            maxPriceLabel.textContent = maxPrice.toLocaleString('en-US');
-
-            // Update range input field
-            document.getElementById('priceRangeInput').value = `₱${minPrice.toLocaleString('en-US')} - ₱${maxPrice.toLocaleString('en-US')}`;
-
-            const minPercent = getPercentFromPrice(minPrice);
-            const maxPercent = getPercentFromPrice(maxPrice);
-
-            // Update thumb positions
-            minThumb.style.left = minPercent + '%';
-            maxThumb.style.left = maxPercent + '%';
-
-            // Update range bar
-            priceRange.style.left = minPercent + '%';
-            priceRange.style.width = (maxPercent - minPercent) + '%';
-        }
-
-        function updatePriceFromInput(type) {
-            let minVal = parseInt(minPriceInput.value);
-            let maxVal = parseInt(maxPriceInput.value);
-
-            if (type === 'min') {
-                if (minVal > maxVal) {
-                    minPriceInput.value = maxVal;
-                }
-            } else if (type === 'max') {
-                if (maxVal < minVal) {
-                    maxPriceInput.value = minVal;
-                }
-            }
-
-            updatePriceSlider('input');
-        }
-
-        function handleDrag(e, type) {
-            let clientX;
-            if (e.touches) {
-                clientX = e.touches[0].clientX;
-            } else {
-                clientX = e.clientX;
-            }
-
-            const sliderRect = priceRange.parentElement.getBoundingClientRect();
-            let newPos = clientX - sliderRect.left;
-            let newPercent = (newPos / sliderRect.width) * 100;
-
-            // Clamp percent to 0-100
-            newPercent = Math.min(100, Math.max(0, newPercent));
-
-            let newPrice = getPriceFromPercent(newPercent);
-            newPrice = Math.round(newPrice / 100) * 100; // Snap to nearest 100
-
-            let currentMin = parseInt(minPriceInput.value);
-            let currentMax = parseInt(maxPriceInput.value);
-
-            if (type === 'min') {
-                if (newPrice <= currentMax) {
-                    minPriceInput.value = newPrice;
-                } else {
-                    minPriceInput.value = currentMax;
-                }
-            } else { // 'max'
-                if (newPrice >= currentMin) {
-                    maxPriceInput.value = newPrice;
-                } else {
-                    maxPriceInput.value = currentMin;
-                }
-            }
-
-            updatePriceSlider('drag');
-        }
-
-        function startDrag(e, type) {
-            e.preventDefault();
-            if (type === 'min') {
-                isDraggingMin = true;
-            } else {
-                isDraggingMax = true;
-            }
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', stopDrag);
-            document.addEventListener('touchmove', onMouseMove, {
-                passive: false
-            });
-            document.addEventListener('touchend', stopDrag);
-            // Close other elements when dragging starts
-            calendarContainer.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-        }
-
-        function onMouseMove(e) {
-            if (isDraggingMin) {
-                handleDrag(e, 'min');
-            } else if (isDraggingMax) {
-                handleDrag(e, 'max');
-            }
-        }
-
-        function stopDrag() {
-            isDraggingMin = false;
-            isDraggingMax = false;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', stopDrag);
-            document.removeEventListener('touchmove', onMouseMove);
-            document.removeEventListener('touchend', stopDrag);
-        }
-
-        // Initialize drag listeners
-        minThumb.addEventListener('mousedown', (e) => startDrag(e, 'min'));
-        maxThumb.addEventListener('mousedown', (e) => startDrag(e, 'max'));
-        minThumb.addEventListener('touchstart', (e) => startDrag(e, 'min'));
-        maxThumb.addEventListener('touchstart', (e) => startDrag(e, 'max'));
-
-        // --- GUESTS LOGIC ---
-        function toggleGuestsDropdown() {
-            guestsDropdown.classList.toggle('hidden');
-            // Ensure other dropdowns/sliders are closed
-            calendarContainer.classList.add('hidden');
-            priceSliderContainer.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-        }
-
-        function changeGuests(type, change) {
-            if (type === 'adults') {
-                const newAdults = adults + change;
-                if (newAdults >= 1) {
-                    adults = newAdults;
-                    adultsCountSpan.textContent = adults;
-                }
-            } else if (type === 'rooms') {
-                const newRooms = rooms + change;
-                if (newRooms >= 1) {
-                    rooms = newRooms;
-                    roomsCountSpan.textContent = rooms;
-                }
-            }
-            updateGuestsInput();
-        }
-
-        function updateGuestsInput() {
-            guestsInput.value = `${adults} adults, ${rooms} room${rooms > 1 ? 's' : ''}`;
-        }
-
-        // --- AMENITIES LOGIC ---
+        // Amenities Functions
         function toggleAmenitiesDropdown() {
-            amenitiesDropdown.classList.toggle('hidden');
-            // Ensure other dropdowns/sliders are closed
+            const dropdown = document.getElementById('amenitiesDropdown');
+            const calendarContainer = document.getElementById('calendarContainer');
+            const dateRangeInput = document.getElementById('dateRangeInput');
+            const calendarMonth = document.getElementById('calendarMonth');
+            const calendarDays = document.getElementById('calendarDays');
+            let currentDate = new Date();
+            let selectedDates = [];
+            const dateRangeDay = document.getElementById('dateRangeDay');
+            let stayType = 'overnight';
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+
             calendarContainer.classList.add('hidden');
             priceSliderContainer.classList.add('hidden');
             guestsDropdown.classList.add('hidden');
+            dropdown.classList.toggle('hidden');
         }
 
         function toggleAmenity(amenity) {
@@ -1437,148 +1052,701 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                 selectedAmenities.push(amenity);
             }
             updateAmenitiesInput();
+            filterResorts();
+        }
+
+        function updateAmenitiesInput() {
+            const input = document.getElementById('amenitiesInput');
+            if (selectedAmenities.length === 0) {
+                input.value = 'All amenities';
+            } else if (selectedAmenities.length === 1) {
+                const amenityNames = {
+                    'hot-spring': 'Hot Spring',
+                    'wifi': 'WiFi',
+                    'parking': 'Parking',
+                    'kitchen': 'Kitchen',
+                    'aircon': 'Air Conditioning',
+                    'karaoke': 'Karaoke',
+                    'smoking': 'Smoking Allowed',
+                    'no-smoking': 'No Smoking',
+                    'pet-friendly': 'Pet Friendly',
+                    'no-pets': 'No Pets Allowed'
+                };
+                input.value = amenityNames[selectedAmenities[0]];
+            } else {
+                input.value = `${selectedAmenities.length} amenities selected`;
+            }
+
+            // Update checkbox states
+            const checkboxes = document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                const chip = cb.parentElement;
+                if (selectedAmenities.includes(cb.value)) {
+                    chip.classList.add('selected');
+                    cb.checked = true;
+                } else {
+                    chip.classList.remove('selected');
+                    cb.checked = false;
+                }
+            });
         }
 
         function clearAmenities() {
             selectedAmenities = [];
-            document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = false;
-                checkbox.parentElement.classList.remove('selected');
-            });
             updateAmenitiesInput();
+            filterResorts();
         }
 
-        function updateAmenitiesInput() {
-            if (selectedAmenities.length === 0) {
-                amenitiesInput.value = 'All amenities';
-            } else {
-                amenitiesInput.value = `${selectedAmenities.length} amenity${selectedAmenities.length > 1 ? 's' : ''} selected`;
-            }
+        // Calendar Functions
+        function toggleCalendar() {
+            const calendar = document.getElementById('calendarContainer');
+            const priceSlider = document.getElementById('priceSliderContainer');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
 
-            // Also update the chip styles
-            document.querySelectorAll('.amenity-chip').forEach(label => {
-                const checkbox = label.querySelector('input[type="checkbox"]');
-                if (checkbox.checked) {
-                    label.classList.add('selected');
-                } else {
-                    label.classList.remove('selected');
-                }
+            priceSlider.classList.add('hidden');
+            guestsDropdown.classList.add('hidden');
+            amenitiesDropdown.classList.add('hidden');
+            calendarContainer.classList.toggle('hidden');
+            if (!calendarContainer.classList.contains('hidden')) {
+                renderCalendar();
+            }
+        }
+
+        function formatDate(date) {
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        function getFirstDayOfMonth(year, month) {
+            // Converts Date.getDay() (0=Sunday) to ISO standard (0=Monday)
+            const day = new Date(year, month, 1).getDay();
+            return day === 0 ? 6 : day - 1;
+        }
+
+        function isPastDate(date) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return date < today;
+        }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            calendarMonth.textContent = new Date(year, month).toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric'
             });
-        }
 
-        // --- SEARCH LOGIC ---
-        function initializeFirebase() {
-            // Firebase setup (replace with your config)
-            const firebaseConfig = {
-                // ... (your actual config should be here)
-            };
+            calendarDays.innerHTML = '';
+            const daysInMonth = getDaysInMonth(year, month);
+            const firstDay = getFirstDayOfMonth(year, month);
 
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
+            // Days from previous month
+            const prevMonthDays = getDaysInMonth(year, month - 1);
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.textContent = prevMonthDays - i;
+                day.className = 'calendar-day other-month';
+                calendarDays.appendChild(day);
             }
 
-            const db = firebase.database();
-            const resortsRef = db.ref('resorts');
-            const dropdownContent = document.getElementById('dropdownContent');
+            // Current month days
+            for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+                const day = document.createElement('div');
+                day.textContent = dayNum;
+                const fullDate = new Date(year, month, dayNum);
+                day.className = 'calendar-day rounded-lg';
 
-            resortsRef.once('value', (snapshot) => {
-                const resorts = snapshot.val();
-                if (resorts) {
-                    window.resortData = Object.values(resorts);
-                    renderDropdown(window.resortData);
+                if (isPastDate(fullDate)) {
+                    day.classList.add('disabled');
                 } else {
-                    dropdownContent.innerHTML = '<div class="px-5 py-4 text-center text-gray-500 text-sm">No resorts found.</div>';
+                    day.onclick = () => handleDayClick(dayNum, month, year);
+
+                    const dateString = fullDate.toISOString().split('T')[0];
+                    const selectedStrings = selectedDates.map(d => d.toISOString().split('T')[0]);
+
+                    if (selectedStrings.includes(dateString)) {
+                        if (selectedDates.length === 1) {
+                            day.classList.add('selected', 'single-day');
+                        } else if (selectedDates.length === 2) {
+                            const [start, end] = selectedStrings.sort();
+                            if (dateString === start) {
+                                day.classList.add('selected', 'range-start');
+                            } else if (dateString === end) {
+                                day.classList.add('selected', 'range-end');
+                            }
+                        }
+                    } else if (selectedDates.length === 2) {
+                        const [startDate, endDate] = selectedDates.sort((a, b) => a - b);
+                        if (fullDate > startDate && fullDate < endDate) {
+                            day.classList.add('in-range');
+                        }
+                    }
+                }
+                calendarDays.appendChild(day);
+            }
+
+
+            function handleDayClick(day, month, year) {
+                const clickedDate = new Date(year, month, day);
+
+                if (stayType === 'overnight') {
+                    if (selectedDates.length === 0) {
+                        selectedDates.push(clickedDate);
+                    } else if (selectedDates.length === 1) {
+                        const existingDate = selectedDates[0];
+                        if (clickedDate.getTime() === existingDate.getTime()) {
+                            selectedDates = [];
+                        } else if (clickedDate < existingDate) {
+                            selectedDates = [clickedDate, existingDate];
+                        } else {
+                            selectedDates.push(clickedDate);
+                        }
+                    } else if (selectedDates.length === 2) {
+                        selectedDates = [clickedDate];
+                    }
+                } else if (stayType === 'dayuse') {
+                    if (selectedDates.length === 1 && selectedDates[0].getTime() === clickedDate.getTime()) {
+                        selectedDates = [];
+                    } else {
+                        selectedDates = [clickedDate];
+                    }
+                }
+
+                updateDateRangeInput();
+                renderCalendar();
+            }
+
+            // Days from next month
+            const totalDaysRendered = firstDay + daysInMonth;
+            const nextMonthStart = totalDaysRendered % 7;
+            const daysToRenderNext = (7 - nextMonthStart) % 7;
+
+            for (let i = 1; i <= daysToRenderNext; i++) {
+                const day = document.createElement('div');
+                day.textContent = i;
+                day.className = 'calendar-day other-month';
+                calendarDays.appendChild(day);
+            }
+        }
+
+        function createDayCell(day, isOtherMonth, date) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-day';
+            cell.textContent = day;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (isOtherMonth) {
+                cell.classList.add('other-month');
+            } else if (date < today) {
+                cell.classList.add('disabled');
+            } else {
+                cell.addEventListener('click', () => selectDate(date));
+
+                // Highlight selected dates
+                if (checkInDate && date.getTime() === checkInDate.getTime()) {
+                    if (stayType === 'dayuse' || !checkOutDate) {
+                        cell.classList.add('single-day');
+                    } else {
+                        cell.classList.add('range-start');
+                    }
+                }
+
+                if (checkOutDate && date.getTime() === checkOutDate.getTime()) {
+                    cell.classList.add('range-end');
+                }
+
+                // Highlight range
+                if (stayType === 'overnight' && checkInDate && checkOutDate) {
+                    if (date > checkInDate && date < checkOutDate) {
+                        cell.classList.add('in-range');
+                    }
+                }
+            }
+
+            return cell;
+        }
+
+        function selectDate(date) {
+            if (stayType === 'dayuse') {
+                checkInDate = date;
+                checkOutDate = null;
+                updateDateRangeInput();
+                document.getElementById('calendarContainer').classList.add('hidden');
+            } else {
+                if (selectingFor === 'checkin' || !checkInDate || (checkInDate && checkOutDate)) {
+                    checkInDate = date;
+                    checkOutDate = null;
+                    selectingFor = 'checkout';
+                } else if (selectingFor === 'checkout') {
+                    if (date > checkInDate) {
+                        checkOutDate = date;
+                        document.getElementById('calendarContainer').classList.add('hidden');
+                        selectingFor = 'checkin';
+                    } else {
+                        checkInDate = date;
+                        checkOutDate = null;
+                    }
+                }
+                updateDateRangeInput();
+            }
+            renderCalendar();
+        }
+
+        function updateDateRangeInput() {
+            if (selectedDates.length === 0) {
+                dateRangeInput.value = 'Select dates';
+                dateRangeDay.textContent = '';
+            } else if (selectedDates.length === 1) {
+                const dateStr = formatDate(selectedDates[0]);
+                if (stayType === 'dayuse') {
+                    dateRangeInput.value = dateStr;
+                    dateRangeDay.textContent = '(Day Use)';
+                } else {
+                    dateRangeInput.value = `${dateStr} - Select End Date`;
+                    dateRangeDay.textContent = '(1 Night)';
+                }
+            } else if (selectedDates.length === 2) {
+                const [startDate, endDate] = selectedDates.sort((a, b) => a - b);
+                const startDateStr = formatDate(startDate);
+                const endDateStr = formatDate(endDate);
+                dateRangeInput.value = `${startDateStr} - ${endDateStr}`;
+
+                const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                dateRangeDay.textContent = `(${diffDays} Nights)`;
+            }
+        }
+
+        function initializeCalendar() {
+            currentDate = new Date();
+            currentDate.setDate(1);
+
+            // Initial default selection for overnight
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            selectedDates = [today, tomorrow];
+            updateDateRangeInput();
+            renderCalendar();
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeCalendar);
+
+        // Calendar-specific logic for closing when clicking outside (part of a larger function in the file)
+        document.addEventListener('click', (e) => {
+            // Checks if the click target is outside the date input AND the calendar container itself
+            if (!document.getElementById('dateRangeInput').contains(e.target) &&
+                !calendarContainer.contains(e.target)
+            ) {
+                calendarContainer.classList.add('hidden');
+            }
+            // ... The full function in the source file has similar checks for other dropdowns (price, guests, amenities, resort)
+        });
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        // Price Slider Functions
+        function togglePriceSlider() {
+            const priceSlider = document.getElementById('priceSliderContainer');
+            const calendar = document.getElementById('calendarContainer');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+
+            calendar.classList.add('hidden');
+            guestsDropdown.classList.add('hidden');
+            amenitiesDropdown.classList.add('hidden');
+            priceSlider.classList.toggle('hidden');
+        }
+
+        function updatePriceSlider() {
+            const minThumb = document.getElementById('minThumb');
+            const maxThumb = document.getElementById('maxThumb');
+            const priceRange = document.getElementById('priceRange');
+
+            const minPercent = ((minPrice - 0) / (20000 - 0)) * 100;
+            const maxPercent = ((maxPrice - 0) / (20000 - 0)) * 100;
+
+            minThumb.style.left = minPercent + '%';
+            maxThumb.style.left = maxPercent + '%';
+            priceRange.style.left = minPercent + '%';
+            priceRange.style.width = (maxPercent - minPercent) + '%';
+
+            document.getElementById('minPriceLabel').textContent = minPrice;
+            document.getElementById('maxPriceLabel').textContent = maxPrice;
+            document.getElementById('minPriceInput').value = minPrice;
+            document.getElementById('maxPriceInput').value = maxPrice;
+            document.getElementById('priceRangeInput').value = `₱${minPrice} - ₱${maxPrice}`;
+        }
+
+        function updatePriceFromInput(type) {
+            if (type === 'min') {
+                minPrice = Math.max(0, Math.min(parseInt(document.getElementById('minPriceInput').value) || 0, maxPrice - 100));
+            } else {
+                maxPrice = Math.max(minPrice + 100, Math.min(parseInt(document.getElementById('maxPriceInput').value) || 20000, 20000));
+            }
+            updatePriceSlider();
+            filterResorts();
+        }
+
+        // Price Slider Drag Events
+        document.getElementById('minThumb').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            activeThumb = 'min';
+            e.preventDefault();
+        });
+
+        document.getElementById('maxThumb').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            activeThumb = 'max';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const track = document.querySelector('.price-slider-track');
+            const rect = track.getBoundingClientRect();
+            const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+            const value = Math.round((percent / 100) * 20000);
+
+            if (activeThumb === 'min') {
+                minPrice = Math.min(value, maxPrice - 100);
+            } else {
+                maxPrice = Math.max(value, minPrice + 100);
+            }
+
+            updatePriceSlider();
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                filterResorts();
+            }
+            isDragging = false;
+            activeThumb = null;
+        });
+
+        // Touch events for mobile
+        document.getElementById('minThumb').addEventListener('touchstart', (e) => {
+            isDragging = true;
+            activeThumb = 'min';
+            e.preventDefault();
+        });
+
+        document.getElementById('maxThumb').addEventListener('touchstart', (e) => {
+            isDragging = true;
+            activeThumb = 'max';
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+
+            const track = document.querySelector('.price-slider-track');
+            const rect = track.getBoundingClientRect();
+            const touch = e.touches[0];
+            const percent = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
+            const value = Math.round((percent / 100) * 20000);
+
+            if (activeThumb === 'min') {
+                minPrice = Math.min(value, maxPrice - 100);
+            } else {
+                maxPrice = Math.max(value, minPrice + 100);
+            }
+
+            updatePriceSlider();
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                filterResorts();
+            }
+            isDragging = false;
+            activeThumb = null;
+        });
+
+        // Guests Dropdown
+        function toggleGuestsDropdown() {
+            const dropdown = document.getElementById('guestsDropdown');
+            const calendarContainer = document.getElementById('calendarContainer');
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+
+            calendarContainer.classList.add('hidden');
+            priceSliderContainer.classList.add('hidden');
+            amenitiesDropdown.classList.add('hidden');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function changeGuests(type, delta) {
+            if (type === 'adults') {
+                adults = Math.max(1, adults + delta);
+                document.getElementById('adultsCount').textContent = adults;
+            } else if (type === 'rooms') {
+                rooms = Math.max(1, Math.min(14, rooms + delta));
+                document.getElementById('roomsCount').textContent = rooms;
+            }
+            updateGuestsInput();
+            filterResorts();
+        }
+
+        let maxRooms = 14; // Add this line
+
+        function updateGuestsInput() {
+            const adultsText = adults === 1 ? '1 adult' : `${adults} adults`;
+            const roomsText = rooms === 1 ? '1 room' : `${rooms} rooms`;
+            document.getElementById('guestsInput').value = `${adultsText}, ${roomsText}`;
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function (event) {
+            const searchInput = document.getElementById('searchInput');
+            const dropdown = document.getElementById('resortDropdown');
+            const guestsInput = document.getElementById('guestsInput');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const calendarContainer = document.getElementById('calendarContainer');
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const dateRangeInput = document.getElementById('dateRangeInput');
+            const priceRangeInput = document.getElementById('priceRangeInput');
+            const amenitiesInput = document.getElementById('amenitiesInput');
+            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+
+            if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+
+            if (!guestsInput.contains(event.target) && !guestsDropdown.contains(event.target)) {
+                guestsDropdown.classList.add('hidden');
+            }
+
+            if (!calendarContainer.contains(event.target) && !dateRangeInput.contains(event.target)) {
+                calendarContainer.classList.add('hidden');
+            }
+
+            if (!priceSliderContainer.contains(event.target) && !priceRangeInput.contains(event.target)) {
+                priceSliderContainer.classList.add('hidden');
+            }
+
+            if (!amenitiesDropdown.contains(event.target) && !amenitiesInput.contains(event.target)) {
+                amenitiesDropdown.classList.add('hidden');
+            }
+        });
+
+        // Initialize Firebase and load data
+        function initializeFirebase() {
+            const resortsRef = database.ref('resorts');
+
+            resortsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    resorts = Object.values(data);
+                    resortsLoaded = true;
+                    filterResorts();
+                } else {
+                    initializeSampleData();
                 }
             }, (error) => {
-                console.error("Firebase fetch error:", error);
-                dropdownContent.innerHTML = '<div class="px-5 py-4 text-center text-red-500 text-sm">Error loading data.</div>';
+                console.error('Error loading resorts:', error);
+                initializeSampleData();
             });
         }
 
-        function renderDropdown(resorts) {
-            const dropdownContent = document.getElementById('dropdownContent');
-            dropdownContent.innerHTML = '';
+        function initializeSampleData() {
+            const sampleResorts = [
+                {
+                    id: 1,
+                    name: "Laguna Hot Spring Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A popular resort featuring natural hot spring pools and accommodations for families and groups.",
+                    facilities: ["Swimming pools", "Hot spring baths", "Cottages", "Function halls", "Restaurant", "Parking"],
+                    lat: 14.179855690866304,
+                    lng: 121.1837820447193,
+                    bedrooms: 4,
+                    price: "budget",
+                    amenities: ["hot-spring", "parking", "kitchen", "wifi"],
+                    priceValue: "₱3,000 per night",
+                    priceNumeric: 3000,
+                    image: "https://placehold.co/600x400/0ea5e9/ffffff?text=Laguna+Hot+Spring+Resort"
+                },
+                {
+                    id: 2,
+                    name: "Villa Mejia",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A private resort with swimming pools and complete facilities for events and gatherings.",
+                    facilities: ["Private pools", "Event space", "Kitchen facilities", "Barbecue area", "Air-conditioned rooms"],
+                    lat: 14.179350807676604,
+                    lng: 121.18485773727306,
+                    bedrooms: 14,
+                    price: "premium",
+                    amenities: ["aircon", "kitchen", "parking"],
+                    priceValue: "₱12,000 per night",
+                    priceNumeric: 12000,
+                    image: "https://placehold.co/600x400/8b5cf6/ffffff?text=Villa+Mejia"
+                },
+                {
+                    id: 3,
+                    name: "Glennette's Haven Private Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "An exclusive private resort with hot spring pools perfect for family outings and celebrations.",
+                    facilities: ["Hot spring baths", "Karaoke", "Videoke", "Outdoor grilling area", "WiFi"],
+                    lat: 14.179889853295485,
+                    lng: 121.1861350014737,
+                    bedrooms: 4,
+                    price: "mid",
+                    amenities: ["hot-spring", "karaoke", "wifi"],
+                    priceValue: "₱7,000 per night",
+                    priceNumeric: 7000,
+                    image: "https://placehold.co/600x400/10b981/ffffff?text=Glennette's+Haven"
+                },
+                {
+                    id: 4,
+                    name: "Elysian Sourire Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A tranquil resort offering relaxing hot spring pools and modern amenities.",
+                    facilities: ["Heated pools", "Spa services", "Gazebo", "Garden area", "Outdoor dining"],
+                    lat: 14.17950049393675,
+                    lng: 121.18694386655233,
+                    bedrooms: 5,
+                    price: "premium",
+                    amenities: ["hot-spring", "wifi", "aircon", "parking"],
+                    priceValue: "₱15,000 per night",
+                    priceNumeric: 15000,
+                    image: "https://placehold.co/600x400/f59e0b/ffffff?text=Elysian+Sourire"
+                },
+                {
+                    id: 5,
+                    name: "Villa Francesca Private Resort - Pansol",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A spacious private resort ideal for large groups and events with multiple pools.",
+                    facilities: ["Multiple swimming pools", "Function hall", "Videoke", "Cottages", "Playground"],
+                    lat: 14.180012234621406,
+                    lng: 121.1871543967939,
+                    bedrooms: 6,
+                    price: "premium",
+                    amenities: ["karaoke", "aircon", "kitchen", "parking"],
+                    priceValue: "₱18,000 per night",
+                    priceNumeric: 18000,
+                    image: "https://placehold.co/600x400/ec4899/ffffff?text=Villa+Francesca"
+                }
+            ];
 
-            if (resorts.length === 0) {
-                dropdownContent.innerHTML = '<div class="px-5 py-4 text-center text-gray-500 text-sm">No results found.</div>';
-                return;
-            }
-
-            resorts.forEach(resort => {
-                const item = document.createElement('div');
-                item.className = 'dropdown-item px-5 py-3 cursor-pointer';
-                item.onclick = () => selectResort(resort);
-
-                item.innerHTML = `
-                    <div>
-                        <p class="font-semibold text-gray-800">${resort.name}</p>
-                        <p class="text-sm text-gray-500">${resort.location || 'Pansol, Calamba'}</p>
-                    </div>
-                `;
-                dropdownContent.appendChild(item);
+            const resortsRef = database.ref('resorts');
+            sampleResorts.forEach(resort => {
+                resortsRef.child(resort.id.toString()).set(resort);
             });
-        }
 
-        function filterResorts() {
-            const searchInput = document.getElementById('searchInput');
-            const filter = searchInput.value.toLowerCase();
-
-            if (window.resortData) {
-                const filtered = window.resortData.filter(resort => {
-                    return resort.name.toLowerCase().includes(filter) ||
-                        (resort.location && resort.location.toLowerCase().includes(filter));
-                });
-                renderDropdown(filtered);
-                showDropdown();
-            }
+            resorts = sampleResorts;
+            resortsLoaded = true;
         }
 
         function showDropdown() {
-            document.getElementById('resortDropdown').classList.remove('hidden');
-            // Close other elements
-            calendarContainer.classList.add('hidden');
-            priceSliderContainer.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
+            const dropdown = document.getElementById('resortDropdown');
+            dropdown.classList.remove('hidden');
+            if (resortsLoaded) {
+                filterResorts();
+            }
         }
 
-        function hideDropdown() {
-            setTimeout(() => {
-                document.getElementById('resortDropdown').classList.add('hidden');
-            }, 200); // Small delay to allow click events on dropdown items to fire
+        function filterResorts() {
+            if (!resortsLoaded) return;
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const dropdownContent = document.getElementById('dropdownContent');
+
+            let filteredResorts = resorts;
+
+            // Filter by search term
+            if (searchTerm) {
+                filteredResorts = resorts.filter(resort =>
+                    resort.name.toLowerCase().includes(searchTerm) ||
+                    resort.address.toLowerCase().includes(searchTerm) ||
+                    resort.description.toLowerCase().includes(searchTerm) ||
+                    resort.facilities.some(facility => facility.toLowerCase().includes(searchTerm)) ||
+                    resort.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Filter by number of rooms (bedrooms)
+            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
+
+            // Filter by price range
+            filteredResorts = filteredResorts.filter(resort =>
+                resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
+            );
+
+            // Filter by selected amenities
+            if (selectedAmenities.length > 0) {
+                filteredResorts = filteredResorts.filter(resort =>
+                    selectedAmenities.every(amenity => resort.amenities.includes(amenity))
+                );
+            }
+
+            if (filteredResorts.length === 0) {
+                dropdownContent.innerHTML = `
+                    <div class="px-5 py-4 text-gray-500 text-sm">
+                        No resorts found matching your criteria
+                    </div>
+                `;
+            } else {
+                dropdownContent.innerHTML = filteredResorts.map(resort => `
+                    <div class="dropdown-item px-5 py-4 cursor-pointer border-b border-gray-100 last:border-b-0" onclick="selectResort('${resort.name.replace(/'/g, "\\'")}')">
+                        <div class="flex justify-between items-start w-full">
+                            <div class="flex-1">
+                                <div class="font-semibold text-gray-900 mb-1">${resort.name}</div>
+                                <div class="text-sm text-gray-600">${resort.priceValue} • ${resort.bedrooms} bedrooms</div>
+                            </div>
+                            <div class="text-xs text-white bg-blue-600 px-2 py-1 rounded ml-2 shrink-0">
+                                ${resort.price}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
         }
 
-        function selectResort(resort) {
-            // For now, selecting a resort just populates the search bar and hides the dropdown
-            document.getElementById('searchInput').value = resort.name;
-            hideDropdown();
-            redirectToFeaturedResorts(resort.id); // Or redirect to resort page
+        function selectResort(resortName) {
+            document.getElementById('searchInput').value = resortName;
+            document.getElementById('resortDropdown').classList.add('hidden');
         }
 
-        function redirectToFeaturedResorts(resortId = null) {
+        function redirectToFeaturedResorts() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
             let url = 'index2.html';
             const params = new URLSearchParams();
 
-            if (resortId) {
-                params.append('resortId', resortId);
+            if (searchTerm) {
+                params.append('search', searchTerm);
             }
-
-            params.append('stayType', stayType);
-
-            if (selectedStartDate && selectedEndDate) {
-                const formatDateToISO = (date) => date.toISOString().split('T')[0];
-                params.append('checkIn', formatDateToISO(selectedStartDate));
-                params.append('checkOut', formatDateToISO(selectedEndDate));
-            } else if (selectedStartDate) {
-                 // If only start date is selected, assume it's the check-in
-                params.append('checkIn', selectedStartDate.toISOString().split('T')[0]);
-                // For overnight, checkOut will be missing, signalling an incomplete search for the backend
+            if (stayType) {
+                params.append('stayType', stayType);
             }
-
+            if (checkInDate) {
+                params.append('checkIn', checkInDate.toISOString());
+            }
+            if (checkOutDate) {
+                params.append('checkOut', checkOutDate.toISOString());
+            }
             params.append('adults', adults);
             params.append('rooms', rooms);
-            params.append('minPrice', minPriceInput.value);
-            params.append('maxPrice', maxPriceInput.value);
+            params.append('minPrice', minPrice);
+            params.append('maxPrice', maxPrice);
 
             if (selectedAmenities.length > 0) {
                 params.append('amenities', selectedAmenities.join(','));
@@ -1602,7 +1770,6 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
         initializeFirebase();
         renderCalendar();
         updatePriceSlider();
-        updateGuestsInput(); // Initialize guests input value
 
         // Close mobile menu when window is resized to desktop
         window.addEventListener('resize', function () {
@@ -1615,27 +1782,6 @@ w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                 overlay.classList.remove('active');
                 hamburger.classList.remove('active');
                 document.body.style.overflow = '';
-            }
-        });
-        
-        // Close dropdown/calendar/slider when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!document.getElementById('dateRangeInput').contains(e.target) && 
-                !calendarContainer.contains(e.target) &&
-                !document.getElementById('priceRangeInput').contains(e.target) && 
-                !priceSliderContainer.contains(e.target) &&
-                !document.getElementById('guestsInput').contains(e.target) &&
-                !guestsDropdown.contains(e.target) &&
-                !document.getElementById('amenitiesInput').contains(e.target) &&
-                !amenitiesDropdown.contains(e.target) &&
-                !document.getElementById('searchInput').contains(e.target) &&
-                !document.getElementById('resortDropdown').contains(e.target)
-            ) {
-                calendarContainer.classList.add('hidden');
-                priceSliderContainer.classList.add('hidden');
-                guestsDropdown.classList.add('hidden');
-                amenitiesDropdown.classList.add('hidden');
-                hideDropdown();
             }
         });
     </script>
