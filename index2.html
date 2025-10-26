@@ -671,7 +671,7 @@
             resortsRef.once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    resorts = validateResortData(Object.values(data)); // Add validation here
+                    resorts = validateResortData(Object.values(data));
                     console.log('Loaded resorts:', resorts);
                 } else {
                     resorts = [];
@@ -689,7 +689,7 @@
             });
         }
 
-        // Initialize page with loaded data - UPDATED TO SHOW FILTER INFO
+        // Initialize page with loaded data
         function initializePageWithData() {
             const urlParams = getUrlParams();
 
@@ -715,6 +715,7 @@
             setupSearch();
             setupSort();
         }
+
         function displayFilterInfo(params) {
             const filterSection = document.querySelector('.filter-section .max-w-7xl');
 
@@ -758,12 +759,9 @@
             filterSection.insertAdjacentHTML('afterbegin', filterInfoHTML);
         }
 
-        // NEW FUNCTION - Clear search filters
+        // Clear search filters
         function clearSearchFilters() {
-            // Remove URL parameters
             window.history.replaceState({}, '', window.location.pathname);
-
-            // Reload the page to reset everything
             window.location.reload();
         }
 
@@ -859,9 +857,10 @@
                 console.log('After category filter:', filtered.length, 'resorts');
             }
 
+            // ✅ FIXED: Apply room/bedroom filter from URL parameters
             if (urlParams.rooms) {
                 const requestedRooms = urlParams.rooms;
-
+                
                 filtered = filtered.filter(resort => {
                     // Show resorts that have at least the requested number of bedrooms
                     return resort.bedrooms >= requestedRooms;
@@ -869,7 +868,7 @@
                 console.log('After bedroom filter:', filtered.length, 'resorts');
             }
 
-            // UPDATED - Apply price range filter with better logic
+            // Apply price range filter
             if (urlParams.minPrice !== null || urlParams.maxPrice !== null) {
                 const min = urlParams.minPrice !== null ? urlParams.minPrice : 0;
                 const max = urlParams.maxPrice !== null ? urlParams.maxPrice : 999999;
@@ -877,7 +876,6 @@
                 console.log('Filtering by price range:', min, '-', max);
 
                 filtered = filtered.filter(resort => {
-                    // Make sure priceNumeric exists and is a number
                     const resortPrice = resort.priceNumeric || 0;
                     const inRange = resortPrice >= min && resortPrice <= max;
 
@@ -889,12 +887,12 @@
                 console.log('After price filter:', filtered.length, 'resorts');
             }
 
-            // Apply amenities filter from URL
+            // ✅ FIXED: Apply amenities filter from URL - Changed from .every() to .some()
             if (urlParams.amenities && urlParams.amenities.length > 0) {
                 filtered = filtered.filter(resort => {
-                    // Make sure resort has amenities array
                     const resortAmenities = resort.amenities || [];
-                    return urlParams.amenities.every(amenity =>
+                    // Show resorts that have at least ONE of the selected amenities (OR logic)
+                    return urlParams.amenities.some(amenity =>
                         resortAmenities.includes(amenity)
                     );
                 });
@@ -926,7 +924,7 @@
             renderResorts(filtered);
         }
 
-        // Add this function to ensure all resorts have proper numeric prices
+        // Validate resort data
         function validateResortData(resortsArray) {
             return resortsArray.map(resort => {
                 // If priceNumeric is missing, try to extract from priceValue
@@ -986,7 +984,7 @@
             });
         }
 
-        // Show resort details - redirects to details page
+        // Show resort details
         function showResortDetails(resortId) {
             window.location.href = `resort-details.html?id=${resortId}`;
         }
