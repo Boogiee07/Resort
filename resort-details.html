@@ -1205,13 +1205,13 @@
         function displayStarRating(rating, count) {
             const starContainer = document.getElementById('starRating');
             const ratingText = document.getElementById('ratingText');
-            
+
             if (count === 0) {
                 starContainer.innerHTML = '<span class="text-sm text-gray-500">No ratings yet</span>';
                 ratingText.textContent = 'Be the first to rate!';
                 return;
             }
-            
+
             const fullStars = Math.floor(rating);
             const hasHalfStar = rating % 1 >= 0.5;
             let starsHtml = '';
@@ -1391,10 +1391,10 @@
                             feedbackList.push(data);
                         }
                     });
-                    
+
                     const ratingData = calculateAverageRating(feedbackList);
                     displayStarRating(ratingData.average, ratingData.count);
-                    
+
                     console.log(`Resort ${resortId}: ${ratingData.count} reviews, average ${ratingData.average.toFixed(1)} stars`);
                 })
                 .catch((error) => {
@@ -1453,20 +1453,21 @@
                     `;
                 }
 
-                const mapsLink = createGoogleMapsLink(contactInfo.googleMapsQuery);
+                const mapsLink = `map.html?navigate=${resortId}`;
                 document.getElementById('locationLink').innerHTML = `
-                    <div class="flex items-start text-gray-700">
-                        <svg class="w-5 h-5 mr-2 md:mr-3 text-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                        </svg>
-                        <a href="${mapsLink}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors flex items-center text-sm md:text-base">
-                            ${contactInfo.address}
-                            <svg class="w-4 h-4 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                            </svg>
-                        </a>
-                    </div>
-                `;
+    <div class="flex items-start text-gray-700">
+        <svg class="w-5 h-5 mr-2 md:mr-3 text-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+        </svg>
+        <a href="${mapsLink}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors flex items-center text-sm md:text-base">
+            ${contactInfo.address}
+            <svg class="w-4 h-4 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+            </svg>
+            <span class="ml-1 text-xs">(Navigate)</span>
+        </a>
+    </div>
+`;
             } else {
                 document.getElementById('resortDescription').textContent = resort.description;
             }
@@ -1649,7 +1650,7 @@
                 .then((docRef) => {
                     console.log('Feedback submitted with ID:', docRef.id);
                     document.getElementById('successMessage').classList.add('active');
-                    
+
                     // Reload ratings after successful feedback submission
                     setTimeout(() => {
                         loadResortDetails();
