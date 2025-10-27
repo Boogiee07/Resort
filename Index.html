@@ -596,7 +596,7 @@
                         </svg>
                         <input type="text" id="priceRangeInput" readonly
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-                            value="₱700 - ₱3000" onclick="togglePriceSlider()">
+                            value="₱ (Price Range)" onclick="togglePriceSlider()">
                     </div>
                 </div>
 
@@ -1270,30 +1270,27 @@
             } else {
                 // Overnight stay logic
                 if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-                    // First click - set check-in date
+                    // First click - set check-in date, KEEP CALENDAR OPEN
                     selectedStartDate = date;
                     selectedEndDate = null;
                     updateDateRangeInput();
                     renderCalendar();
-                    // Calendar STAYS OPEN - no close here!
                 } else if (selectedStartDate && !selectedEndDate) {
                     // Second click - set check-out date
                     if (date > selectedStartDate) {
-                        // Valid check-out date (after check-in)
+                        // Valid check-out date (after check-in) - CLOSE CALENDAR
                         selectedEndDate = date;
                         updateDateRangeInput();
                         renderCalendar();
-                        // Calendar CLOSES HERE after 2nd date is selected
                         setTimeout(() => {
                             document.getElementById('calendarContainer').classList.add('hidden');
-                        }, 300);
+                        }, 200);
                     } else {
-                        // Date is before check-in, restart selection
+                        // Date is before or same as check-in, restart selection, KEEP OPEN
                         selectedStartDate = date;
                         selectedEndDate = null;
                         updateDateRangeInput();
                         renderCalendar();
-                        // Calendar STAYS OPEN
                     }
                 }
             }
@@ -1375,7 +1372,8 @@
             document.getElementById('maxPriceLabel').textContent = maxPrice;
             document.getElementById('minPriceInput').value = minPrice;
             document.getElementById('maxPriceInput').value = maxPrice;
-            document.getElementById('priceRangeInput').value = `₱${minPrice} - ₱${maxPrice}`;
+
+            document.getElementById('priceRangeInput').value = '₱ (Price Range)';
         }
 
         function updatePriceFromInput(type) {
