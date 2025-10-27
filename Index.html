@@ -602,14 +602,14 @@
 
                 <div id="calendarContainer" class="hidden calendar-container">
                     <div class="calendar-header">
-                        <button onclick="previousMonth()" class="p-1 hover:bg-gray-100 rounded-lg">
+                        <button onclick="event.stopPropagation(); previousMonth()" class="p-1 hover:bg-gray-100 rounded-lg">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
                         <div class="font-semibold text-lg" id="calendarMonth"></div>
-                        <button onclick="nextMonth()" class="p-1 hover:bg-gray-100 rounded-lg">
+                        <button onclick="event.stopPropagation(); nextMonth()" class="p-1 hover:bg-gray-100 rounded-lg">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                                 </path>
@@ -1230,7 +1230,10 @@
             } else if (date < today) {
                 cell.classList.add('disabled');
             } else {
-                cell.addEventListener('click', () => selectDate(date));
+                cell.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent event from bubbling to document listener
+                    selectDate(date);
+                });
 
                 // Highlight selected dates
                 if (selectedStartDate && date.getTime() === selectedStartDate.getTime()) {
@@ -1262,36 +1265,43 @@
 
         function selectDate(date) {
             if (stayType === 'dayuse') {
-                // Day use: close immediately after 1 date
+                // Day use: select 1 date only and close calendar immediately
                 selectedStartDate = date;
                 selectedEndDate = null;
                 updateDateRangeInput();
                 document.getElementById('calendarContainer').classList.add('hidden');
             } else {
-                // Overnight stay logic
-                if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-                    // First click - set check-in date, KEEP CALENDAR OPEN
+                // Overnight stay: requires 2 dates before calendar closes
+                if (!selectedStartDate) {
+                    // First date selected (check-in) - keep calendar open
                     selectedStartDate = date;
                     selectedEndDate = null;
                     updateDateRangeInput();
                     renderCalendar();
-                } else if (selectedStartDate && !selectedEndDate) {
-                    // Second click - set check-out date
+                } else if (!selectedEndDate) {
+                    // Second date being selected (check-out)
                     if (date > selectedStartDate) {
-                        // Valid check-out date (after check-in) - CLOSE CALENDAR
+                        // Valid check-out date - set end date and close calendar after delay
                         selectedEndDate = date;
                         updateDateRangeInput();
                         renderCalendar();
+                        // Close calendar after showing both dates
                         setTimeout(() => {
                             document.getElementById('calendarContainer').classList.add('hidden');
-                        }, 200);
+                        }, 300);
                     } else {
-                        // Date is before or same as check-in, restart selection, KEEP OPEN
+                        // Date is before/equal to check-in, restart selection
                         selectedStartDate = date;
                         selectedEndDate = null;
                         updateDateRangeInput();
                         renderCalendar();
                     }
+                } else {
+                    // Both dates already selected, start new selection
+                    selectedStartDate = date;
+                    selectedEndDate = null;
+                    updateDateRangeInput();
+                    renderCalendar();
                 }
             }
         }
@@ -1517,8 +1527,11 @@
                 guestsDropdown.classList.add('hidden');
             }
 
+            // Only close calendar if clicking outside AND (it's day use OR both dates are selected for overnight)
             if (!calendarContainer.contains(event.target) && !dateRangeInput.contains(event.target)) {
-                calendarContainer.classList.add('hidden');
+                if (stayType === 'dayuse' || (stayType === 'overnight' && selectedStartDate && selectedEndDate)) {
+                    calendarContainer.classList.add('hidden');
+                }
             }
 
             if (!priceSliderContainer.contains(event.target) && !priceRangeInput.contains(event.target)) {
@@ -1756,6 +1769,11 @@
         initializeFirebase();
         renderCalendar();
         updatePriceSlider();
+
+        // Prevent calendar from closing when clicking inside it
+        document.getElementById('calendarContainer').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
 
         // Close mobile menu when window is resized to desktop
         window.addEventListener('resize', function () {
