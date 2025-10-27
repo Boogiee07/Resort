@@ -300,7 +300,8 @@
                 </span>
             </h2>
             <p class="text-sm sm:text-2xl drop-shadow-lg max-w-3xl mx-auto">
-                <span class="bg-white text-gray-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold sm:font-bold shadow-lg inline-block">
+                <span
+                    class="bg-white text-gray-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold sm:font-bold shadow-lg inline-block">
                     Discover our handpicked selection of the best hot spring resorts
                 </span>
             </p>
@@ -894,8 +895,8 @@
             if (urlParams.amenities && urlParams.amenities.length > 0) {
                 filtered = filtered.filter(resort => {
                     const resortAmenities = resort.amenities || [];
-                    // Show resorts that have at least ONE of the selected amenities (OR logic)
-                    return urlParams.amenities.some(amenity =>
+                    // Show resorts that have ALL of the selected amenities (AND logic)
+                    return urlParams.amenities.every(amenity =>
                         resortAmenities.includes(amenity)
                     );
                 });
