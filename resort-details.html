@@ -696,36 +696,29 @@
         </div>
     </div>
 
+    <!-- Header & Navigation Bar -->
     <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition">
-                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-7 h-7 md:w-8 md:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
                     </path>
                 </svg>
                 <div>
-                    <h1 class="text-lg sm:text-xl font-extrabold text-gray-900">Pansol Resorts</h1>
+                    <h1 class="text-lg md:text-xl font-extrabold text-gray-900">Pansol Resorts</h1>
                     <p class="text-xs text-gray-500 hidden sm:block">Pansol Hot Spring Resorts</p>
                 </div>
-            </a>
+            </div>
 
-            <!-- Desktop Navigation -->
-            <nav class="hidden md:flex space-x-8 text-sm font-semibold">
-                <a href="index.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
+            <nav class="space-x-2 md:space-x-8 text-xs md:text-sm font-semibold">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
                 <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
+                <a href="#contact"
+                    class="text-gray-600 hover:text-blue-600 transition duration-150 hidden md:inline">Contact</a>
             </nav>
-
-            <!-- Mobile Hamburger -->
-            <button class="md:hidden hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
         </div>
     </header>
-
 
     <!-- Main Content -->
     <main id="mainContent" class="hidden">
@@ -809,6 +802,7 @@
 
                 <!-- Contact Information -->
                 <div id="contactInfo" class="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-200 space-y-3 md:space-y-4">
+                    <div id="contactName"></div>
                     <div id="phoneNumbers" class="space-y-2"></div>
                     <div id="emailAddress"></div>
                     <div id="locationLink"></div>
@@ -1083,6 +1077,7 @@
                 googleMapsQuery: '758 Ilang-Ilang Street, Calamba, Philippines'
             },
             '2': {
+                callerName: 'Mr. Rudy Mejia',
                 description: "Experience comfort and relaxation at Villa Mejia. Our private resort offers a serene escape with natural hot spring pools, perfect for family gatherings and intimate celebrations.",
                 phones: ['0963 633 7674'],
                 email: null,
@@ -1090,6 +1085,7 @@
                 googleMapsQuery: '241 Purok 2, Brgy. Pansol, Calamba City, Laguna'
             },
             '3': {
+                callerName: 'Ms. Glennette Obusan',
                 description: "Welcome to Glennette's Haven Private Resort, your exclusive sanctuary for relaxation and rejuvenation. Perfect for families, groups, and special occasions.",
                 phones: ['0927 271 3040'],
                 email: 'glennette98@yahoo.com.ph',
@@ -1104,6 +1100,7 @@
                 googleMapsQuery: '315 Purok 3 Brgy. Pansol, Calamba'
             },
             '5': {
+                callerName: 'Ms. Francesca Castro',
                 description: "Villa Francesca Private Resort offers an exclusive getaway experience combining elegance with comfort, featuring natural hot spring pools and premium amenities.",
                 phones: ['0936 114 4780'],
                 email: 'villafrancesca.privateresort@gmail.com',
@@ -1435,6 +1432,17 @@
             const contactInfo = resortContactInfo[resortId];
             if (contactInfo) {
                 document.getElementById('resortDescription').textContent = contactInfo.description;
+
+                if (contactInfo.callerName) {
+                    document.getElementById('contactName').innerHTML = `
+                        <div class="flex items-center text-gray-700">
+                            <svg class="w-5 h-5 mr-2 md:mr-3 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <span class="font-semibold text-gray-800 text-sm md:text-base">Name: ${contactInfo.callerName}</span>
+                        </div>
+                    `;
+                }
 
                 const phonesHtml = contactInfo.phones.map(phone => {
                     const formatted = formatPhoneNumber(phone);
