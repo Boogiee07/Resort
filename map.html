@@ -188,6 +188,125 @@
       border-color: #f39c12;
     }
 
+    /* Navigation Confirmation Modal */
+    .nav-confirmation-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .nav-confirmation-modal.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .nav-modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 450px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease;
+      text-align: center;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .nav-modal-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-modal-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .nav-modal-resort-name {
+      font-size: 1.1rem;
+      color: #3498db;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .nav-modal-text {
+      font-size: 0.95rem;
+      color: #7f8c8d;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .nav-modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .nav-modal-btn {
+      padding: 12px 30px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+      max-width: 180px;
+    }
+
+    .nav-modal-btn-primary {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+    }
+
+    .nav-modal-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+    }
+
+    .nav-modal-btn-secondary {
+      background: #ecf0f1;
+      color: #7f8c8d;
+    }
+
+    .nav-modal-btn-secondary:hover {
+      background: #d5dbdb;
+    }
+
     /* Custom routing control styles */
     .leaflet-routing-container {
       background-color: rgba(255, 255, 255, 0.95);
@@ -327,6 +446,26 @@
         font-size: 0.8rem;
         padding: 10px 16px;
       }
+
+      .nav-modal-content {
+        padding: 25px 20px;
+      }
+
+      .nav-modal-title {
+        font-size: 1.3rem;
+      }
+
+      .nav-modal-resort-name {
+        font-size: 1rem;
+      }
+
+      .nav-modal-buttons {
+        flex-direction: column;
+      }
+
+      .nav-modal-btn {
+        max-width: 100%;
+      }
     }
   </style>
   
@@ -364,6 +503,26 @@
   </button>
 
   <div class="location-status" id="location-status"></div>
+
+  <!-- Navigation Confirmation Modal -->
+  <div class="nav-confirmation-modal" id="navConfirmModal">
+    <div class="nav-modal-content">
+      <div class="nav-modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+        </svg>
+      </div>
+      <div class="nav-modal-title">Start Navigation?</div>
+      <div class="nav-modal-resort-name" id="navModalResortName">Resort Name</div>
+      <div class="nav-modal-text">
+        We'll need access to your location to show you directions to this resort.
+      </div>
+      <div class="nav-modal-buttons">
+        <button class="nav-modal-btn nav-modal-btn-secondary" id="navCancelBtn">Cancel</button>
+        <button class="nav-modal-btn nav-modal-btn-primary" id="navConfirmBtn">Allow & Navigate</button>
+      </div>
+    </div>
+  </div>
   
 <script>
   // Resort data with coordinates
@@ -375,7 +534,7 @@
       facilities: "Swimming pools, Hot spring baths, Cottages, Function halls, Restaurant, Parking",
       lat: 14.179855690866304,
       lng: 121.1837820447193,
-      website: "2_resort.html?id=1",
+      website: "resort-details.html?id=1",
       priceValue: "₱3,000 per night",
     },
     '2': {
@@ -385,7 +544,7 @@
       facilities: "Private pools, Event space, Kitchen facilities, Barbecue area, Air-conditioned rooms",
       lat: 14.179350807676604,
       lng: 121.18485773727306,
-      website: "2_resort.html?id=2",
+      website: "resort-details.html?id=2",
       priceValue: "₱12,000 per night",
     },
     '3': {
@@ -395,7 +554,7 @@
       facilities: "Hot spring pools, Karaoke, Videoke, Outdoor grilling area, WiFi",
       lat: 14.179889853295485,
       lng: 121.1861350014737,
-      website: "2_resort.html?id=3",
+      website: "resort-details.html?id=3",
       priceValue: "₱7,000 per night",
     },
     '4': {
@@ -405,7 +564,7 @@
       facilities: "Heated pools, Spa services, Gazebo, Garden area, Outdoor dining",
       lat: 14.17950049393675,
       lng: 121.18694386655233,
-      website: "2_resort.html?id=4",
+      website: "resort-details.html?id=4",
       priceValue: "₱15,000 per night",
     },
     '5': {
@@ -415,7 +574,7 @@
       facilities: "Multiple swimming pools, Function hall, Videoke, Cottages, Playground",
       lat: 14.180012234621406,
       lng: 121.1871543967939,
-      website: "2_resort.html?id=5",
+      website: "resort-details.html?id=5",
       priceValue: "₱18,000 per night",
     }
   };
@@ -512,15 +671,28 @@
         }, 500);
       }
       
-      // Show message to get location
-      showLocationStatus('Click the location button to start navigation', 'success');
-      setTimeout(() => {
-        hideLocationStatus();
-      }, 5000);
-      
       // Store the resort ID for later navigation
       window.pendingNavigationId = resortId;
+      
+      // Show confirmation modal
+      setTimeout(() => {
+        showNavigationConfirmation(resort.name);
+      }, 800);
     }
+  }
+
+  // Show navigation confirmation modal
+  function showNavigationConfirmation(resortName) {
+    const modal = document.getElementById('navConfirmModal');
+    const resortNameEl = document.getElementById('navModalResortName');
+    resortNameEl.textContent = resortName;
+    modal.classList.add('active');
+  }
+
+  // Hide navigation confirmation modal
+  function hideNavigationConfirmation() {
+    const modal = document.getElementById('navConfirmModal');
+    modal.classList.remove('active');
   }
 
   // Get user's current location
@@ -583,7 +755,7 @@
         let errorMessage = 'Unable to get location';
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Location access denied';
+            errorMessage = 'Location access denied. Please enable location in your browser settings.';
             break;
           case error.POSITION_UNAVAILABLE:
             errorMessage = 'Location unavailable';
@@ -620,7 +792,7 @@
   // Navigate to a specific resort
   function navigateToResort(resortId) {
     if (!userLocation) {
-      showLocationStatus('Please click the location button first', 'error');
+      showLocationStatus('Please allow location access first', 'error');
       setTimeout(() => {
         hideLocationStatus();
       }, 3000);
@@ -718,6 +890,33 @@
   function goBack() {
     window.history.back();
   }
+
+  // Modal event listeners
+  document.getElementById('navConfirmBtn').addEventListener('click', function() {
+    hideNavigationConfirmation();
+    // Close any open popups
+    map.closePopup();
+    getCurrentLocation();
+  });
+
+  document.getElementById('navCancelBtn').addEventListener('click', function() {
+    hideNavigationConfirmation();
+    // Close the resort popup as well
+    map.closePopup();
+    showLocationStatus('Navigation cancelled. You can click the location button anytime to navigate.', 'success');
+    setTimeout(() => {
+      hideLocationStatus();
+    }, 5000);
+    window.pendingNavigationId = null;
+  });
+
+  // Close modal when clicking outside
+  document.getElementById('navConfirmModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      hideNavigationConfirmation();
+      window.pendingNavigationId = null;
+    }
+  });
 
   // Event Listeners
   document.getElementById('location-btn').addEventListener('click', getCurrentLocation);
