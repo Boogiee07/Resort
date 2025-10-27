@@ -734,11 +734,16 @@
         </div>
 
         <!-- Hero Image -->
-        <div class="relative">
+        <div class="relative cursor-pointer" onclick="openImageGallery(0)" title="Click to view gallery">
             <img id="resortHeroImage" class="hero-image" src="" alt="Resort">
             <div class="absolute top-4 right-4 md:top-6 md:right-6">
                 <span id="priceBadge"
                     class="px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold shadow-lg uppercase"></span>
+            </div>
+            <div class="absolute inset-0 bg-black opacity-0 hover:opacity-10 transition-opacity duration-300 flex items-center justify-center">
+            </div>
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
+                <span class="text-sm font-semibold">🔍 Click to view gallery</span>
             </div>
         </div>
 
