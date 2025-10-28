@@ -806,6 +806,15 @@
       map.removeControl(routingControl);
     }
     
+    // Hide all resort markers except the one being navigated to
+    for (const [id, marker] of Object.entries(markers)) {
+      if (id === resortId) {
+        marker.addTo(map);
+      } else {
+        map.removeLayer(marker);
+      }
+    }
+    
     routingControl = L.Routing.control({
       waypoints: [
         L.latLng(userLocation.lat, userLocation.lng),
@@ -839,7 +848,6 @@
       hideLocationStatus();
     }, 3000);
   }
-
   // Clear route function
   function clearRoute() {
     if (routingControl) {
