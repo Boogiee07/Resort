@@ -1366,7 +1366,7 @@
             document.getElementById('minPriceInput').value = minPrice;
             document.getElementById('maxPriceInput').value = maxPrice;
 
-            document.getElementById('priceRangeInput').value = '₱ (Price Range)';
+            document.getElementById('priceRangeInput').value = `₱${minPrice.toLocaleString()} - ₱${maxPrice.toLocaleString()}`;
         }
 
         function updatePriceFromInput(type) {
