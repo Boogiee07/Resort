@@ -167,7 +167,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Mobile menu styles */
         .mobile-menu {
             display: none;
             position: fixed;
@@ -201,7 +200,6 @@
             display: block;
         }
 
-        /* Hamburger menu */
         .hamburger {
             display: flex;
             flex-direction: column;
@@ -222,7 +220,6 @@
             transition: all 0.3s;
         }
 
-        /* Filter section mobile sticky */
         .filter-section {
             background: white;
             z-index: 40;
@@ -235,7 +232,6 @@
             }
         }
 
-        /* Mobile optimizations for small screens */
         @media (max-width: 360px) {
             .hero-bg {
                 padding: 1.5rem 0.75rem;
@@ -250,7 +246,6 @@
             }
         }
 
-        /* Modal mobile full screen */
         @media (max-width: 640px) {
             .modal.active>div {
                 border-radius: 0;
@@ -261,7 +256,6 @@
             }
         }
 
-        /* Smooth scrolling for filter chips */
         .filter-chips-container {
             overflow-x: auto;
             scrollbar-width: none;
@@ -276,7 +270,6 @@
 
 <body class="antialiased">
 
-    <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="text-center">
             <div class="loading-spinner mx-auto mb-3"></div>
@@ -284,10 +277,8 @@
         </div>
     </div>
 
-    <!-- Mobile Menu Overlay -->
     <div id="mobileOverlay" class="mobile-overlay" onclick="closeMobileMenu()"></div>
 
-    <!-- Mobile Menu -->
     <div id="mobileMenu" class="mobile-menu">
         <div class="p-6">
             <div class="flex justify-between items-center mb-8">
@@ -306,7 +297,6 @@
         </div>
     </div>
 
-    <!-- Header & Navigation Bar -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition">
@@ -319,14 +309,12 @@
                 </div>
             </a>
 
-            <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-8 text-sm font-semibold">
                 <a href="index.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
                 <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
                 <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
             </nav>
 
-            <!-- Mobile Hamburger -->
             <button class="md:hidden hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
@@ -335,7 +323,6 @@
         </div>
     </header>
 
-    <!-- Hero Section with Background Image -->
     <div class="hero-bg py-8 sm:py-24 px-3">
         <div class="max-w-7xl mx-auto text-center">
             <h2 class="text-xl sm:text-5xl md:text-6xl font-black mb-3 sm:mb-6 drop-shadow-2xl">
@@ -345,17 +332,15 @@
             </h2>
             <p class="text-xs sm:text-2xl drop-shadow-lg max-w-3xl mx-auto mt-2">
                 <span class="bg-white text-gray-900 px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold sm:font-bold shadow-lg inline-block">
-                    Discover our handpicked selection of the best hot spring resorts
+                    Discover our handpicked selection
                 </span>
             </p>
         </div>
     </div>
 
-    <!-- Filter and Search Section -->
     <section class="filter-section py-3 sm:py-6 px-3 sm:px-6 lg:px-8 shadow-sm">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col gap-3">
-                <!-- Search Bar -->
                 <div class="w-full">
                     <div class="relative">
                         <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -365,7 +350,6 @@
                     </div>
                 </div>
 
-                <!-- Filter Chips - Scrollable on mobile -->
                 <div class="filter-chips-container -mx-3 px-3 sm:mx-0 sm:px-0">
                     <div class="flex gap-2 pb-1">
                         <button onclick="toggleFilter('all')" class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-600 text-white whitespace-nowrap flex-shrink-0" data-filter="all">
@@ -383,7 +367,6 @@
                     </div>
                 </div>
 
-                <!-- Sort Dropdown -->
                 <div class="w-full">
                     <select id="sortSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm">
                         <option value="name">Sort by Name</option>
@@ -393,7 +376,6 @@
                     </select>
                 </div>
 
-                <!-- Results Counter -->
                 <div class="text-xs text-gray-600">
                     <span id="resultsCount">Loading...</span>
                 </div>
@@ -401,15 +383,11 @@
         </div>
     </section>
 
-    <!-- Resorts Grid Section -->
     <section class="py-4 sm:py-12 px-3 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-            <!-- Grid for Resort Cards -->
             <div id="resortsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
-                <!-- Resort cards will be inserted here by JavaScript -->
             </div>
 
-            <!-- No Results Message -->
             <div id="noResults" class="hidden text-center py-8 sm:py-16">
                 <svg class="w-12 h-12 sm:w-20 sm:h-20 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -423,7 +401,6 @@
         </div>
     </section>
 
-    <!-- Modal for Resort Details -->
     <div id="resortModal" class="modal">
         <div class="bg-white rounded-none sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-screen sm:max-h-[90vh] overflow-y-auto m-0 sm:m-4">
             <div class="relative">
@@ -474,12 +451,10 @@
         </div>
     </div>
 
-    <!-- Footer Section -->
     <footer class="bg-gray-800 text-gray-300 py-6 sm:py-12">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12">
 
-                <!-- Pansol Resorts Section -->
                 <div>
                     <h3 class="text-base sm:text-xl font-bold text-white mb-3">Pansol Resorts</h3>
                     <p class="text-xs sm:text-sm text-gray-400 mb-3 leading-relaxed">
@@ -494,7 +469,6 @@
                     </div>
                 </div>
 
-                <!-- Visitor's Guide Section -->
                 <div>
                     <h3 class="text-base sm:text-xl font-bold text-white mb-3">Visitor's Guide</h3>
                     <div class="space-y-2 text-xs sm:text-sm">
@@ -528,7 +502,6 @@
                     </div>
                 </div>
 
-                <!-- Contact Us Section -->
                 <div>
                     <h3 class="text-base sm:text-xl font-bold text-white mb-3" id="contact">Contact Us</h3>
                     <p class="text-xs text-gray-400 mb-3">For inquiries or assistance:</p>
@@ -554,7 +527,6 @@
 
             </div>
 
-            <!-- Copyright -->
             <div class="mt-6 sm:mt-10 pt-4 border-t border-gray-700 text-center text-xs text-gray-400">
                 &copy; 2025 Pansol Resorts. All rights reserved.
             </div>
@@ -562,7 +534,6 @@
     </footer>
 
     <script>
-        // Mobile menu functions
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             const overlay = document.getElementById('mobileOverlay');
@@ -581,7 +552,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDoILyFqD0iuOe4DfA2YoyjNiu30Mzw_DM",
             authDomain: "resort-ec9b6.firebaseapp.com",
@@ -593,11 +563,9 @@
             measurementId: "G-12YD26J2E8"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Facilities images mapping
         const facilityImages = {
             'Swimming pools': 'https://placehold.co/80x80/0ea5e9/ffffff?text=Pool',
             'Hot spring baths': 'https://placehold.co/80x80/f59e0b/ffffff?text=Hot+Spring',
@@ -624,12 +592,10 @@
             'Playground': 'https://placehold.co/80x80/facc15/ffffff?text=Play'
         };
 
-        // Resort data from Firebase
         let resorts = [];
         let activeFilter = 'all';
         let currentSort = 'name';
 
-        // Amenity icons mapping
         const amenityLabels = {
             'hot-spring': '🌊 Hot Spring',
             'aircon': '❄️ Air Conditioning',
@@ -639,7 +605,6 @@
             'parking': '🅿️ Parking'
         };
 
-        // Price badge colors
         const priceBadgeColors = {
             'budget': 'bg-green-100 text-green-800',
             'mid': 'bg-blue-100 text-blue-800',
@@ -664,16 +629,13 @@
 
         function loadResortsFromFirebase() {
             const resortsRef = database.ref('resorts');
-
             resortsRef.once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     resorts = validateResortData(Object.values(data));
-                    console.log('Loaded resorts:', resorts);
                 } else {
                     resorts = [];
                 }
-
                 document.getElementById('loadingOverlay').style.display = 'none';
                 initializePageWithData();
             }, (error) => {
@@ -685,22 +647,18 @@
 
         function initializePageWithData() {
             const urlParams = getUrlParams();
-
             if (urlParams.search) {
                 document.getElementById('searchInput').value = urlParams.search;
             }
-
             if (urlParams.sort) {
                 document.getElementById('sortSelect').value = urlParams.sort;
                 currentSort = urlParams.sort;
             }
-
             if (urlParams.rooms || urlParams.adults || urlParams.stayType ||
                 urlParams.minPrice || urlParams.maxPrice ||
                 (urlParams.amenities && urlParams.amenities.length > 0)) {
                 displayFilterInfo(urlParams);
             }
-
             applyFiltersAndSort();
             setupSearch();
             setupSort();
@@ -708,40 +666,29 @@
 
         function displayFilterInfo(params) {
             const filterSection = document.querySelector('.filter-section .max-w-7xl');
-
             let filterInfoHTML = '<div class="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">';
             filterInfoHTML += '<svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">';
             filterInfoHTML += '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
             filterInfoHTML += '</svg>';
             filterInfoHTML += '<div class="flex-1"><div class="font-semibold text-blue-900 mb-1 text-sm">Active Filters:</div>';
             filterInfoHTML += '<div class="text-xs text-blue-800">';
-
             const filters = [];
             if (params.rooms) filters.push(`${params.rooms} room${params.rooms > 1 ? 's' : ''}`);
             if (params.adults) filters.push(`${params.adults} adult${params.adults > 1 ? 's' : ''}`);
             if (params.stayType) filters.push(params.stayType === 'overnight' ? 'Overnight' : 'Day use');
-
             if (params.minPrice !== null || params.maxPrice !== null) {
                 const min = params.minPrice !== null ? params.minPrice : 700;
                 const max = params.maxPrice !== null ? params.maxPrice : 20000;
-                const formattedMin = min.toLocaleString();
-                const formattedMax = max.toLocaleString();
-                filters.push(`₱${formattedMin}-₱${formattedMax}`);
+                filters.push(`₱${min.toLocaleString()}-₱${max.toLocaleString()}`);
             }
-
             if (params.amenities && params.amenities.length > 0) {
                 filters.push(`${params.amenities.length} amenity`);
             }
-
-            if (filters.length === 0) {
-                filters.push('All resorts');
-            }
-
+            if (filters.length === 0) filters.push('All resorts');
             filterInfoHTML += filters.join(' • ');
             filterInfoHTML += '</div></div>';
             filterInfoHTML += '<button onclick="clearSearchFilters()" class="text-blue-600 hover:text-blue-800 font-semibold text-xs whitespace-nowrap">Clear</button>';
             filterInfoHTML += '</div>';
-
             filterSection.insertAdjacentHTML('afterbegin', filterInfoHTML);
         }
 
@@ -752,7 +699,6 @@
 
         function toggleFilter(filter) {
             activeFilter = filter;
-
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 if (btn.dataset.filter === filter) {
                     btn.classList.remove('bg-gray-200', 'text-gray-700');
@@ -762,25 +708,32 @@
                     btn.classList.add('bg-gray-200', 'text-gray-700');
                 }
             });
-
             applyFiltersAndSort();
+            
+            // Scroll to the resorts grid section
+            const resortsSection = document.getElementById('resortsGrid').parentElement;
+            const headerHeight = document.querySelector('header').offsetHeight;
+            const filterHeight = document.querySelector('.filter-section').offsetHeight;
+            const scrollPosition = resortsSection.offsetTop - headerHeight - filterHeight;
+            
+            window.scrollTo({
+                top: scrollPosition,
+                behavior: 'smooth'
+            });
         }
 
         function renderResorts(resortsToShow) {
             const grid = document.getElementById('resortsGrid');
             const noResults = document.getElementById('noResults');
             const resultsCount = document.getElementById('resultsCount');
-
             if (resortsToShow.length === 0) {
                 grid.innerHTML = '';
                 noResults.classList.remove('hidden');
                 resultsCount.textContent = 'No resorts found';
                 return;
             }
-
             noResults.classList.add('hidden');
             resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
-
             grid.innerHTML = resortsToShow.map(resort => `
         <div class="resort-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="showResortDetails(${resort.id})">
             <div class="relative">
@@ -830,16 +783,12 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const urlParams = getUrlParams();
             let filtered = resorts;
-
             if (activeFilter !== 'all') {
                 filtered = filtered.filter(resort => resort.price === activeFilter);
             }
-
             if (urlParams.rooms) {
-                const requestedRooms = urlParams.rooms;
-                filtered = filtered.filter(resort => resort.bedrooms >= requestedRooms);
+                filtered = filtered.filter(resort => resort.bedrooms >= urlParams.rooms);
             }
-
             if (urlParams.minPrice !== null || urlParams.maxPrice !== null) {
                 const min = urlParams.minPrice !== null ? urlParams.minPrice : 0;
                 const max = urlParams.maxPrice !== null ? urlParams.maxPrice : 999999;
@@ -848,14 +797,12 @@
                     return resortPrice >= min && resortPrice <= max;
                 });
             }
-
             if (urlParams.amenities && urlParams.amenities.length > 0) {
                 filtered = filtered.filter(resort => {
                     const resortAmenities = resort.amenities || [];
                     return urlParams.amenities.every(amenity => resortAmenities.includes(amenity));
                 });
             }
-
             if (searchTerm) {
                 const exactMatch = filtered.filter(r => r.name.toLowerCase() === searchTerm);
                 if (exactMatch.length > 0) {
@@ -868,7 +815,6 @@
                     );
                 }
             }
-
             filtered = sortResorts(filtered, currentSort);
             renderResorts(filtered);
         }
@@ -907,15 +853,11 @@
         }
 
         function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', () => {
-                applyFiltersAndSort();
-            });
+            document.getElementById('searchInput').addEventListener('input', applyFiltersAndSort);
         }
 
         function setupSort() {
-            const sortSelect = document.getElementById('sortSelect');
-            sortSelect.addEventListener('change', (e) => {
+            document.getElementById('sortSelect').addEventListener('change', (e) => {
                 currentSort = e.target.value;
                 applyFiltersAndSort();
             });
@@ -935,7 +877,6 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('sortSelect').value = 'name';
             currentSort = 'name';
-
             document.querySelectorAll('.filter-chip').forEach(btn => {
                 if (btn.dataset.filter === 'all') {
                     btn.classList.remove('bg-gray-200', 'text-gray-700');
@@ -945,15 +886,12 @@
                     btn.classList.add('bg-gray-200', 'text-gray-700');
                 }
             });
-
             window.history.replaceState({}, '', window.location.pathname);
             applyFiltersAndSort();
         }
 
         document.getElementById('resortModal').addEventListener('click', (e) => {
-            if (e.target.id === 'resortModal') {
-                closeModal();
-            }
+            if (e.target.id === 'resortModal') closeModal();
         });
 
         loadResortsFromFirebase();
