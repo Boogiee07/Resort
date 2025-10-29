@@ -662,32 +662,22 @@
 
                 <!-- Guests and Amenities Row -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Guests -->
+                    <!-- Rooms -->
                     <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
                             </path>
                         </svg>
                         <input type="text" id="guestsInput" readonly
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-                            value="2 adults, 1 room" onclick="toggleGuestsDropdown()">
+                            value="1 room" onclick="toggleGuestsDropdown()">
 
-                        <!-- Guests Dropdown -->
+                        <!-- Rooms Dropdown -->
                         <div id="guestsDropdown"
                             class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                             <div class="space-y-4">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-gray-700">Adults</span>
-                                    <div class="flex items-center gap-3">
-                                        <button onclick="changeGuests('adults', -1)"
-                                            class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">-</button>
-                                        <span id="adultsCount" class="w-8 text-center">2</span>
-                                        <button onclick="changeGuests('adults', 1)"
-                                            class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">+</button>
-                                    </div>
-                                </div>
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-700">Rooms</span>
                                     <div class="flex items-center gap-3">
@@ -993,7 +983,6 @@
         let currentYear = new Date().getFullYear();
         let selectedStartDate = null;
         let selectedEndDate = null;
-        let adults = 2;
         let rooms = 1;
         let minPrice = 0;
         let maxPrice = 20000;
@@ -1251,7 +1240,7 @@
                     if (date >= selectedStartDate && date <= selectedEndDate) {
                         cell.classList.add('in-range');
                     }
-                }
+                    }
             }
 
             return cell;
@@ -1481,10 +1470,7 @@
         }
 
         function changeGuests(type, delta) {
-            if (type === 'adults') {
-                adults = Math.max(1, adults + delta);
-                document.getElementById('adultsCount').textContent = adults;
-            } else if (type === 'rooms') {
+            if (type === 'rooms') {
                 rooms = Math.max(1, Math.min(14, rooms + delta));
                 document.getElementById('roomsCount').textContent = rooms;
             }
@@ -1495,9 +1481,8 @@
         let maxRooms = 14;
 
         function updateGuestsInput() {
-            const adultsText = adults === 1 ? '1 adult' : `${adults} adults`;
             const roomsText = rooms === 1 ? '1 room' : `${rooms} rooms`;
-            document.getElementById('guestsInput').value = `${adultsText}, ${roomsText}`;
+            document.getElementById('guestsInput').value = roomsText;
         }
 
         // Close dropdowns when clicking outside
@@ -1671,7 +1656,7 @@
                 );
             }
 
-            // ✅ FIXED: Filter by number of rooms (bedrooms) - EXACT OR GREATER
+            // Filter by number of rooms (bedrooms) - EXACT OR GREATER
             filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
 
             // Filter by price range
@@ -1679,7 +1664,7 @@
                 resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
             );
 
-            // ✅ FIXED: Filter by selected amenities - ALL must be present (AND logic)
+            // Filter by selected amenities - ALL must be present (AND logic)
             if (selectedAmenities.length > 0) {
                 filteredResorts = filteredResorts.filter(resort => {
                     const resortAmenities = resort.amenities || [];
@@ -1687,7 +1672,7 @@
                 });
             }
 
-            // ✅ Update amenities dropdown based on available resorts
+            // Update amenities dropdown based on available resorts
             updateAmenitiesDropdown();
 
             if (filteredResorts.length === 0) {
@@ -1736,7 +1721,6 @@
             if (selectedEndDate) {
                 params.append('checkOut', selectedEndDate.toISOString());
             }
-            params.append('adults', adults);
             params.append('rooms', rooms);
             params.append('minPrice', minPrice);
             params.append('maxPrice', maxPrice);
