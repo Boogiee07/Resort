@@ -117,6 +117,36 @@
         .fade-in {
             animation: fadeIn 0.5s ease;
         }
+
+        .realtime-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .realtime-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
     </style>
 </head>
 
@@ -168,7 +198,13 @@
         <!-- Resort Info Header -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6">
-                <h1 id="resortName" class="text-3xl md:text-4xl font-black text-gray-900 mb-4"></h1>
+                <div class="flex justify-between items-start flex-wrap gap-4 mb-4">
+                    <h1 id="resortName" class="text-3xl md:text-4xl font-black text-gray-900"></h1>
+                    <div class="realtime-badge">
+                        <div class="realtime-dot"></div>
+                        <span>Live Updates</span>
+                    </div>
+                </div>
                 <div class="flex items-center gap-4 flex-wrap">
                     <div class="flex items-center">
                         <div id="averageStars" class="flex mr-2"></div>
@@ -250,6 +286,7 @@
 
         let allReviews = [];
         let currentFilter = 'all';
+        let unsubscribe = null; // Store the unsubscribe function
 
         function getResortIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
@@ -330,6 +367,30 @@
             container.innerHTML = reviewsHtml;
         }
 
+        function updateStats() {
+            if (allReviews.length > 0) {
+                // Calculate average rating
+                const totalRating = allReviews.reduce((sum, review) => sum + review.rating, 0);
+                const averageRating = totalRating / allReviews.length;
+
+                // Update header
+                document.getElementById('resortName').textContent = `${allReviews[0].resortName} Reviews`;
+                document.getElementById('averageStars').innerHTML = generateStars(Math.round(averageRating));
+                document.getElementById('averageRating').textContent = averageRating.toFixed(1);
+                document.getElementById('totalReviews').textContent = `Based on ${allReviews.length} ${allReviews.length === 1 ? 'review' : 'reviews'}`;
+
+                // Display rating distribution
+                const distribution = calculateRatingDistribution(allReviews);
+                displayRatingDistribution(distribution, allReviews.length);
+            } else {
+                document.getElementById('resortName').textContent = 'Resort Reviews';
+                document.getElementById('averageRating').textContent = '0.0';
+                document.getElementById('totalReviews').textContent = 'No reviews yet';
+                document.getElementById('averageStars').innerHTML = generateStars(0);
+                displayRatingDistribution({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }, 0);
+            }
+        }
+
         function filterReviews(rating) {
             currentFilter = rating;
             
@@ -358,55 +419,42 @@
             // Set back button
             document.getElementById('backButton').href = `resort-details.html?id=${resortId}`;
 
-            // UPDATED: Added where clause to filter out archived feedback
-            firestore.collection('feedback')
+            // Set up real-time listener with onSnapshot
+            const query = firestore.collection('feedback')
                 .where('resortId', '==', resortId)
-                .where('archived', '==', false) // Only get non-archived feedback
-                .get()
-                .then((querySnapshot) => {
+                .where('archived', '==', false); // Only get non-archived feedback
+
+            unsubscribe = query.onSnapshot(
+                (querySnapshot) => {
+                    console.log('Real-time update received');
                     allReviews = [];
+                    
                     querySnapshot.forEach((doc) => {
                         const data = doc.data();
                         allReviews.push(data);
                     });
                     
-                    // Sort reviews by timestamp in memory (newest first)
+                    // Sort reviews by timestamp (newest first)
                     allReviews.sort((a, b) => {
                         const timeA = a.timestamp ? a.timestamp.toMillis() : new Date(a.createdAt).getTime();
                         const timeB = b.timestamp ? b.timestamp.toMillis() : new Date(b.createdAt).getTime();
                         return timeB - timeA;
                     });
 
-                    if (allReviews.length > 0) {
-                        // Calculate average rating
-                        const totalRating = allReviews.reduce((sum, review) => sum + review.rating, 0);
-                        const averageRating = totalRating / allReviews.length;
+                    // Update stats and display
+                    updateStats();
+                    filterReviews(currentFilter);
 
-                        // Update header
-                        document.getElementById('resortName').textContent = `${allReviews[0].resortName} Reviews`;
-                        document.getElementById('averageStars').innerHTML = generateStars(Math.round(averageRating));
-                        document.getElementById('averageRating').textContent = averageRating.toFixed(1);
-                        document.getElementById('totalReviews').textContent = `Based on ${allReviews.length} ${allReviews.length === 1 ? 'review' : 'reviews'}`;
-
-                        // Display rating distribution
-                        const distribution = calculateRatingDistribution(allReviews);
-                        displayRatingDistribution(distribution, allReviews.length);
-
-                        // Display reviews
-                        displayReviews(allReviews);
-                    } else {
-                        document.getElementById('resortName').textContent = 'Resort Reviews';
-                        document.getElementById('noReviews').classList.remove('hidden');
-                    }
-
+                    // Hide loading overlay on first load
                     document.getElementById('loadingOverlay').style.display = 'none';
                     document.getElementById('mainContent').classList.remove('hidden');
-                })
-                .catch((error) => {
+                },
+                (error) => {
                     console.error('Error loading reviews:', error);
                     document.getElementById('loadingOverlay').style.display = 'none';
                     alert('Error loading reviews. Please try again.');
-                });
+                }
+            );
         }
 
         // Filter button event listeners
@@ -415,6 +463,13 @@
                 const filter = this.getAttribute('data-filter');
                 filterReviews(filter);
             });
+        });
+
+        // Clean up listener when page is unloaded
+        window.addEventListener('beforeunload', () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
         });
 
         // Load reviews on page load
