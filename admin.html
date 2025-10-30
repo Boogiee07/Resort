@@ -1672,6 +1672,13 @@
       }
 
       downloadSelectedLogs() {
+        const hasFilters = this.activityStartDate || this.activityEndDate || this.activityResortFilter !== 'all';
+
+        if (!hasFilters) {
+          alert('Please select at least one filter (Start Date, End Date, or Resort) before downloading selected logs.\n\nTo download all logs without filters, use the "Download All Logs" button.');
+          return;
+        }
+
         if (this.filteredActivityLogs.length === 0) {
           let message = 'No logs match your current filters.';
 
