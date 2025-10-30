@@ -553,6 +553,89 @@
             background: #f0fdf4;
         }
 
+        /* Activity Log Styles */
+        .activity-header {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #f1f5f9;
+            margin-bottom: 24px;
+        }
+
+        .activity-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .activity-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .activity-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .activity-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #f1f5f9;
+            overflow: hidden;
+        }
+
+        .activity-table thead {
+            background: #6366f1;
+            color: white;
+        }
+
+        .activity-table th {
+            color: white;
+            padding: 16px 20px;
+        }
+
+        .activity-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-logout {
+            background: #64748b;
+            color: white;
+        }
+
+        .badge-feedback-restored {
+            background: #22c55e;
+            color: white;
+        }
+
+        .badge-feedback-archived {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .badge-admin-created {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .badge-user-deleted {
+            background: #ef4444;
+            color: white;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             display: none;
@@ -769,6 +852,14 @@
             .tabs {
                 flex-direction: column;
             }
+
+            .activity-filters {
+                grid-template-columns: 1fr;
+            }
+
+            .activity-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -815,14 +906,13 @@
                 </div>
                 <div class="header-actions">
                     <a href="index.html" class="btn btn-primary">
-                            <i data-lucide="home" style="width: 18px; height: 18px;"></i>
-                            Home
-                        </a>
+                        <i data-lucide="home" style="width: 18px; height: 18px;"></i>
+                        Home
+                    </a>
                     <button id="signout-btn" class="btn btn-danger">
                         <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
                         Sign Out
                     </button>
-                    
                 </div>
             </div>
 
@@ -872,6 +962,10 @@
                 <button class="tab-btn" data-tab="archived">
                     <i data-lucide="archive" style="width: 18px; height: 18px;"></i>
                     Archived Feedback
+                </button>
+                <button class="tab-btn" data-tab="activity">
+                    <i data-lucide="activity" style="width: 18px; height: 18px;"></i>
+                    Activity Log
                 </button>
             </div>
 
@@ -946,6 +1040,62 @@
                 <!-- Archived Resort Table -->
                 <div class="resort-table-container" id="archived-table"></div>
             </div>
+
+            <!-- Activity Log Tab -->
+            <div class="tab-content" id="tab-activity">
+                <!-- Activity Log Header -->
+                <div class="activity-header">
+                    <h2>Generate PDF Report</h2>
+                    
+                    <div class="activity-filters">
+                        <div>
+                            <label class="form-label">Start Date</label>
+                            <input type="date" id="activity-start-date" class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">End Date</label>
+                            <input type="date" id="activity-end-date" class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">Resorts Filter</label>
+                            <select id="activity-resort-filter" class="form-input">
+                                <option value="all">All Resorts</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-actions">
+                        <button class="btn btn-primary" id="download-selected-logs">
+                            <i data-lucide="download" style="width: 18px; height: 18px;"></i>
+                            Download Selected Logs
+                        </button>
+                        <button class="btn btn-success" id="download-all-logs">
+                            <i data-lucide="download" style="width: 18px; height: 18px;"></i>
+                            Download All Logs
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Activity Log Table -->
+                <div class="activity-table">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>TIMESTAMP</th>
+                                    <th>ADMIN USER</th>
+                                    <th>ACTION TYPE</th>
+                                    <th>TARGET</th>
+                                    <th>DETAILS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activity-log-body">
+                                <!-- Activity logs will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1006,7 +1156,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, deleteDoc, updateDoc, query, where, addDoc, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -1027,6 +1177,7 @@
 
         let dashboardInstance = null;
         let unsubscribeFeedback = null;
+        let unsubscribeActivityLog = null;
         let currentFeedbackId = null;
         let currentTab = 'active';
 
@@ -1039,8 +1190,10 @@
                 this.projectId = projectId;
                 this.activeFeedbacks = [];
                 this.archivedFeedbacks = [];
+                this.activityLogs = [];
                 this.filteredActiveFeedbacks = [];
                 this.filteredArchivedFeedbacks = [];
+                this.filteredActivityLogs = [];
                 this.searchTerm = '';
                 this.filterRating = 'all';
                 this.filterResort = 'all';
@@ -1049,6 +1202,9 @@
                 this.filterRatingArchived = 'all';
                 this.filterResortArchived = 'all';
                 this.sortByArchived = 'newest';
+                this.activityStartDate = '';
+                this.activityEndDate = '';
+                this.activityResortFilter = 'all';
                 this.resorts = new Set();
                 this.setupEventListeners();
             }
@@ -1057,8 +1213,13 @@
                 return collection(this.db, 'feedback');
             }
 
+            getActivityLogRef() {
+                return collection(this.db, 'activityLogs');
+            }
+
             init() {
                 this.setupRealtimeListener();
+                this.setupActivityLogListener();
             }
 
             setupRealtimeListener() {
@@ -1105,11 +1266,58 @@
                 );
             }
 
+            setupActivityLogListener() {
+                if (unsubscribeActivityLog) {
+                    unsubscribeActivityLog();
+                }
+
+                const activityLogRef = query(
+                    this.getActivityLogRef(),
+                    orderBy('timestamp', 'desc')
+                );
+
+                unsubscribeActivityLog = onSnapshot(activityLogRef, 
+                    (snapshot) => {
+                        this.activityLogs = [];
+                        
+                        snapshot.forEach((doc) => {
+                            const data = { id: doc.id, ...doc.data() };
+                            this.activityLogs.push(data);
+                        });
+                        
+                        console.log(`Loaded ${this.activityLogs.length} activity logs`);
+                        this.filterActivityLogs();
+                        this.renderActivityLog();
+                    }, 
+                    (error) => {
+                        console.error("Activity log error:", error);
+                    }
+                );
+            }
+
+            async logActivity(actionType, target, details) {
+                try {
+                    const activityLogRef = this.getActivityLogRef();
+                    await addDoc(activityLogRef, {
+                        timestamp: Timestamp.now(),
+                        adminUser: this.auth.currentUser.email,
+                        actionType: actionType,
+                        target: target,
+                        details: details
+                    });
+                    console.log('Activity logged:', actionType);
+                } catch (error) {
+                    console.error('Error logging activity:', error);
+                }
+            }
+
             updateResortFilters() {
                 const resortFilter = document.getElementById('resort-filter');
                 const resortFilterArchived = document.getElementById('resort-filter-archived');
+                const activityResortFilter = document.getElementById('activity-resort-filter');
                 const currentValueActive = resortFilter.value;
                 const currentValueArchived = resortFilterArchived.value;
+                const currentValueActivity = activityResortFilter.value;
                 
                 const sortedResorts = Array.from(this.resorts).sort();
                 const options = '<option value="all">All Resorts</option>' + 
@@ -1119,12 +1327,16 @@
                 
                 resortFilter.innerHTML = options;
                 resortFilterArchived.innerHTML = options;
+                activityResortFilter.innerHTML = options;
                 
                 if (currentValueActive && sortedResorts.includes(currentValueActive)) {
                     resortFilter.value = currentValueActive;
                 }
                 if (currentValueArchived && sortedResorts.includes(currentValueArchived)) {
                     resortFilterArchived.value = currentValueArchived;
+                }
+                if (currentValueActivity && sortedResorts.includes(currentValueActivity)) {
+                    activityResortFilter.value = currentValueActivity;
                 }
             }
 
@@ -1141,6 +1353,15 @@
                     document.getElementById('rating-filter-archived').addEventListener('change', () => this.handleFilterChange('archived'));
                     document.getElementById('resort-filter-archived').addEventListener('change', () => this.handleFilterChange('archived'));
                     document.getElementById('sort-by-archived').addEventListener('change', () => this.handleFilterChange('archived'));
+                    
+                    // Activity log filters
+                    document.getElementById('activity-start-date').addEventListener('change', () => this.handleActivityFilterChange());
+                    document.getElementById('activity-end-date').addEventListener('change', () => this.handleActivityFilterChange());
+                    document.getElementById('activity-resort-filter').addEventListener('change', () => this.handleActivityFilterChange());
+                    
+                    // Activity log download buttons
+                    document.getElementById('download-selected-logs').addEventListener('click', () => this.downloadSelectedLogs());
+                    document.getElementById('download-all-logs').addEventListener('click', () => this.downloadAllLogs());
                     
                     // Tab switching
                     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1204,6 +1425,44 @@
                 }
                 this.filterAndSortFeedbacks();
                 this.render();
+            }
+
+            handleActivityFilterChange() {
+                this.activityStartDate = document.getElementById('activity-start-date').value;
+                this.activityEndDate = document.getElementById('activity-end-date').value;
+                this.activityResortFilter = document.getElementById('activity-resort-filter').value;
+                this.filterActivityLogs();
+                this.renderActivityLog();
+            }
+
+            filterActivityLogs() {
+                this.filteredActivityLogs = this.activityLogs.filter(log => {
+                    let matches = true;
+                    
+                    // Date filtering
+                    if (this.activityStartDate) {
+                        const startDate = new Date(this.activityStartDate);
+                        startDate.setHours(0, 0, 0, 0);
+                        const logDate = log.timestamp?.toDate() || new Date(log.timestamp);
+                        if (logDate < startDate) matches = false;
+                    }
+                    
+                    if (this.activityEndDate) {
+                        const endDate = new Date(this.activityEndDate);
+                        endDate.setHours(23, 59, 59, 999);
+                        const logDate = log.timestamp?.toDate() || new Date(log.timestamp);
+                        if (logDate > endDate) matches = false;
+                    }
+                    
+                    // Resort filtering
+                    if (this.activityResortFilter !== 'all') {
+                        if (!log.target || !log.target.toLowerCase().includes(this.activityResortFilter.toLowerCase())) {
+                            matches = false;
+                        }
+                    }
+                    
+                    return matches;
+                });
             }
 
             filterAndSortFeedbacks() {
@@ -1273,6 +1532,119 @@
             render() {
                 this.renderResortTables('resort-table', this.filteredActiveFeedbacks, false);
                 this.renderResortTables('archived-table', this.filteredArchivedFeedbacks, true);
+            }
+
+            renderActivityLog() {
+                const tbody = document.getElementById('activity-log-body');
+                
+                if (this.filteredActivityLogs.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 48px; color: #64748b;">
+                                <i data-lucide="activity" style="width: 48px; height: 48px; margin: 0 auto 16px; display: block; color: #cbd5e1;"></i>
+                                <div style="font-weight: 600; margin-bottom: 8px;">No activity logs found</div>
+                                <div style="font-size: 13px;">Activity logs will appear here when actions are performed</div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = this.filteredActivityLogs.map(log => {
+                        const timestamp = log.timestamp?.toDate() || new Date(log.timestamp);
+                        const formattedDate = timestamp.toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric', 
+                            hour: '2-digit', 
+                            minute: '2-digit'
+                        });
+                        
+                        let badgeClass = '';
+                        let badgeText = log.actionType || 'UNKNOWN';
+                        
+                        switch(log.actionType?.toLowerCase()) {
+                            case 'logout':
+                                badgeClass = 'badge-logout';
+                                badgeText = 'LOGOUT';
+                                break;
+                            case 'feedback_restored':
+                                badgeClass = 'badge-feedback-restored';
+                                badgeText = 'FEEDBACK RESTORED';
+                                break;
+                            case 'feedback_archived':
+                                badgeClass = 'badge-feedback-archived';
+                                badgeText = 'FEEDBACK ARCHIVED';
+                                break;
+                            case 'admin_created':
+                                badgeClass = 'badge-admin-created';
+                                badgeText = 'ADMIN CREATED';
+                                break;
+                            case 'user_deleted':
+                                badgeClass = 'badge-user-deleted';
+                                badgeText = 'USER DELETED';
+                                break;
+                        }
+                        
+                        return `
+                            <tr>
+                                <td class="table-date">${formattedDate}</td>
+                                <td class="table-name">${this.escapeHtml(log.adminUser || 'Unknown')}</td>
+                                <td>
+                                    <span class="activity-badge ${badgeClass}">${badgeText}</span>
+                                </td>
+                                <td class="table-name">${this.escapeHtml(log.target || 'N/A')}</td>
+                                <td style="font-weight: 500;">${this.escapeHtml(log.details || 'No details')}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+                
+                lucide.createIcons();
+            }
+
+            downloadSelectedLogs() {
+                if (this.filteredActivityLogs.length === 0) {
+                    alert('No logs available to download with current filters.');
+                    return;
+                }
+                this.generatePDF(this.filteredActivityLogs, 'selected');
+            }
+
+            downloadAllLogs() {
+                if (this.activityLogs.length === 0) {
+                    alert('No logs available to download.');
+                    return;
+                }
+                this.generatePDF(this.activityLogs, 'all');
+            }
+
+            generatePDF(logs, type) {
+                // Create a simple text-based report
+                let content = `Activity Log Report\n`;
+                content += `Generated: ${new Date().toLocaleString()}\n`;
+                content += `Report Type: ${type === 'all' ? 'All Logs' : 'Filtered Logs'}\n`;
+                content += `Total Records: ${logs.length}\n`;
+                content += `\n${'='.repeat(100)}\n\n`;
+                
+                logs.forEach(log => {
+                    const timestamp = log.timestamp?.toDate() || new Date(log.timestamp);
+                    content += `Timestamp: ${timestamp.toLocaleString()}\n`;
+                    content += `Admin User: ${log.adminUser || 'Unknown'}\n`;
+                    content += `Action Type: ${log.actionType || 'Unknown'}\n`;
+                    content += `Target: ${log.target || 'N/A'}\n`;
+                    content += `Details: ${log.details || 'No details'}\n`;
+                    content += `${'-'.repeat(100)}\n\n`;
+                });
+                
+                // Create and download the file
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `activity-log-${type}-${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
             }
 
             openModal(feedback, isArchived = false) {
