@@ -1497,13 +1497,24 @@
             const detailsText = (log.details || '').toLowerCase();
             const filterText = this.activityResortFilter.toLowerCase();
 
-            if (!targetText.includes(filterText) && !detailsText.includes(filterText)) {
+            // Check if the log is related to feedback (has resort info)
+            const isFeedbackLog = log.actionType === 'feedback_archived' || log.actionType === 'feedback_restored';
+
+            if (isFeedbackLog) {
+              // For feedback logs, check if resort matches
+              if (!targetText.includes(filterText) && !detailsText.includes(filterText)) {
+                matches = false;
+              }
+            } else {
+              // For non-feedback logs (logout, admin_created, etc.), exclude them when filtering by resort
               matches = false;
             }
           }
 
           return matches;
         });
+
+        console.log(`Filtered activity logs: ${this.filteredActivityLogs.length} of ${this.activityLogs.length}`);
       }
 
       filterAndSortFeedbacks() {
@@ -1661,7 +1672,17 @@
 
       downloadSelectedLogs() {
         if (this.filteredActivityLogs.length === 0) {
-          alert('No logs available to download with current filters.');
+          let message = 'No logs match your current filters.';
+
+          if (this.activityLogs.length === 0) {
+            message = 'No activity logs available yet. Logs will appear when actions are performed.';
+          } else if (this.activityResortFilter !== 'all') {
+            message = `No logs found for "${this.activityResortFilter}". Only feedback-related logs are shown when filtering by resort.`;
+          } else if (this.activityStartDate || this.activityEndDate) {
+            message = 'No logs found in the selected date range. Try adjusting your date filters.';
+          }
+
+          alert(message);
           return;
         }
         this.generatePDF(this.filteredActivityLogs, 'selected');
@@ -1670,7 +1691,7 @@
       // Download All Logs
       downloadAllLogs() {
         if (this.activityLogs.length === 0) {
-          alert('No logs available to download.');
+          alert('No activity logs available yet. Logs will appear when actions are performed.');
           return;
         }
         this.generatePDF(this.activityLogs, 'all');
@@ -2102,26 +2123,26 @@
 
     // Sign Out Handler
     document.getElementById('signout-btn').addEventListener('click', async () => {
-    try {
+      try {
         // Log the logout activity before signing out
         if (dashboardInstance && auth.currentUser) {
-            await dashboardInstance.logActivity(
-                'logout',
-                auth.currentUser.email,
-                `Admin user ${auth.currentUser.email} logged out`
-            );
+          await dashboardInstance.logActivity(
+            'logout',
+            auth.currentUser.email,
+            `Admin user ${auth.currentUser.email} logged out`
+          );
         }
-        
+
         await signOut(auth);
         console.log("User signed out");
         dashboardInstance = null;
         // Redirect to index.html after successful sign out
         window.location.href = 'index.html';
-    } catch (error) {
+      } catch (error) {
         console.error("Sign out error:", error);
         alert('Failed to sign out. Please try again.');
-    }
-});
+      }
+    });
 
     // Initialize icons on page load
     lucide.createIcons();
