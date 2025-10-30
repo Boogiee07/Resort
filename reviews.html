@@ -358,8 +358,10 @@
             // Set back button
             document.getElementById('backButton').href = `resort-details.html?id=${resortId}`;
 
+            // UPDATED: Added where clause to filter out archived feedback
             firestore.collection('feedback')
                 .where('resortId', '==', resortId)
+                .where('archived', '==', false) // Only get non-archived feedback
                 .get()
                 .then((querySnapshot) => {
                     allReviews = [];
