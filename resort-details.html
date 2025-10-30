@@ -1236,7 +1236,9 @@
                 starsHtml += '<span class="star">★</span>';
             }
             starContainer.innerHTML = starsHtml;
-            ratingText.textContent = `${rating.toFixed(1)} out of 5 (${count} ${count === 1 ? 'review' : 'reviews'})`;
+            
+            const resortId = getResortIdFromUrl();
+            ratingText.innerHTML = `${rating.toFixed(1)} out of 5 (<a href="reviews.html?id=${resortId}" class="text-blue-600 hover:text-blue-800 font-semibold underline transition-colors">${count} ${count === 1 ? 'review' : 'reviews'}</a>)`;
         }
 
         function formatPhoneNumber(phone) {
