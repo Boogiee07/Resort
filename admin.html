@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Logs</title>
+    <title>Feedback & Ratings Dashboard</title>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     
     <style>
         * {
@@ -22,35 +20,122 @@
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 24px;
         }
 
-        .header {
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .header-content {
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             display: flex;
             align-items: center;
-            gap: 16px;
+            justify-content: center;
+            z-index: 9999;
         }
 
-        .header-title {
-            font-size: 32px;
+        .loading-content {
+            text-align: center;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Login Container */
+        .login-wrapper {
+            display: none;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #3b82f6;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 24px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .login-title {
+            font-size: 28px;
             font-weight: 700;
             color: #111827;
+            text-align: center;
+            margin-bottom: 32px;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 12px;
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .error-message {
+            min-height: 20px;
+            font-size: 13px;
+            color: #dc2626;
+            margin-bottom: 16px;
         }
 
         .btn {
@@ -68,6 +153,7 @@
         }
 
         .btn-primary {
+            width: 100%;
             background: #3b82f6;
             color: white;
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
@@ -100,7 +186,139 @@
             cursor: not-allowed;
         }
 
-        .filter-card {
+        /* Main Content */
+        .main-content {
+            display: none;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .header-subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .user-id {
+            font-size: 11px;
+            color: #3b82f6;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 24px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .icon-blue { color: #3b82f6; }
+        .icon-green { color: #22c55e; }
+        .icon-yellow { color: #eab308; }
+        .icon-red { color: #ef4444; }
+        .icon-orange { color: #f97316; }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #f1f5f9;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #64748b;
+        }
+
+        .tab-btn:hover {
+            background: #f8fafc;
+        }
+
+        .tab-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Filters */
+        .filters {
             background: white;
             padding: 24px;
             border-radius: 12px;
@@ -109,43 +327,35 @@
             margin-bottom: 24px;
         }
 
-        .filter-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 20px;
-        }
-
         .filter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
-            margin-bottom: 16px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
+        .search-wrapper {
+            position: relative;
         }
 
-        .form-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #64748b;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            width: 20px;
+            height: 20px;
         }
 
-        .form-input {
+        .search-input {
             width: 100%;
-            padding: 10px 12px;
+            padding: 10px 10px 10px 40px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             font-size: 14px;
         }
 
-        .form-input:focus {
+        .search-input:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -167,18 +377,55 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        .filter-actions {
+        /* Resort Table Styles */
+        .resort-table-container {
             display: flex;
-            gap: 12px;
-            justify-content: flex-end;
+            flex-direction: column;
+            gap: 24px;
         }
 
-        .logs-card {
+        .resort-table-card {
             background: white;
             border-radius: 12px;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
             border: 1px solid #f1f5f9;
             overflow: hidden;
+        }
+
+        .resort-table-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .resort-table-header.archived {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        }
+
+        .resort-table-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .resort-table-title h3 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .resort-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .resort-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .table-wrapper {
@@ -191,8 +438,8 @@
         }
 
         thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         th {
@@ -200,6 +447,7 @@
             padding: 16px 20px;
             font-size: 13px;
             font-weight: 600;
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -209,6 +457,12 @@
             border-bottom: 1px solid #f1f5f9;
             font-size: 14px;
             color: #374151;
+            font-weight: 500;
+        }
+
+        tbody tr {
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
         tbody tr:hover {
@@ -219,47 +473,241 @@
             border-bottom: none;
         }
 
-        .timestamp {
-            color: #64748b;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .admin-user {
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .action-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
+        .table-name {
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #111827;
+            font-size: 15px;
         }
 
-        .action-login { background: #dbeafe; color: #1e40af; }
-        .action-logout { background: #d1d5db; color: #374151; }
-        .action-archive { background: #cffafe; color: #0e7490; }
-        .action-restore { background: #d1fae5; color: #065f46; }
-        .action-delete { background: #fee2e2; color: #991b1b; }
-        .action-create { background: #e9d5ff; color: #6b21a8; }
-        .action-update { background: #fef3c7; color: #92400e; }
+        .table-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
 
-        .target {
-            font-weight: 500;
+        .table-feedback {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
             color: #1f2937;
         }
 
-        .details {
-            color: #374151;
-            max-width: 400px;
+        .table-date {
+            color: #64748b;
+            font-size: 13px;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .table-actions {
+            text-align: right;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 4px;
+        }
+
+        .star {
+            width: 16px;
+            height: 16px;
+        }
+
+        .star-filled {
+            fill: #fbbf24;
+            color: #fbbf24;
+        }
+
+        .star-empty {
+            color: #d1d5db;
+        }
+
+        .archive-btn {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .archive-btn:hover {
+            background: #fef2f2;
+        }
+
+        .restore-btn {
+            background: transparent;
+            border: none;
+            color: #22c55e;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .restore-btn:hover {
+            background: #f0fdf4;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-header-info {
+            flex: 1;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(90vh - 200px);
+        }
+
+        .modal-section {
+            margin-bottom: 24px;
+        }
+
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .modal-value {
+            font-size: 16px;
+            color: #111827;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .modal-rating {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-rating-stars {
+            display: flex;
+            gap: 4px;
+        }
+
+        .modal-rating-stars .star {
+            width: 20px;
+            height: 20px;
+        }
+
+        .modal-rating-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .resort-badge-modal {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .empty-state {
+            background: white;
             padding: 64px 48px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #f1f5f9;
             text-align: center;
         }
 
@@ -282,82 +730,8 @@
             font-size: 14px;
         }
 
-        .loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .loading-overlay.active {
-            display: flex;
-        }
-
-        .loading-content {
-            background: white;
-            padding: 32px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid #e2e8f0;
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 24px;
-            border-top: 1px solid #f1f5f9;
-        }
-
-        .pagination-info {
-            font-size: 14px;
-            color: #64748b;
-        }
-
-        .pagination-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .pagination-btn {
-            padding: 8px 16px;
-            border: 1px solid #d1d5db;
-            background: white;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .pagination-btn:hover:not(:disabled) {
-            background: #f8fafc;
-            border-color: #3b82f6;
-        }
-
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .hidden {
+            display: none !important;
         }
 
         @media (max-width: 768px) {
@@ -366,8 +740,17 @@
                 align-items: flex-start;
             }
 
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
             .filter-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .resort-stats {
+                flex-direction: column;
+                gap: 8px;
             }
 
             table {
@@ -378,111 +761,252 @@
                 padding: 12px 16px;
             }
 
-            .details {
-                max-width: 200px;
+            .modal {
+                max-width: 100%;
+                margin: 0;
+            }
+
+            .tabs {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
+    <!-- Loading State -->
     <div id="loading" class="loading-overlay">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p class="loading-text">Generating PDF...</p>
+            <p class="loading-text">Initializing...</p>
         </div>
     </div>
 
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-content">
-                <i data-lucide="file-text" style="width: 36px; height: 36px; color: #667eea;"></i>
-                <h1 class="header-title">Activity Logs</h1>
+    <!-- Login Container -->
+    <div id="login-container" class="login-wrapper">
+        <div class="login-box">
+            <a href="index.html" class="back-link">
+                <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+                <span>Back to Home</span>
+            </a>
+            <h2 class="login-title">Admin Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="admin@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <div class="error-message" id="login-error"></div>
+                <button type="submit" class="btn btn-primary" id="login-btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div>
+                    <h1 class="header-title">Feedback & Ratings Dashboard</h1>
+                    <p class="header-subtitle">Monitor and manage customer feedback</p>
+                </div>
+                <div class="header-actions">
+                    <a href="index.html" class="btn btn-primary">
+                            <i data-lucide="home" style="width: 18px; height: 18px;"></i>
+                            Home
+                        </a>
+                    <button id="signout-btn" class="btn btn-danger">
+                        <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+                        Sign Out
+                    </button>
+                    
+                </div>
             </div>
-            <div class="header-actions">
-                <a href="index.html" class="btn btn-primary">
-                    <i data-lucide="home" style="width: 18px; height: 18px;"></i>
-                    Home
-                </a>
-                <button id="signout-btn" class="btn btn-danger">
-                    <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
-                    Sign Out
+
+            <p class="user-id" id="user-id-display"></p>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <p class="stat-label">Total Feedback</p>
+                        <p class="stat-value" id="total-feedback">0</p>
+                    </div>
+                    <i data-lucide="message-square" class="stat-icon icon-blue"></i>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <p class="stat-label">Average Rating</p>
+                        <p class="stat-value" id="avg-rating">0.0</p>
+                    </div>
+                    <i data-lucide="trending-up" class="stat-icon icon-green"></i>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <p class="stat-label">5-Star Reviews</p>
+                        <p class="stat-value" id="five-star">0</p>
+                    </div>
+                    <i data-lucide="star" class="stat-icon icon-yellow star-filled"></i>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <p class="stat-label">Archived</p>
+                        <p class="stat-value" id="archived-count">0</p>
+                    </div>
+                    <i data-lucide="archive" class="stat-icon icon-orange"></i>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="active">
+                    <i data-lucide="inbox" style="width: 18px; height: 18px;"></i>
+                    Active Feedback
                 </button>
+                <button class="tab-btn" data-tab="archived">
+                    <i data-lucide="archive" style="width: 18px; height: 18px;"></i>
+                    Archived Feedback
+                </button>
+            </div>
+
+            <!-- Active Feedback Tab -->
+            <div class="tab-content active" id="tab-active">
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-grid">
+                        <div class="search-wrapper">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="search-input" class="search-input" placeholder="Search feedback...">
+                        </div>
+
+                        <select id="resort-filter">
+                            <option value="all">All Resorts</option>
+                        </select>
+
+                        <select id="rating-filter">
+                            <option value="all">All Ratings</option>
+                            <option value="5">5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+                        </select>
+
+                        <select id="sort-by">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="highest">Highest Rating</option>
+                            <option value="lowest">Lowest Rating</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Resort Table -->
+                <div class="resort-table-container" id="resort-table"></div>
+            </div>
+
+            <!-- Archived Feedback Tab -->
+            <div class="tab-content" id="tab-archived">
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-grid">
+                        <div class="search-wrapper">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="search-input-archived" class="search-input" placeholder="Search archived feedback...">
+                        </div>
+
+                        <select id="resort-filter-archived">
+                            <option value="all">All Resorts</option>
+                        </select>
+
+                        <select id="rating-filter-archived">
+                            <option value="all">All Ratings</option>
+                            <option value="5">5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+                        </select>
+
+                        <select id="sort-by-archived">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="highest">Highest Rating</option>
+                            <option value="lowest">Lowest Rating</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Archived Resort Table -->
+                <div class="resort-table-container" id="archived-table"></div>
             </div>
         </div>
+    </div>
 
-        <!-- Filter Card -->
-        <div class="filter-card">
-            <h2 class="filter-title">Generate PDF Report</h2>
-            <div class="filter-grid">
-                <div class="form-group">
-                    <label class="form-label">Start Date</label>
-                    <input type="date" id="start-date" class="form-input">
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-header-info">
+                    <h2 class="modal-title" id="modal-name"></h2>
+                    <p class="modal-subtitle" id="modal-email"></p>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">End Date</label>
-                    <input type="date" id="end-date" class="form-input">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Resorts Filter</label>
-                    <select id="resort-filter">
-                        <option value="all">All Resorts</option>
-                    </select>
-                </div>
-            </div>
-            <div class="filter-actions">
-                <button id="download-selected" class="btn btn-primary">
-                    <i data-lucide="download" style="width: 18px; height: 18px;"></i>
-                    Download Selected Logs
-                </button>
-                <button id="download-all" class="btn btn-success">
-                    <i data-lucide="download" style="width: 18px; height: 18px;"></i>
-                    Download All Logs
+                <button class="modal-close" id="modal-close">
+                    <i data-lucide="x" style="width: 24px; height: 24px;"></i>
                 </button>
             </div>
-        </div>
-
-        <!-- Activity Logs Table -->
-        <div class="logs-card">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>TIMESTAMP</th>
-                            <th>ADMIN USER</th>
-                            <th>ACTION TYPE</th>
-                            <th>TARGET</th>
-                            <th>DETAILS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logs-tbody">
-                        <tr>
-                            <td colspan="5">
-                                <div class="empty-state">
-                                    <i data-lucide="inbox" class="empty-icon"></i>
-                                    <h3 class="empty-title">No activity logs found</h3>
-                                    <p class="empty-text">Activity logs will appear here as actions are performed.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="pagination" id="pagination">
-                <div class="pagination-info" id="pagination-info">Showing 0 of 0 logs</div>
-                <div class="pagination-controls">
-                    <button class="pagination-btn" id="prev-page" disabled>Previous</button>
-                    <button class="pagination-btn" id="next-page" disabled>Next</button>
+            <div class="modal-body">
+                <div class="modal-section" id="modal-resort-section">
+                    <div class="modal-label">Resort</div>
+                    <div class="modal-value" id="modal-resort"></div>
                 </div>
+                
+                <div class="modal-section">
+                    <div class="modal-label">Rating</div>
+                    <div class="modal-rating">
+                        <div class="modal-rating-stars" id="modal-rating-stars"></div>
+                        <span class="modal-rating-number" id="modal-rating-number"></span>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-label">Feedback Message</div>
+                    <div class="modal-value" id="modal-message"></div>
+                </div>
+
+                <div class="modal-section" id="modal-category-section">
+                    <div class="modal-label">Category</div>
+                    <div class="modal-value" id="modal-category"></div>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-label">Date Submitted</div>
+                    <div class="modal-value" id="modal-date"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success hidden" id="modal-restore">
+                    <i data-lucide="rotate-ccw" style="width: 18px; height: 18px;"></i>
+                    Restore Feedback
+                </button>
+                <button class="btn btn-danger" id="modal-archive">
+                    <i data-lucide="archive" style="width: 18px; height: 18px;"></i>
+                    Archive Feedback
+                </button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -496,282 +1020,615 @@
             measurementId: "G-12YD26J2E8"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        let allLogs = [];
-        let resorts = new Set();
-        let currentPage = 1;
-        const logsPerPage = 50;
+        let dashboardInstance = null;
+        let unsubscribeFeedback = null;
+        let currentFeedbackId = null;
+        let currentTab = 'active';
 
-        // Check authentication
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = 'dashboard.html';
-            } else {
-                loadActivityLogs();
+        // Dashboard Class
+        class FeedbackDashboard {
+            constructor(db, auth, userId, projectId) {
+                this.db = db;
+                this.auth = auth;
+                this.userId = userId;
+                this.projectId = projectId;
+                this.activeFeedbacks = [];
+                this.archivedFeedbacks = [];
+                this.filteredActiveFeedbacks = [];
+                this.filteredArchivedFeedbacks = [];
+                this.searchTerm = '';
+                this.filterRating = 'all';
+                this.filterResort = 'all';
+                this.sortBy = 'newest';
+                this.searchTermArchived = '';
+                this.filterRatingArchived = 'all';
+                this.filterResortArchived = 'all';
+                this.sortByArchived = 'newest';
+                this.resorts = new Set();
+                this.setupEventListeners();
             }
-        });
 
-        // Load activity logs
-        function loadActivityLogs() {
-            const logsRef = collection(db, 'activityLogs');
-            const logsQuery = query(logsRef, orderBy('timestamp', 'desc'));
+            getCollectionRef() {
+                return collection(this.db, 'feedback');
+            }
 
-            onSnapshot(logsQuery, (snapshot) => {
-                allLogs = [];
-                resorts.clear();
+            init() {
+                this.setupRealtimeListener();
+            }
 
-                snapshot.forEach((doc) => {
-                    const log = { id: doc.id, ...doc.data() };
-                    allLogs.push(log);
+            setupRealtimeListener() {
+                if (unsubscribeFeedback) {
+                    unsubscribeFeedback();
+                }
 
-                    if (log.target && log.target.includes('-')) {
-                        const resortName = log.target.split('-')[0];
-                        resorts.add(resortName);
+                const feedbacksRef = this.getCollectionRef();
+
+                unsubscribeFeedback = onSnapshot(feedbacksRef, 
+                    (snapshot) => {
+                        this.activeFeedbacks = [];
+                        this.archivedFeedbacks = [];
+                        this.resorts.clear();
+                        
+                        snapshot.forEach((doc) => {
+                            const data = { id: doc.id, ...doc.data() };
+                            
+                            if (data.archived) {
+                                this.archivedFeedbacks.push(data);
+                            } else {
+                                this.activeFeedbacks.push(data);
+                            }
+                            
+                            if (data.resortName) {
+                                this.resorts.add(data.resortName);
+                            } else if (data.resortId) {
+                                this.resorts.add(`Resort ID: ${data.resortId}`);
+                            }
+                        });
+                        
+                        this.updateResortFilters();
+                        console.log(`Loaded ${this.activeFeedbacks.length} active and ${this.archivedFeedbacks.length} archived feedback`);
+                        this.filterAndSortFeedbacks();
+                        this.updateStats();
+                        this.render();
+                    }, 
+                    (error) => {
+                        console.error("Firestore error:", error);
+                        if (error.code === 'permission-denied') {
+                            alert('Permission denied. Please check your Firestore security rules.');
+                        }
                     }
+                );
+            }
+
+            updateResortFilters() {
+                const resortFilter = document.getElementById('resort-filter');
+                const resortFilterArchived = document.getElementById('resort-filter-archived');
+                const currentValueActive = resortFilter.value;
+                const currentValueArchived = resortFilterArchived.value;
+                
+                const sortedResorts = Array.from(this.resorts).sort();
+                const options = '<option value="all">All Resorts</option>' + 
+                    sortedResorts.map(resort => 
+                        `<option value="${resort}">${resort}</option>`
+                    ).join('');
+                
+                resortFilter.innerHTML = options;
+                resortFilterArchived.innerHTML = options;
+                
+                if (currentValueActive && sortedResorts.includes(currentValueActive)) {
+                    resortFilter.value = currentValueActive;
+                }
+                if (currentValueArchived && sortedResorts.includes(currentValueArchived)) {
+                    resortFilterArchived.value = currentValueArchived;
+                }
+            }
+
+            setupEventListeners() {
+                if (!this.listenersInitialized) {
+                    // Active tab filters
+                    document.getElementById('search-input').addEventListener('input', () => this.handleFilterChange('active'));
+                    document.getElementById('rating-filter').addEventListener('change', () => this.handleFilterChange('active'));
+                    document.getElementById('resort-filter').addEventListener('change', () => this.handleFilterChange('active'));
+                    document.getElementById('sort-by').addEventListener('change', () => this.handleFilterChange('active'));
+                    
+                    // Archived tab filters
+                    document.getElementById('search-input-archived').addEventListener('input', () => this.handleFilterChange('archived'));
+                    document.getElementById('rating-filter-archived').addEventListener('change', () => this.handleFilterChange('archived'));
+                    document.getElementById('resort-filter-archived').addEventListener('change', () => this.handleFilterChange('archived'));
+                    document.getElementById('sort-by-archived').addEventListener('change', () => this.handleFilterChange('archived'));
+                    
+                    // Tab switching
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const tab = btn.getAttribute('data-tab');
+                            this.switchTab(tab);
+                        });
+                    });
+                    
+                    // Modal controls
+                    document.getElementById('modal-close').addEventListener('click', () => this.closeModal());
+                    document.getElementById('feedback-modal').addEventListener('click', (e) => {
+                        if (e.target.id === 'feedback-modal') {
+                            this.closeModal();
+                        }
+                    });
+                    document.getElementById('modal-archive').addEventListener('click', () => {
+                        if (currentFeedbackId && confirm('Are you sure you want to archive this feedback? It will be hidden from view.')) {
+                            this.archiveFeedback(currentFeedbackId);
+                            this.closeModal();
+                        }
+                    });
+                    document.getElementById('modal-restore').addEventListener('click', () => {
+                        if (currentFeedbackId && confirm('Are you sure you want to restore this feedback?')) {
+                            this.restoreFeedback(currentFeedbackId);
+                            this.closeModal();
+                        }
+                    });
+                    
+                    this.listenersInitialized = true;
+                }
+            }
+
+            switchTab(tab) {
+                currentTab = tab;
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`tab-${tab}`).classList.add('active');
+                
+                lucide.createIcons();
+            }
+
+            handleFilterChange(tab) {
+                if (tab === 'active') {
+                    this.searchTerm = document.getElementById('search-input').value;
+                    this.filterRating = document.getElementById('rating-filter').value;
+                    this.filterResort = document.getElementById('resort-filter').value;
+                    this.sortBy = document.getElementById('sort-by').value;
+                } else {
+                    this.searchTermArchived = document.getElementById('search-input-archived').value;
+                    this.filterRatingArchived = document.getElementById('rating-filter-archived').value;
+                    this.filterResortArchived = document.getElementById('resort-filter-archived').value;
+                    this.sortByArchived = document.getElementById('sort-by-archived').value;
+                }
+                this.filterAndSortFeedbacks();
+                this.render();
+            }
+
+            filterAndSortFeedbacks() {
+                // Filter active feedbacks
+                this.filteredActiveFeedbacks = this.filterAndSort(
+                    this.activeFeedbacks,
+                    this.searchTerm,
+                    this.filterRating,
+                    this.filterResort,
+                    this.sortBy
+                );
+                
+                // Filter archived feedbacks
+                this.filteredArchivedFeedbacks = this.filterAndSort(
+                    this.archivedFeedbacks,
+                    this.searchTermArchived,
+                    this.filterRatingArchived,
+                    this.filterResortArchived,
+                    this.sortByArchived
+                );
+            }
+
+            filterAndSort(feedbacks, searchTerm, filterRating, filterResort, sortBy) {
+                return feedbacks
+                    .filter(f => {
+                        const name = (f.name || f.userName || '').toLowerCase();
+                        const message = (f.message || f.feedback || '').toLowerCase();
+                        const rating = f.rating || f.stars || 0;
+                        const search = searchTerm.toLowerCase();
+                        const resortName = f.resortName || (f.resortId ? `Resort ID: ${f.resortId}` : '');
+
+                        const matchesSearch = name.includes(search) || message.includes(search) || resortName.toLowerCase().includes(search);
+                        const matchesRating = filterRating === 'all' || rating === parseInt(filterRating);
+                        const matchesResort = filterResort === 'all' || resortName === filterResort;
+                        
+                        return matchesSearch && matchesRating && matchesResort;
+                    })
+                    .sort((a, b) => {
+                        const getTimestamp = (item) => {
+                            if (item.timestamp?.seconds) return item.timestamp.seconds;
+                            if (item.timestamp instanceof Date) return item.timestamp.getTime() / 1000;
+                            if (typeof item.timestamp === 'number') return item.timestamp / 1000;
+                            return 0;
+                        };
+
+                        if (sortBy === 'newest') return getTimestamp(b) - getTimestamp(a);
+                        if (sortBy === 'oldest') return getTimestamp(a) - getTimestamp(b);
+                        if (sortBy === 'highest') return (b.rating || b.stars || 0) - (a.rating || a.stars || 0);
+                        if (sortBy === 'lowest') return (a.rating || a.stars || 0) - (b.rating || b.stars || 0);
+                        return 0;
+                    });
+            }
+
+            updateStats() {
+                const total = this.activeFeedbacks.length;
+                const totalRatingSum = this.activeFeedbacks.reduce((sum, f) => {
+                    const rating = f.rating || f.stars || 0;
+                    return sum + rating;
+                }, 0);
+                
+                document.getElementById('total-feedback').textContent = total;
+                document.getElementById('avg-rating').textContent = total > 0 ? (totalRatingSum / total).toFixed(1) : '0.0';
+                document.getElementById('five-star').textContent = this.activeFeedbacks.filter(f => (f.rating || f.stars) === 5).length;
+                document.getElementById('archived-count').textContent = this.archivedFeedbacks.length;
+            }
+
+            render() {
+                this.renderResortTables('resort-table', this.filteredActiveFeedbacks, false);
+                this.renderResortTables('archived-table', this.filteredArchivedFeedbacks, true);
+            }
+
+            openModal(feedback, isArchived = false) {
+                currentFeedbackId = feedback.id;
+                
+                const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
+                const email = feedback.email || feedback.guestEmail || feedback.userEmail || '';
+                const message = feedback.message || feedback.feedback || feedback.comment || 'No message.';
+                const rating = feedback.rating || feedback.stars || 0;
+                const category = feedback.category || feedback.type || '';
+                const resortName = feedback.resortName || '';
+                const resortId = feedback.resortId || '';
+                
+                let date;
+                if (feedback.timestamp?.toDate) {
+                    date = feedback.timestamp.toDate();
+                } else if (feedback.timestamp instanceof Date) {
+                    date = feedback.timestamp;
+                } else if (typeof feedback.timestamp === 'number') {
+                    date = new Date(feedback.timestamp);
+                } else {
+                    date = new Date();
+                }
+                
+                document.getElementById('modal-name').textContent = name;
+                document.getElementById('modal-email').textContent = email || 'No email provided';
+                document.getElementById('modal-message').textContent = message;
+                document.getElementById('modal-rating-number').textContent = rating + '.0';
+                document.getElementById('modal-rating-stars').innerHTML = this.renderStarRating(rating);
+                document.getElementById('modal-date').textContent = date.toLocaleString();
+                
+                if (resortName || resortId) {
+                    document.getElementById('modal-resort-section').style.display = 'block';
+                    document.getElementById('modal-resort').innerHTML = `
+                        <div class="resort-badge-modal">
+                            <i data-lucide="building" style="width: 16px; height: 16px;"></i>
+                            <span>${resortName || 'Resort'}</span>
+                            ${resortId ? `<span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; font-size: 11px;">ID: ${resortId}</span>` : ''}
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('modal-resort-section').style.display = 'none';
+                }
+                
+                if (category) {
+                    document.getElementById('modal-category-section').style.display = 'block';
+                    document.getElementById('modal-category').textContent = category;
+                } else {
+                    document.getElementById('modal-category-section').style.display = 'none';
+                }
+                
+                // Show/hide appropriate action buttons
+                if (isArchived) {
+                    document.getElementById('modal-archive').classList.add('hidden');
+                    document.getElementById('modal-restore').classList.remove('hidden');
+                } else {
+                    document.getElementById('modal-archive').classList.remove('hidden');
+                    document.getElementById('modal-restore').classList.add('hidden');
+                }
+                
+                document.getElementById('feedback-modal').classList.add('active');
+                lucide.createIcons();
+            }
+
+            closeModal() {
+                document.getElementById('feedback-modal').classList.remove('active');
+                currentFeedbackId = null;
+            }
+
+            renderResortTables(containerId, feedbacks, isArchived) {
+                const container = document.getElementById(containerId);
+                
+                const resortGroups = {};
+                feedbacks.forEach(feedback => {
+                    const resortKey = feedback.resortName || (feedback.resortId ? `Resort ID: ${feedback.resortId}` : 'Unknown Resort');
+                    if (!resortGroups[resortKey]) {
+                        resortGroups[resortKey] = [];
+                    }
+                    resortGroups[resortKey].push(feedback);
                 });
 
-                updateResortFilter();
-                renderLogs();
-            });
-        }
-
-        // Update resort filter dropdown
-        function updateResortFilter() {
-            const resortFilter = document.getElementById('resort-filter');
-            const currentValue = resortFilter.value;
-            
-            const sortedResorts = Array.from(resorts).sort();
-            resortFilter.innerHTML = '<option value="all">All Resorts</option>' +
-                sortedResorts.map(resort => `<option value="${resort}">${resort}</option>`).join('');
-            
-            if (sortedResorts.includes(currentValue)) {
-                resortFilter.value = currentValue;
-            }
-        }
-
-        // Render logs
-        function renderLogs() {
-            const tbody = document.getElementById('logs-tbody');
-            const startIndex = (currentPage - 1) * logsPerPage;
-            const endIndex = startIndex + logsPerPage;
-            const logsToShow = allLogs.slice(startIndex, endIndex);
-
-            if (logsToShow.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5">
-                            <div class="empty-state">
-                                <i data-lucide="inbox" class="empty-icon"></i>
-                                <h3 class="empty-title">No activity logs found</h3>
-                                <p class="empty-text">Activity logs will appear here as actions are performed.</p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            } else {
-                tbody.innerHTML = logsToShow.map(log => {
-                    const timestamp = log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp);
-                    const actionClass = `action-${(log.actionType || '').toLowerCase().replace('_', '-')}`;
-                    
-                    return `
-                        <tr>
-                            <td class="timestamp">${timestamp.toLocaleString('en-US', { 
-                                month: 'short', 
-                                day: 'numeric', 
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            })}</td>
-                            <td class="admin-user">${escapeHtml(log.adminUser || 'Unknown')}</td>
-                            <td><span class="action-badge ${actionClass}">${escapeHtml(log.actionType || 'UNKNOWN')}</span></td>
-                            <td class="target">${escapeHtml(log.target || 'N/A')}</td>
-                            <td class="details">${escapeHtml(log.details || 'No details')}</td>
-                        </tr>
+                if (Object.keys(resortGroups).length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i data-lucide="${isArchived ? 'archive' : 'inbox'}" class="empty-icon"></i>
+                            <h3 class="empty-title">${isArchived ? 'No archived feedback' : 'No active feedback'}</h3>
+                            <p class="empty-text">${isArchived ? 'Archived feedback will appear here.' : 'No feedback matches your filters.'}</p>
+                        </div>
                     `;
-                }).join('');
+                } else {
+                    container.innerHTML = Object.entries(resortGroups).map(([resortName, feedbacks]) => {
+                        const avgRating = feedbacks.reduce((sum, f) => sum + (f.rating || f.stars || 0), 0) / feedbacks.length;
+                        const totalFeedback = feedbacks.length;
+                        
+                        return `
+                            <div class="resort-table-card">
+                                <div class="resort-table-header ${isArchived ? 'archived' : ''}">
+                                    <div class="resort-table-title">
+                                        <i data-lucide="building" style="width: 24px; height: 24px;"></i>
+                                        <h3>${this.escapeHtml(resortName)}</h3>
+                                    </div>
+                                    <div class="resort-stats">
+                                        <div class="resort-stat">
+                                            <i data-lucide="message-square" style="width: 16px; height: 16px;"></i>
+                                            <span>${totalFeedback} Reviews</span>
+                                        </div>
+                                        <div class="resort-stat">
+                                            <i data-lucide="star" style="width: 16px; height: 16px;" class="star-filled"></i>
+                                            <span>${avgRating.toFixed(1)} Avg</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Guest Name</th>
+                                                <th>Rating</th>
+                                                <th>Feedback</th>
+                                                <th>Date</th>
+                                                <th class="table-actions">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${feedbacks.map(feedback => {
+                                                const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
+                                                const message = feedback.message || feedback.feedback || feedback.comment || 'No message.';
+                                                const rating = feedback.rating || feedback.stars || 0;
+                                                
+                                                let date;
+                                                if (feedback.timestamp?.toDate) {
+                                                    date = feedback.timestamp.toDate();
+                                                } else if (feedback.timestamp instanceof Date) {
+                                                    date = feedback.timestamp;
+                                                } else if (typeof feedback.timestamp === 'number') {
+                                                    date = new Date(feedback.timestamp);
+                                                } else {
+                                                    date = new Date();
+                                                }
+                                                
+                                                return `
+                                                    <tr class="feedback-row" data-id="${feedback.id}" data-archived="${isArchived}">
+                                                        <td class="table-name">${this.escapeHtml(name)}</td>
+                                                        <td>
+                                                            <div class="table-rating">
+                                                                ${this.renderStarRating(rating)}
+                                                                <span>${rating}.0</span>
+                                                            </div>
+                                                        </td>
+                                                        <td class="table-feedback">${this.escapeHtml(message)}</td>
+                                                        <td class="table-date">${date.toLocaleDateString()}</td>
+                                                        <td class="table-actions">
+                                                            ${isArchived ? 
+                                                                `<button class="restore-btn" data-id="${feedback.id}">
+                                                                    <i data-lucide="rotate-ccw" style="width: 18px; height: 18px;"></i>
+                                                                </button>` :
+                                                                `<button class="archive-btn" data-id="${feedback.id}">
+                                                                    <i data-lucide="archive" style="width: 18px; height: 18px;"></i>
+                                                                </button>`
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    container.querySelectorAll('.feedback-row').forEach(row => {
+                        row.addEventListener('click', (e) => {
+                            if (!e.target.closest('.archive-btn') && !e.target.closest('.restore-btn')) {
+                                const id = row.getAttribute('data-id');
+                                const archived = row.getAttribute('data-archived') === 'true';
+                                const feedbackList = archived ? this.archivedFeedbacks : this.activeFeedbacks;
+                                const feedback = feedbackList.find(f => f.id === id);
+                                if (feedback) {
+                                    this.openModal(feedback, archived);
+                                }
+                            }
+                        });
+                    });
+
+                    container.querySelectorAll('.archive-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const id = btn.getAttribute('data-id');
+                            if (confirm('Are you sure you want to archive this feedback? It will be hidden from view.')) {
+                                this.archiveFeedback(id);
+                            }
+                        });
+                    });
+
+                    container.querySelectorAll('.restore-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const id = btn.getAttribute('data-id');
+                            if (confirm('Are you sure you want to restore this feedback?')) {
+                                this.restoreFeedback(id);
+                            }
+                        });
+                    });
+                }
+
+                lucide.createIcons();
             }
 
-            // Update pagination
-            updatePagination();
-            lucide.createIcons();
+            renderStarRating(rating) {
+                return `
+                    <div class="star-rating">
+                        ${[1, 2, 3, 4, 5].map(star => `
+                            <i data-lucide="star" class="star ${star <= rating ? 'star-filled' : 'star-empty'}"></i>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            async archiveFeedback(id) {
+                try {
+                    await updateDoc(doc(this.db, 'feedback', id), {
+                        archived: true,
+                        archivedAt: new Date()
+                    });
+                    console.log(`Feedback ${id} archived`);
+                } catch (error) {
+                    console.error('Error archiving feedback:', error);
+                    alert(`Failed to archive feedback: ${error.message}`);
+                }
+            }
+
+            async restoreFeedback(id) {
+                try {
+                    await updateDoc(doc(this.db, 'feedback', id), {
+                        archived: false,
+                        archivedAt: null
+                    });
+                    console.log(`Feedback ${id} restored`);
+                } catch (error) {
+                    console.error('Error restoring feedback:', error);
+                    alert(`Failed to restore feedback: ${error.message}`);
+                }
+            }
         }
 
-        // Update pagination
-        function updatePagination() {
-            const totalPages = Math.ceil(allLogs.length / logsPerPage);
-            const startIndex = (currentPage - 1) * logsPerPage + 1;
-            const endIndex = Math.min(currentPage * logsPerPage, allLogs.length);
-
-            document.getElementById('pagination-info').textContent = 
-                `Showing ${startIndex}-${endIndex} of ${allLogs.length} logs`;
-            
-            document.getElementById('prev-page').disabled = currentPage === 1;
-            document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
-        }
-
-        // Pagination controls
-        document.getElementById('prev-page').addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                renderLogs();
+        // Authentication Setup
+        async function setupAuth() {
+            try {
+                await setPersistence(auth, browserLocalPersistence);
+            } catch (error) {
+                console.error("Persistence error:", error);
             }
-        });
 
-        document.getElementById('next-page').addEventListener('click', () => {
-            const totalPages = Math.ceil(allLogs.length / logsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderLogs();
-            }
-        });
+            onAuthStateChanged(auth, (user) => {
+                document.getElementById('loading').classList.add('hidden');
+                
+                if (user) {
+                    console.log('User authenticated:', user.email);
+                    document.getElementById('login-container').classList.add('hidden');
+                    document.getElementById('main-content').style.display = 'block';
 
-        // Filter logs based on criteria
-        function getFilteredLogs() {
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-            const resortFilter = document.getElementById('resort-filter').value;
+                    if (!dashboardInstance) {
+                        dashboardInstance = new FeedbackDashboard(db, auth, user.uid, firebaseConfig.projectId);
+                        dashboardInstance.init();
+                    } else if (dashboardInstance.userId !== user.uid) {
+                        dashboardInstance.userId = user.uid;
+                        dashboardInstance.init();
+                    }
 
-            return allLogs.filter(log => {
-                const logDate = log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp);
-                const logDateStr = logDate.toISOString().split('T')[0];
-
-                const matchesStartDate = !startDate || logDateStr >= startDate;
-                const matchesEndDate = !endDate || logDateStr <= endDate;
-                const matchesResort = resortFilter === 'all' || 
-                    (log.target && log.target.startsWith(resortFilter));
-
-                return matchesStartDate && matchesEndDate && matchesResort;
+                    document.getElementById('user-id-display').textContent = `Admin User ID: ${user.uid}`;
+                    lucide.createIcons();
+                } else {
+                    console.log('User not authenticated');
+                    document.getElementById('main-content').style.display = 'none';
+                    document.getElementById('login-container').style.display = 'flex';
+                    
+                    if (unsubscribeFeedback) {
+                        unsubscribeFeedback();
+                        unsubscribeFeedback = null;
+                    }
+                }
             });
         }
 
-        // Generate PDF
-        async function generatePDF(logs, filename) {
-            document.getElementById('loading').classList.add('active');
+        // Login Form Handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorElement = document.getElementById('login-error');
+            const loginBtn = document.getElementById('login-btn');
+            
+            errorElement.textContent = '';
+
+            if (!email || !password) {
+                errorElement.textContent = "Please enter both email and password.";
+                return;
+            }
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing in...';
 
             try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('l', 'mm', 'a4');
-
-                // Title
-                doc.setFontSize(20);
-                doc.setFont(undefined, 'bold');
-                doc.text('Activity Logs Report', 14, 20);
-
-                // Filters info
-                doc.setFontSize(10);
-                doc.setFont(undefined, 'normal');
-                const startDate = document.getElementById('start-date').value || 'All';
-                const endDate = document.getElementById('end-date').value || 'All';
-                const resort = document.getElementById('resort-filter').value;
-                
-                doc.text(`Start Date: ${startDate}`, 14, 30);
-                doc.text(`End Date: ${endDate}`, 14, 35);
-                doc.text(`Resort: ${resort === 'all' ? 'All Resorts' : resort}`, 14, 40);
-                doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 45);
-                doc.text(`Total Logs: ${logs.length}`, 14, 50);
-
-                // Table
-                const tableData = logs.map(log => {
-                    const timestamp = log.timestamp?.toDate ? log.timestamp.toDate() : new Date(log.timestamp);
-                    return [
-                        timestamp.toLocaleString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric', 
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }),
-                        log.adminUser || 'Unknown',
-                        log.actionType || 'UNKNOWN',
-                        log.target || 'N/A',
-                        log.details || 'No details'
-                    ];
-                });
-
-                doc.autoTable({
-                    startY: 55,
-                    head: [['TIMESTAMP', 'ADMIN USER', 'ACTION TYPE', 'TARGET', 'DETAILS']],
-                    body: tableData,
-                    theme: 'grid',
-                    headStyles: {
-                        fillColor: [102, 126, 234],
-                        textColor: 255,
-                        fontStyle: 'bold',
-                        fontSize: 9
-                    },
-                    bodyStyles: {
-                        fontSize: 8
-                    },
-                    columnStyles: {
-                        0: { cellWidth: 40 },
-                        1: { cellWidth: 50 },
-                        2: { cellWidth: 35 },
-                        3: { cellWidth: 55 },
-                        4: { cellWidth: 'auto' }
-                    }
-                });
-
-                doc.save(filename);
+                await signInWithEmailAndPassword(auth, email, password);
+                console.log('Login successful');
             } catch (error) {
-                console.error('Error generating PDF:', error);
-                alert('Failed to generate PDF. Please try again.');
+                console.error("Login error:", error);
+                let message = "Login failed. Please check your credentials.";
+                
+                if (error.code === 'auth/user-not-found') {
+                    message = "No user found with this email.";
+                } else if (error.code === 'auth/wrong-password') {
+                    message = "Incorrect password.";
+                } else if (error.code === 'auth/invalid-email') {
+                    message = "Invalid email address.";
+                } else if (error.code === 'auth/too-many-requests') {
+                    message = "Too many failed attempts. Please try again later.";
+                } else if (error.code === 'auth/network-request-failed') {
+                    message = "Network error. Please check your connection.";
+                } else if (error.code === 'auth/invalid-credential') {
+                    message = "Invalid credentials. Please check your email and password.";
+                }
+                
+                errorElement.textContent = message;
             } finally {
-                document.getElementById('loading').classList.remove('active');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
             }
-        }
-
-        // Download selected logs
-        document.getElementById('download-selected').addEventListener('click', () => {
-            const filteredLogs = getFilteredLogs();
-            
-            if (filteredLogs.length === 0) {
-                alert('No logs match the selected filters.');
-                return;
-            }
-
-            const startDate = document.getElementById('start-date').value || 'all';
-            const endDate = document.getElementById('end-date').value || 'all';
-            const resort = document.getElementById('resort-filter').value;
-            const filename = `activity-logs-${startDate}-to-${endDate}-${resort}.pdf`;
-            
-            generatePDF(filteredLogs, filename);
         });
 
-        // Download all logs
-        document.getElementById('download-all').addEventListener('click', () => {
-            if (allLogs.length === 0) {
-                alert('No logs available to download.');
-                return;
-            }
-
-            const filename = `activity-logs-all-${new Date().toISOString().split('T')[0]}.pdf`;
-            generatePDF(allLogs, filename);
-        });
-
-        // Sign out
+        // Sign Out Handler
         document.getElementById('signout-btn').addEventListener('click', async () => {
             try {
                 await signOut(auth);
+                console.log("User signed out");
+                dashboardInstance = null;
+                // Redirect to index.html after successful sign out
                 window.location.href = 'index.html';
             } catch (error) {
-                console.error('Sign out error:', error);
+                console.error("Sign out error:", error);
                 alert('Failed to sign out. Please try again.');
             }
         });
 
-        // Escape HTML
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Initialize icons
+        // Initialize icons on page load
         lucide.createIcons();
+
+        // Start authentication
+        setupAuth();
     </script>
 </body>
 </html>
