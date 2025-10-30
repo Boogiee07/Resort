@@ -360,13 +360,19 @@
 
             firestore.collection('feedback')
                 .where('resortId', '==', resortId)
-                .orderBy('timestamp', 'desc')
                 .get()
                 .then((querySnapshot) => {
                     allReviews = [];
                     querySnapshot.forEach((doc) => {
                         const data = doc.data();
                         allReviews.push(data);
+                    });
+                    
+                    // Sort reviews by timestamp in memory (newest first)
+                    allReviews.sort((a, b) => {
+                        const timeA = a.timestamp ? a.timestamp.toMillis() : new Date(a.createdAt).getTime();
+                        const timeB = b.timestamp ? b.timestamp.toMillis() : new Date(b.createdAt).getTime();
+                        return timeB - timeA;
                     });
 
                     if (allReviews.length > 0) {
