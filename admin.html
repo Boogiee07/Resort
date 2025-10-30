@@ -1872,10 +1872,21 @@
 
             async archiveFeedback(id) {
                 try {
+                    const feedback = this.activeFeedbacks.find(f => f.id === id);
+                    const resortName = feedback?.resortName || (feedback?.resortId ? `Resort ID: ${feedback.resortId}` : 'Unknown Resort');
+                    const guestName = feedback?.name || feedback?.userName || feedback?.guestName || 'Anonymous';
+                    
                     await updateDoc(doc(this.db, 'feedback', id), {
                         archived: true,
                         archivedAt: new Date()
                     });
+                    
+                    await this.logActivity(
+                        'feedback_archived',
+                        `${resortName} - ${guestName}`,
+                        `Feedback from ${guestName} at ${resortName} was archived`
+                    );
+                    
                     console.log(`Feedback ${id} archived`);
                 } catch (error) {
                     console.error('Error archiving feedback:', error);
@@ -1885,10 +1896,21 @@
 
             async restoreFeedback(id) {
                 try {
+                    const feedback = this.archivedFeedbacks.find(f => f.id === id);
+                    const resortName = feedback?.resortName || (feedback?.resortId ? `Resort ID: ${feedback.resortId}` : 'Unknown Resort');
+                    const guestName = feedback?.name || feedback?.userName || feedback?.guestName || 'Anonymous';
+                    
                     await updateDoc(doc(this.db, 'feedback', id), {
                         archived: false,
                         archivedAt: null
                     });
+                    
+                    await this.logActivity(
+                        'feedback_restored',
+                        `${resortName} - ${guestName}`,
+                        `Feedback from ${guestName} at ${resortName} was restored`
+                    );
+                    
                     console.log(`Feedback ${id} restored`);
                 } catch (error) {
                     console.error('Error restoring feedback:', error);
