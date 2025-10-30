@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Feedback & Ratings Dashboard</title>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     * {
@@ -1698,31 +1699,64 @@
       }
 
       generatePDF(logs, type) {
-        // Create a detailed text-based report
-        let content = `${'='.repeat(100)}\n`;
-        content += `ACTIVITY LOG REPORT\n`;
-        content += `${'='.repeat(100)}\n\n`;
-        content += `Generated: ${new Date().toLocaleString()}\n`;
-        content += `Report Type: ${type === 'all' ? 'All Logs' : 'Filtered Logs'}\n`;
-        content += `Total Records: ${logs.length}\n\n`;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 15;
+        const maxWidth = pageWidth - (margin * 2);
+        let yPos = margin;
+
+        // Helper function to check if we need a new page
+        const checkNewPage = (heightNeeded) => {
+          if (yPos + heightNeeded > pageHeight - margin) {
+            doc.addPage();
+            yPos = margin;
+            return true;
+          }
+          return false;
+        };
+
+        // Title
+        doc.setFontSize(20);
+        doc.setFont(undefined, 'bold');
+        doc.text('ACTIVITY LOG REPORT', pageWidth / 2, yPos, { align: 'center' });
+        yPos += 10;
+
+        // Report Info
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'normal');
+        doc.text(`Generated: ${new Date().toLocaleString()}`, margin, yPos);
+        yPos += 6;
+        doc.text(`Report Type: ${type === 'all' ? 'All Logs' : 'Filtered Logs'}`, margin, yPos);
+        yPos += 6;
+        doc.text(`Total Records: ${logs.length}`, margin, yPos);
+        yPos += 6;
 
         if (type === 'selected') {
           if (this.activityStartDate) {
-            content += `Start Date Filter: ${this.activityStartDate}\n`;
+            doc.text(`Start Date Filter: ${this.activityStartDate}`, margin, yPos);
+            yPos += 6;
           }
           if (this.activityEndDate) {
-            content += `End Date Filter: ${this.activityEndDate}\n`;
+            doc.text(`End Date Filter: ${this.activityEndDate}`, margin, yPos);
+            yPos += 6;
           }
           if (this.activityResortFilter !== 'all') {
-            content += `Resort Filter: ${this.activityResortFilter}\n`;
+            doc.text(`Resort Filter: ${this.activityResortFilter}`, margin, yPos);
+            yPos += 6;
           }
-          content += `\n`;
         }
 
-        content += `${'='.repeat(100)}\n\n`;
+        yPos += 5;
+        doc.setDrawColor(200);
+        doc.line(margin, yPos, pageWidth - margin, yPos);
+        yPos += 10;
 
+        // Activity Logs
         logs.forEach((log, index) => {
-          // Parse timestamp properly
+          // Parse timestamp
           let timestamp;
           if (log.timestamp?.toDate) {
             timestamp = log.timestamp.toDate();
@@ -1736,32 +1770,62 @@
             timestamp = new Date();
           }
 
-          content += `Record #${index + 1}\n`;
-          content += `${'-'.repeat(100)}\n`;
-          content += `Timestamp:    ${timestamp.toLocaleString()}\n`;
-          content += `Admin User:   ${log.adminUser || 'Unknown'}\n`;
-          content += `Action Type:  ${log.actionType || 'Unknown'}\n`;
-          content += `Target:       ${log.target || 'N/A'}\n`;
-          content += `Details:      ${log.details || 'No details'}\n`;
-          content += `\n`;
+          checkNewPage(40);
+
+          // Record header
+          doc.setFontSize(11);
+          doc.setFont(undefined, 'bold');
+          doc.text(`Record #${index + 1}`, margin, yPos);
+          yPos += 7;
+
+          // Record details
+          doc.setFontSize(9);
+          doc.setFont(undefined, 'bold');
+          doc.text('Timestamp:', margin, yPos);
+          doc.setFont(undefined, 'normal');
+          doc.text(timestamp.toLocaleString(), margin + 25, yPos);
+          yPos += 5;
+
+          checkNewPage(5);
+          doc.setFont(undefined, 'bold');
+          doc.text('Admin User:', margin, yPos);
+          doc.setFont(undefined, 'normal');
+          doc.text(log.adminUser || 'Unknown', margin + 25, yPos);
+          yPos += 5;
+
+          checkNewPage(5);
+          doc.setFont(undefined, 'bold');
+          doc.text('Action Type:', margin, yPos);
+          doc.setFont(undefined, 'normal');
+          doc.text(log.actionType || 'Unknown', margin + 25, yPos);
+          yPos += 5;
+
+          checkNewPage(5);
+          doc.setFont(undefined, 'bold');
+          doc.text('Target:', margin, yPos);
+          doc.setFont(undefined, 'normal');
+          const targetText = doc.splitTextToSize(log.target || 'N/A', maxWidth - 25);
+          doc.text(targetText, margin + 25, yPos);
+          yPos += (targetText.length * 5);
+
+          checkNewPage(10);
+          doc.setFont(undefined, 'bold');
+          doc.text('Details:', margin, yPos);
+          doc.setFont(undefined, 'normal');
+          const detailsText = doc.splitTextToSize(log.details || 'No details', maxWidth - 25);
+          doc.text(detailsText, margin + 25, yPos);
+          yPos += (detailsText.length * 5);
+
+          yPos += 5;
+          doc.setDrawColor(220);
+          doc.line(margin, yPos, pageWidth - margin, yPos);
+          yPos += 8;
         });
 
-        content += `${'='.repeat(100)}\n`;
-        content += `End of Report\n`;
-        content += `${'='.repeat(100)}\n`;
-
-        // Create and download the file
-        const blob = new Blob([content], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
+        // Save PDF
         const dateStr = new Date().toISOString().split('T')[0];
         const timeStr = new Date().toTimeString().split(' ')[0].replace(/:/g, '-');
-        a.download = `activity-log-${type}-${dateStr}_${timeStr}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
+        doc.save(`activity-log-${type}-${dateStr}_${timeStr}.pdf`);
       }
 
       openModal(feedback, isArchived = false) {
