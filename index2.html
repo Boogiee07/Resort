@@ -810,7 +810,7 @@
 
         function loadResortsFromFirebase() {
             const resortsRef = database.ref('resorts');
-            resortsRef.on('value', (snapshot) => {
+            resortsRef.once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     resorts = Object.values(data);
@@ -818,7 +818,12 @@
                 } else {
                     resorts = [];
                     document.getElementById('loadingOverlay').style.display = 'none';
+                    renderResorts([]);
                 }
+            }).catch((error) => {
+                console.error('Error loading resorts:', error);
+                document.getElementById('loadingOverlay').style.display = 'none';
+                showToast('Error loading resorts. Please refresh the page.');
             });
         }
 
