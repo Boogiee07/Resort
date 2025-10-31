@@ -1390,9 +1390,9 @@
             document.getElementById('resortBedrooms').textContent = `${resort.bedrooms} Bedroom${resort.bedrooms > 1 ? 's' : ''}`;
             document.getElementById('resortPrice').textContent = resort.priceValue.split(' ')[0];
 
-            // Fetch feedback from Firestore to calculate real ratings
             firestore.collection('feedback')
                 .where('resortId', '==', resortId)
+                .where('archived', '==', false)
                 .get()
                 .then((querySnapshot) => {
                     const feedbackList = [];
