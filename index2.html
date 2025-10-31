@@ -683,6 +683,7 @@
                 const data = snapshot.val();
                 if (data) {
                     resorts = validateResortData(Object.values(data));
+                    console.log('Loaded resorts:', resorts);
                 } else {
                     resorts = [];
                 }
@@ -790,7 +791,7 @@
                 <span class="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold ${priceBadgeColors[resort.price]} shadow-lg uppercase">
                     ${resort.price}
                 </span>
-                ${resort.rating ? `
+                ${resort.rating && resort.rating > 0 ? `
                 <div class="absolute bottom-2 left-2">
                     <div class="rating-badge">
                         <span>★</span>
@@ -891,15 +892,20 @@
                     resort.amenities = [];
                 }
                 // Use rating from Firebase, ensure it's a valid number
-                if (resort.rating !== undefined && resort.rating !== null) {
+                if (resort.rating !== undefined && resort.rating !== null && resort.rating !== '') {
                     resort.rating = parseFloat(resort.rating);
                     // Clamp rating between 0 and 5
-                    if (resort.rating < 0) resort.rating = 0;
-                    if (resort.rating > 5) resort.rating = 5;
+                    if (isNaN(resort.rating)) {
+                        resort.rating = 4.0;
+                    } else {
+                        if (resort.rating < 0) resort.rating = 0;
+                        if (resort.rating > 5) resort.rating = 5;
+                    }
                 } else {
-                    // If no rating in Firebase, set to null (don't show rating)
-                    resort.rating = null;
+                    // Default rating if not provided
+                    resort.rating = 4.0;
                 }
+                console.log(`Resort: ${resort.name}, Rating: ${resort.rating}`);
                 return resort;
             });
         }
@@ -964,7 +970,7 @@
         });
 
         loadResortsFromFirebase();
-        </script>
+    </script>
 
 </body>
 
