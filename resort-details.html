@@ -130,7 +130,7 @@
         }
 
         .star {
-            color: #d1d5db;
+            color: #fbbf24;
             font-size: 18px;
             transition: color 0.2s ease;
         }
@@ -143,6 +143,10 @@
 
         .star.filled {
             color: #fbbf24;
+        }
+
+        .star.empty {
+            color: #d1d5db;
         }
 
         .feedback-button {
@@ -683,6 +687,12 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .star-rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
     </style>
 </head>
 
@@ -772,8 +782,8 @@
                             </svg>
                             <span id="resortBedrooms"></span>
                         </div>
-                        <div class="flex items-center flex-wrap">
-                            <div id="starRating" class="flex items-center mr-2"></div>
+                        <div class="flex items-center flex-wrap gap-2">
+                            <div id="starRating" class="flex items-center"></div>
                             <span id="ratingText" class="text-xs md:text-sm text-gray-600 font-medium"></span>
                         </div>
                     </div>
@@ -792,7 +802,7 @@
                 </div>
             </div>
 
-            <div class="bg-gray-50 rounded-lg md:rounded-xl p-4 md:p-6 border-l-4 border-blue-600">
+            <div class="bg-gray-50 rounded-lg md:rounded-xl p-4 md:p-6 border-l-4 border-blue-600 mb-6 md:mb-8">
                 <p class="text-xs md:text-sm text-gray-600 italic">
                     <strong>Note:</strong> This information is for reference purposes only. Please contact the resort
                     directly for current availability, accurate pricing, and booking details. Prices and facilities may
@@ -1073,6 +1083,71 @@
         const database = firebase.database();
         const firestore = firebase.firestore();
 
+        // Initialize Rating System
+        window.RatingSystem = {
+            async fetchResortRating(resortId) {
+                try {
+                    const snapshot = await firestore.collection('feedback')
+                        .where('resortId', '==', resortId)
+                        .get();
+                    
+                    const reviews = [];
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        if (data.rating && typeof data.rating === 'number') {
+                            reviews.push({ id: doc.id, ...data });
+                        }
+                    });
+
+                    if (reviews.length === 0) {
+                        return { average: 0, count: 0, reviews: [] };
+                    }
+
+                    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+                    const average = totalRating / reviews.length;
+
+                    return {
+                        average: parseFloat(average.toFixed(1)),
+                        count: reviews.length,
+                        reviews: reviews
+                    };
+                } catch (error) {
+                    console.error(`Error fetching rating for resort ${resortId}:`, error);
+                    return { average: 0, count: 0, reviews: [] };
+                }
+            },
+
+            generateDetailedRatingHTML(rating, count, resortId) {
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating % 1 >= 0.5;
+                const emptyStars = 5 - Math.ceil(rating);
+                
+                let starsHTML = '';
+                
+                if (count === 0) {
+                    starsHTML = '<span class="text-sm md:text-base text-gray-500">No ratings yet</span>';
+                } else {
+                    for (let i = 0; i < fullStars; i++) {
+                        starsHTML += '<span class="star filled text-xl md:text-2xl">★</span>';
+                    }
+                    
+                    if (hasHalfStar) {
+                        starsHTML += '<span class="star filled text-xl md:text-2xl">★</span>';
+                    }
+                    
+                    for (let i = 0; i < emptyStars; i++) {
+                        starsHTML += '<span class="star empty text-xl md:text-2xl">★</span>';
+                    }
+                }
+                
+                const ratingText = count === 0 
+                    ? 'Be the first to rate!' 
+                    : `${rating.toFixed(1)} out of 5 (<a href="reviews.html?id=${resortId}" class="text-blue-600 hover:text-blue-800 font-semibold underline transition-colors">${count} ${count === 1 ? 'review' : 'reviews'}</a>)`;
+                
+                return { stars: starsHTML, text: ratingText };
+            }
+        };
+
         const resortContactInfo = {
             '4': {
                 description: "Welcome to Elysian Sourire Resort. ELYSIAN is a Greek word that means beautiful or creative; divinely inspired; peaceful and perfect. SOURIRE is a French word for Smile 😊 A perfect place that will surely give you a beautiful Sourire.",
@@ -1202,52 +1277,24 @@
             'premium': 'bg-purple-100 text-purple-800'
         };
 
-        function calculateAverageRating(feedbackList) {
-            if (!feedbackList || feedbackList.length === 0) {
-                return { average: 0, count: 0 };
-            }
-            const totalRating = feedbackList.reduce((sum, feedback) => sum + feedback.rating, 0);
-            const average = totalRating / feedbackList.length;
-            return { average: average, count: feedbackList.length };
-        }
-
-        function displayStarRating(rating, count) {
-            const starContainer = document.getElementById('starRating');
-            const ratingText = document.getElementById('ratingText');
-
-            if (count === 0) {
-                starContainer.innerHTML = '<span class="text-sm text-gray-500">No ratings yet</span>';
-                ratingText.textContent = 'Be the first to rate!';
-                return;
-            }
-
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 >= 0.5;
-            let starsHtml = '';
-            for (let i = 0; i < fullStars; i++) {
-                starsHtml += '<span class="star filled">★</span>';
-            }
-            if (hasHalfStar) {
-                starsHtml += '<span class="star filled">★</span>';
-            }
-            const emptyStars = 5 - Math.ceil(rating);
-            for (let i = 0; i < emptyStars; i++) {
-                starsHtml += '<span class="star">★</span>';
-            }
-            starContainer.innerHTML = starsHtml;
+        async function displayStarRating(resortId) {
+            const ratingData = await window.RatingSystem.fetchResortRating(resortId);
+            const ratingHTML = window.RatingSystem.generateDetailedRatingHTML(
+                ratingData.average, 
+                ratingData.count, 
+                resortId
+            );
             
-            const resortId = getResortIdFromUrl();
-            ratingText.innerHTML = `${rating.toFixed(1)} out of 5 (<a href="reviews.html?id=${resortId}" class="text-blue-600 hover:text-blue-800 font-semibold underline transition-colors">${count} ${count === 1 ? 'review' : 'reviews'}</a>)`;
+            document.getElementById('starRating').innerHTML = ratingHTML.stars;
+            document.getElementById('ratingText').innerHTML = ratingHTML.text;
+            
+            console.log(`Resort ${resortId}: ${ratingData.count} reviews, average ${ratingData.average.toFixed(1)} stars`);
         }
 
         function formatPhoneNumber(phone) {
             const cleanPhone = phone.replace(/\s+/g, '');
             const telLink = cleanPhone.startsWith('0') ? '+63' + cleanPhone.substring(1) : cleanPhone;
             return { display: phone, link: telLink };
-        }
-
-        function createGoogleMapsLink(query) {
-            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
         }
 
         function openImageGallery(index) {
@@ -1376,7 +1423,7 @@
             });
         }
 
-        function displayResortDetails(resort, resortId) {
+        async function displayResortDetails(resort, resortId) {
             document.title = `${resort.name} - Pansol Hot Spring Resorts`;
             document.getElementById('resortHeroImage').src = resort.image;
             document.getElementById('resortHeroImage').alt = resort.name;
@@ -1390,29 +1437,8 @@
             document.getElementById('resortBedrooms').textContent = `${resort.bedrooms} Bedroom${resort.bedrooms > 1 ? 's' : ''}`;
             document.getElementById('resortPrice').textContent = resort.priceValue.split(' ')[0];
 
-            // Fetch feedback from Firestore to calculate real ratings
-            firestore.collection('feedback')
-                .where('resortId', '==', resortId)
-                .get()
-                .then((querySnapshot) => {
-                    const feedbackList = [];
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        if (data.rating) {
-                            feedbackList.push(data);
-                        }
-                    });
-
-                    const ratingData = calculateAverageRating(feedbackList);
-                    displayStarRating(ratingData.average, ratingData.count);
-
-                    console.log(`Resort ${resortId}: ${ratingData.count} reviews, average ${ratingData.average.toFixed(1)} stars`);
-                })
-                .catch((error) => {
-                    console.error('Error fetching ratings:', error);
-                    // Show no ratings if error
-                    displayStarRating(0, 0);
-                });
+            // Fetch and display ratings using the Rating System
+            await displayStarRating(resortId);
 
             const facebookButton = document.getElementById('facebookButton');
             if (resort.facebookUrl && resort.facebookUrl.trim() !== '') {
@@ -1477,19 +1503,19 @@
 
                 const mapsLink = `map.html?navigate=${resortId}`;
                 document.getElementById('locationLink').innerHTML = `
-    <div class="flex items-start text-gray-700">
-        <svg class="w-5 h-5 mr-2 md:mr-3 text-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-        </svg>
-        <a href="${mapsLink}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors flex items-center text-sm md:text-base">
-            ${contactInfo.address}
-            <svg class="w-4 h-4 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-            </svg>
-            <span class="ml-1 text-xs">(Navigate)</span>
-        </a>
-    </div>
-`;
+                    <div class="flex items-start text-gray-700">
+                        <svg class="w-5 h-5 mr-2 md:mr-3 text-blue-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <a href="${mapsLink}" class="text-blue-600 hover:text-blue-800 font-semibold transition-colors flex items-center text-sm md:text-base">
+                            ${contactInfo.address}
+                            <svg class="w-4 h-4 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                            </svg>
+                            <span class="ml-1 text-xs">(Navigate)</span>
+                        </a>
+                    </div>
+                `;
             } else {
                 document.getElementById('resortDescription').textContent = resort.description;
             }
@@ -1516,7 +1542,7 @@
                 console.log(`Resort ${resortId}: Loaded ${galleryImages.length} images`);
             });
 
-           const facilitiesHtml = resort.facilities.map((facility, index) => {
+            const facilitiesHtml = resort.facilities.map((facility, index) => {
                 const isHidden = index >= INITIAL_FACILITIES_COUNT;
                 const galleryIndex = index;
 
@@ -1572,6 +1598,7 @@
 
         loadResortDetails();
 
+        // Feedback System
         let selectedRating = 0;
         let currentResortId = '';
         let currentResortName = '';
@@ -1666,13 +1693,14 @@
             };
 
             firestore.collection('feedback').add(feedbackData)
-                .then((docRef) => {
+                .then(async (docRef) => {
                     console.log('Feedback submitted with ID:', docRef.id);
                     document.getElementById('successMessage').classList.add('active');
 
-                    // Reload ratings after successful feedback submission
+                    // Reload ratings after successful feedback
+                    await displayStarRating(currentResortId);
+                    
                     setTimeout(() => {
-                        loadResortDetails();
                         closeFeedbackModal();
                         submitBtn.disabled = false;
                         document.getElementById('submitText').style.display = 'inline';
