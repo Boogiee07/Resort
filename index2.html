@@ -890,8 +890,15 @@
                 if (!resort.amenities) {
                     resort.amenities = [];
                 }
-                if (!resort.rating) {
-                    resort.rating = 3.5 + Math.random() * 1.5;
+                // Use rating from Firebase, ensure it's a valid number
+                if (resort.rating !== undefined && resort.rating !== null) {
+                    resort.rating = parseFloat(resort.rating);
+                    // Clamp rating between 0 and 5
+                    if (resort.rating < 0) resort.rating = 0;
+                    if (resort.rating > 5) resort.rating = 5;
+                } else {
+                    // If no rating in Firebase, set to null (don't show rating)
+                    resort.rating = null;
                 }
                 return resort;
             });
