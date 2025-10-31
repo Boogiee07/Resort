@@ -1068,34 +1068,32 @@
       <!-- Activity Log Tab -->
       <div class="tab-content" id="tab-activity">
         <!-- Activity Log Header -->
-        <div class="activity-header">
-          <h2>Generate PDF Report</h2>
-
+        <div class="activity-header" style="margin-bottom: 24px;">
+          <h2>Generate Feedback Report</h2>
           <div class="activity-filters">
             <div>
               <label class="form-label">Start Date</label>
-              <input type="date" id="activity-start-date" class="form-input">
+              <input type="date" id="feedback-start-date" class="form-input">
             </div>
             <div>
               <label class="form-label">End Date</label>
-              <input type="date" id="activity-end-date" class="form-input">
+              <input type="date" id="feedback-end-date" class="form-input">
             </div>
             <div>
-              <label class="form-label">Resorts Filter</label>
-              <select id="activity-resort-filter" class="form-input">
+              <label class="form-label">Resort Filter</label>
+              <select id="feedback-report-resort" class="form-input">
                 <option value="all">All Resorts</option>
               </select>
             </div>
           </div>
-
           <div class="activity-actions">
-            <button class="btn btn-primary" id="download-selected-logs">
+            <button class="btn btn-primary" id="download-selected-feedback">
               <i data-lucide="download" style="width: 18px; height: 18px;"></i>
-              Download Selected Logs
+              Download Selected Feedback
             </button>
-            <button class="btn btn-success" id="download-all-logs">
+            <button class="btn btn-success" id="download-all-feedback">
               <i data-lucide="download" style="width: 18px; height: 18px;"></i>
-              Download All Logs
+              Download All Feedback
             </button>
           </div>
         </div>
@@ -1231,6 +1229,9 @@
         this.activityResortFilter = 'all';
         this.resorts = new Set();
         this.setupEventListeners();
+        this.feedbackStartDate = '';
+        this.feedbackEndDate = '';
+        this.feedbackReportResort = 'all';
       }
 
       getCollectionRef() {
@@ -1340,9 +1341,11 @@
         const resortFilter = document.getElementById('resort-filter');
         const resortFilterArchived = document.getElementById('resort-filter-archived');
         const activityResortFilter = document.getElementById('activity-resort-filter');
-        const currentValueActive = resortFilter.value;
-        const currentValueArchived = resortFilterArchived.value;
-        const currentValueActivity = activityResortFilter.value;
+        const feedbackReportResort = document.getElementById('feedback-report-resort');
+        const currentValueActive = resortFilter?.value;
+        const currentValueArchived = resortFilterArchived?.value;
+        const currentValueActivity = activityResortFilter?.value;
+        const currentValueFeedback = feedbackReportResort?.value;
 
         const sortedResorts = Array.from(this.resorts).sort();
         const options = '<option value="all">All Resorts</option>' +
@@ -1350,23 +1353,38 @@
             `<option value="${resort}">${resort}</option>`
           ).join('');
 
-        resortFilter.innerHTML = options;
-        resortFilterArchived.innerHTML = options;
-        activityResortFilter.innerHTML = options;
+        if (resortFilter) resortFilter.innerHTML = options;
+        if (resortFilterArchived) resortFilterArchived.innerHTML = options;
+        if (activityResortFilter) activityResortFilter.innerHTML = options;
+        if (feedbackReportResort) feedbackReportResort.innerHTML = options;
 
-        if (currentValueActive && sortedResorts.includes(currentValueActive)) {
+        if (currentValueActive && sortedResorts.includes(currentValueActive) && resortFilter) {
           resortFilter.value = currentValueActive;
         }
-        if (currentValueArchived && sortedResorts.includes(currentValueArchived)) {
+        if (currentValueArchived && sortedResorts.includes(currentValueArchived) && resortFilterArchived) {
           resortFilterArchived.value = currentValueArchived;
         }
-        if (currentValueActivity && sortedResorts.includes(currentValueActivity)) {
+        if (currentValueActivity && sortedResorts.includes(currentValueActivity) && activityResortFilter) {
           activityResortFilter.value = currentValueActivity;
+        }
+        if (currentValueFeedback && sortedResorts.includes(currentValueFeedback) && feedbackReportResort) {
+          feedbackReportResort.value = currentValueFeedback;
         }
       }
 
       setupEventListeners() {
         if (!this.listenersInitialized) {
+
+          // Feedback report download buttons
+          document.getElementById('download-selected-feedback').addEventListener('click', () => this.downloadSelectedFeedback());
+          document.getElementById('download-all-feedback').addEventListener('click', () => this.downloadAllFeedback());
+
+          // Feedback report filters
+          document.getElementById('feedback-start-date').addEventListener('change', () => this.handleFeedbackReportFilterChange());
+          document.getElementById('feedback-end-date').addEventListener('change', () => this.handleFeedbackReportFilterChange());
+          document.getElementById('feedback-report-resort').addEventListener('change', () => this.handleFeedbackReportFilterChange());
+
+
           // Active tab filters
           document.getElementById('search-input').addEventListener('input', () => this.handleFilterChange('active'));
           document.getElementById('rating-filter').addEventListener('change', () => this.handleFilterChange('active'));
@@ -1380,13 +1398,11 @@
           document.getElementById('sort-by-archived').addEventListener('change', () => this.handleFilterChange('archived'));
 
           // Activity log filters
-          document.getElementById('activity-start-date').addEventListener('change', () => this.handleActivityFilterChange());
-          document.getElementById('activity-end-date').addEventListener('change', () => this.handleActivityFilterChange());
-          document.getElementById('activity-resort-filter').addEventListener('change', () => this.handleActivityFilterChange());
+          document.getElementById('activity-start-date')?.addEventListener('change', () => this.handleActivityFilterChange());
+          document.getElementById('activity-end-date')?.addEventListener('change', () => this.handleActivityFilterChange());
+          document.getElementById('activity-resort-filter')?.addEventListener('change', () => this.handleActivityFilterChange());
 
-          // Activity log download buttons
-          document.getElementById('download-selected-logs').addEventListener('click', () => this.downloadSelectedLogs());
-          document.getElementById('download-all-logs').addEventListener('click', () => this.downloadAllLogs());
+
 
           // Tab switching
           document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1419,6 +1435,7 @@
           this.listenersInitialized = true;
         }
       }
+
 
       switchTab(tab) {
         currentTab = tab;
@@ -1453,70 +1470,66 @@
       }
 
       handleActivityFilterChange() {
-        this.activityStartDate = document.getElementById('activity-start-date').value;
-        this.activityEndDate = document.getElementById('activity-end-date').value;
-        this.activityResortFilter = document.getElementById('activity-resort-filter').value;
+        const startDateEl = document.getElementById('activity-start-date');
+        const endDateEl = document.getElementById('activity-end-date');
+        const resortFilterEl = document.getElementById('activity-resort-filter');
+        
+        if (startDateEl) this.activityStartDate = startDateEl.value;
+        if (endDateEl) this.activityEndDate = endDateEl.value;
+        if (resortFilterEl) this.activityResortFilter = resortFilterEl.value;
         this.filterActivityLogs();
         this.renderActivityLog();
       }
 
-      filterActivityLogs() {
-        this.filteredActivityLogs = this.activityLogs.filter(log => {
+      handleFeedbackReportFilterChange() {
+        this.feedbackStartDate = document.getElementById('feedback-start-date').value;
+        this.feedbackEndDate = document.getElementById('feedback-end-date').value;
+        this.feedbackReportResort = document.getElementById('feedback-report-resort').value;
+      }
+
+      filterFeedbackForReport(feedbacks) {
+        return feedbacks.filter(f => {
           let matches = true;
 
-          // Get log date
-          let logDate;
-          if (log.timestamp?.toDate) {
-            logDate = log.timestamp.toDate();
-          } else if (log.timestamp instanceof Date) {
-            logDate = log.timestamp;
-          } else if (typeof log.timestamp === 'number') {
-            logDate = new Date(log.timestamp);
-          } else if (log.timestamp?.seconds) {
-            logDate = new Date(log.timestamp.seconds * 1000);
+          // Get feedback date
+          let feedbackDate;
+          if (f.timestamp?.toDate) {
+            feedbackDate = f.timestamp.toDate();
+          } else if (f.timestamp instanceof Date) {
+            feedbackDate = f.timestamp;
+          } else if (typeof f.timestamp === 'number') {
+            feedbackDate = new Date(f.timestamp);
+          } else if (f.timestamp?.seconds) {
+            feedbackDate = new Date(f.timestamp.seconds * 1000);
           } else {
-            console.warn('Invalid timestamp format:', log.timestamp);
             return false;
           }
 
           // Date filtering
-          if (this.activityStartDate) {
-            const startDate = new Date(this.activityStartDate);
+          if (this.feedbackStartDate) {
+            const startDate = new Date(this.feedbackStartDate);
             startDate.setHours(0, 0, 0, 0);
-            if (logDate < startDate) matches = false;
+            if (feedbackDate < startDate) matches = false;
           }
 
-          if (this.activityEndDate) {
-            const endDate = new Date(this.activityEndDate);
+          if (this.feedbackEndDate) {
+            const endDate = new Date(this.feedbackEndDate);
             endDate.setHours(23, 59, 59, 999);
-            if (logDate > endDate) matches = false;
+            if (feedbackDate > endDate) matches = false;
           }
 
-          // Resort filtering - check both target and details fields
-          if (this.activityResortFilter !== 'all') {
-            const targetText = (log.target || '').toLowerCase();
-            const detailsText = (log.details || '').toLowerCase();
-            const filterText = this.activityResortFilter.toLowerCase();
-
-            // Check if the log is related to feedback (has resort info)
-            const isFeedbackLog = log.actionType === 'feedback_archived' || log.actionType === 'feedback_restored';
-
-            if (isFeedbackLog) {
-              // For feedback logs, check if resort matches
-              if (!targetText.includes(filterText) && !detailsText.includes(filterText)) {
-                matches = false;
-              }
-            } else {
-              // For non-feedback logs (logout, admin_created, etc.), exclude them when filtering by resort
+          // Resort filtering
+          if (this.feedbackReportResort !== 'all') {
+            const resortName = f.resortName || (f.resortId ? `Resort ID: ${f.resortId}` : '');
+            if (resortName !== this.feedbackReportResort) {
               matches = false;
             }
           }
 
           return matches;
         });
-
-        console.log(`Filtered activity logs: ${this.filteredActivityLogs.length} of ${this.activityLogs.length}`);
       }
+
 
       filterAndSortFeedbacks() {
         // Filter active feedbacks
@@ -1671,41 +1684,44 @@
         lucide.createIcons();
       }
 
-      downloadSelectedLogs() {
-        const hasFilters = this.activityStartDate || this.activityEndDate || this.activityResortFilter !== 'all';
+      downloadSelectedFeedback() {
+        // Check if any filters are applied
+        const hasFilters = this.feedbackStartDate || this.feedbackEndDate || this.feedbackReportResort !== 'all';
 
         if (!hasFilters) {
-          alert('Please select at least one filter (Start Date, End Date, or Resort) before downloading selected logs.\n\nTo download all logs without filters, use the "Download All Logs" button.');
+          alert('Please select at least one filter (Start Date, End Date, or Resort) before downloading selected feedback.\n\nTo download all feedback without filters, use the "Download All Feedback" button.');
           return;
         }
 
-        if (this.filteredActivityLogs.length === 0) {
-          let message = 'No logs match your current filters.';
+        const filteredFeedback = this.filterFeedbackForReport(this.activeFeedbacks);
 
-          if (this.activityLogs.length === 0) {
-            message = 'No activity logs available yet. Logs will appear when actions are performed.';
-          } else if (this.activityResortFilter !== 'all') {
-            message = `No logs found for "${this.activityResortFilter}". Only feedback-related logs are shown when filtering by resort.`;
-          } else if (this.activityStartDate || this.activityEndDate) {
-            message = 'No logs found in the selected date range. Try adjusting your date filters.';
+        if (filteredFeedback.length === 0) {
+          let message = 'No feedback matches your current filters.';
+
+          if (this.activeFeedbacks.length === 0) {
+            message = 'No active feedback available yet.';
+          } else if (this.feedbackReportResort !== 'all') {
+            message = `No feedback found for "${this.feedbackReportResort}".`;
+          } else if (this.feedbackStartDate || this.feedbackEndDate) {
+            message = 'No feedback found in the selected date range. Try adjusting your date filters.';
           }
 
           alert(message);
           return;
         }
-        this.generatePDF(this.filteredActivityLogs, 'selected');
+
+        this.generateFeedbackPDF(filteredFeedback, 'selected');
       }
 
-      // Download All Logs
-      downloadAllLogs() {
-        if (this.activityLogs.length === 0) {
-          alert('No activity logs available yet. Logs will appear when actions are performed.');
+      downloadAllFeedback() {
+        if (this.activeFeedbacks.length === 0) {
+          alert('No active feedback available yet.');
           return;
         }
-        this.generatePDF(this.activityLogs, 'all');
+        this.generateFeedbackPDF(this.activeFeedbacks, 'all');
       }
 
-      generatePDF(logs, type) {
+      generateFeedbackPDF(feedbacks, type) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
@@ -1728,7 +1744,7 @@
         // Title
         doc.setFontSize(20);
         doc.setFont(undefined, 'bold');
-        doc.text('ACTIVITY LOG REPORT', pageWidth / 2, yPos, { align: 'center' });
+        doc.text('CUSTOMER FEEDBACK REPORT', pageWidth / 2, yPos, { align: 'center' });
         yPos += 10;
 
         // Report Info
@@ -1736,22 +1752,32 @@
         doc.setFont(undefined, 'normal');
         doc.text(`Generated: ${new Date().toLocaleString()}`, margin, yPos);
         yPos += 6;
-        doc.text(`Report Type: ${type === 'all' ? 'All Logs' : 'Filtered Logs'}`, margin, yPos);
+        doc.text(`Report Type: ${type === 'all' ? 'All Active Feedback' : 'Filtered Feedback'}`, margin, yPos);
         yPos += 6;
-        doc.text(`Total Records: ${logs.length}`, margin, yPos);
+        doc.text(`Total Records: ${feedbacks.length}`, margin, yPos);
+        yPos += 6;
+
+        // Calculate statistics
+        const totalRating = feedbacks.reduce((sum, f) => sum + (f.rating || f.stars || 0), 0);
+        const avgRating = feedbacks.length > 0 ? (totalRating / feedbacks.length).toFixed(1) : '0.0';
+        const fiveStarCount = feedbacks.filter(f => (f.rating || f.stars) === 5).length;
+
+        doc.text(`Average Rating: ${avgRating} / 5.0`, margin, yPos);
+        yPos += 6;
+        doc.text(`5-Star Reviews: ${fiveStarCount}`, margin, yPos);
         yPos += 6;
 
         if (type === 'selected') {
-          if (this.activityStartDate) {
-            doc.text(`Start Date Filter: ${this.activityStartDate}`, margin, yPos);
+          if (this.feedbackStartDate) {
+            doc.text(`Start Date Filter: ${this.feedbackStartDate}`, margin, yPos);
             yPos += 6;
           }
-          if (this.activityEndDate) {
-            doc.text(`End Date Filter: ${this.activityEndDate}`, margin, yPos);
+          if (this.feedbackEndDate) {
+            doc.text(`End Date Filter: ${this.feedbackEndDate}`, margin, yPos);
             yPos += 6;
           }
-          if (this.activityResortFilter !== 'all') {
-            doc.text(`Resort Filter: ${this.activityResortFilter}`, margin, yPos);
+          if (this.feedbackReportResort !== 'all') {
+            doc.text(`Resort Filter: ${this.feedbackReportResort}`, margin, yPos);
             yPos += 6;
           }
         }
@@ -1761,78 +1787,87 @@
         doc.line(margin, yPos, pageWidth - margin, yPos);
         yPos += 10;
 
-        // Activity Logs
-        logs.forEach((log, index) => {
-          // Parse timestamp
-          let timestamp;
-          if (log.timestamp?.toDate) {
-            timestamp = log.timestamp.toDate();
-          } else if (log.timestamp instanceof Date) {
-            timestamp = log.timestamp;
-          } else if (typeof log.timestamp === 'number') {
-            timestamp = new Date(log.timestamp);
-          } else if (log.timestamp?.seconds) {
-            timestamp = new Date(log.timestamp.seconds * 1000);
-          } else {
-            timestamp = new Date();
+        // Group by resort
+        const resortGroups = {};
+        feedbacks.forEach(feedback => {
+          const resortKey = feedback.resortName || (feedback.resortId ? `Resort ID: ${feedback.resortId}` : 'Unknown Resort');
+          if (!resortGroups[resortKey]) {
+            resortGroups[resortKey] = [];
           }
+          resortGroups[resortKey].push(feedback);
+        });
 
-          checkNewPage(40);
+        // Render each resort group
+        Object.entries(resortGroups).forEach(([resortName, resortFeedbacks]) => {
+          checkNewPage(20);
 
-          // Record header
-          doc.setFontSize(11);
+          // Resort Header
+          doc.setFontSize(14);
           doc.setFont(undefined, 'bold');
-          doc.text(`Record #${index + 1}`, margin, yPos);
+          doc.text(resortName, margin, yPos);
           yPos += 7;
 
-          // Record details
           doc.setFontSize(9);
-          doc.setFont(undefined, 'bold');
-          doc.text('Timestamp:', margin, yPos);
           doc.setFont(undefined, 'normal');
-          doc.text(timestamp.toLocaleString(), margin + 25, yPos);
-          yPos += 5;
-
-          checkNewPage(5);
-          doc.setFont(undefined, 'bold');
-          doc.text('Admin User:', margin, yPos);
-          doc.setFont(undefined, 'normal');
-          doc.text(log.adminUser || 'Unknown', margin + 25, yPos);
-          yPos += 5;
-
-          checkNewPage(5);
-          doc.setFont(undefined, 'bold');
-          doc.text('Action Type:', margin, yPos);
-          doc.setFont(undefined, 'normal');
-          doc.text(log.actionType || 'Unknown', margin + 25, yPos);
-          yPos += 5;
-
-          checkNewPage(5);
-          doc.setFont(undefined, 'bold');
-          doc.text('Target:', margin, yPos);
-          doc.setFont(undefined, 'normal');
-          const targetText = doc.splitTextToSize(log.target || 'N/A', maxWidth - 25);
-          doc.text(targetText, margin + 25, yPos);
-          yPos += (targetText.length * 5);
-
-          checkNewPage(10);
-          doc.setFont(undefined, 'bold');
-          doc.text('Details:', margin, yPos);
-          doc.setFont(undefined, 'normal');
-          const detailsText = doc.splitTextToSize(log.details || 'No details', maxWidth - 25);
-          doc.text(detailsText, margin + 25, yPos);
-          yPos += (detailsText.length * 5);
-
-          yPos += 5;
-          doc.setDrawColor(220);
-          doc.line(margin, yPos, pageWidth - margin, yPos);
+          const resortAvg = (resortFeedbacks.reduce((sum, f) => sum + (f.rating || f.stars || 0), 0) / resortFeedbacks.length).toFixed(1);
+          doc.text(`${resortFeedbacks.length} reviews | Average: ${resortAvg} stars`, margin, yPos);
           yPos += 8;
+
+          // Resort feedback
+          resortFeedbacks.forEach((feedback, index) => {
+            checkNewPage(35);
+
+            const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
+            const email = feedback.email || feedback.guestEmail || feedback.userEmail || 'No email';
+            const message = feedback.message || feedback.feedback || feedback.comment || 'No message';
+            const rating = feedback.rating || feedback.stars || 0;
+
+            // Parse timestamp
+            let timestamp;
+            if (feedback.timestamp?.toDate) {
+              timestamp = feedback.timestamp.toDate();
+            } else if (feedback.timestamp instanceof Date) {
+              timestamp = feedback.timestamp;
+            } else if (typeof feedback.timestamp === 'number') {
+              timestamp = new Date(feedback.timestamp);
+            } else if (feedback.timestamp?.seconds) {
+              timestamp = new Date(feedback.timestamp.seconds * 1000);
+            } else {
+              timestamp = new Date();
+            }
+
+            // Feedback entry
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${index + 1}. ${name}`, margin + 3, yPos);
+            yPos += 5;
+
+            doc.setFontSize(8);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Email: ${email}`, margin + 3, yPos);
+            yPos += 4;
+            doc.text(`Rating: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)} (${rating}/5)`, margin + 3, yPos);
+            yPos += 4;
+            doc.text(`Date: ${timestamp.toLocaleDateString()}`, margin + 3, yPos);
+            yPos += 5;
+
+            doc.setFont(undefined, 'italic');
+            const messageLines = doc.splitTextToSize(`"${message}"`, maxWidth - 6);
+            doc.text(messageLines, margin + 3, yPos);
+            yPos += (messageLines.length * 4) + 5;
+
+            doc.setDrawColor(230);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 5;
+          });
+
+          yPos += 5;
         });
 
         // Save PDF
         const dateStr = new Date().toISOString().split('T')[0];
         const timeStr = new Date().toTimeString().split(' ')[0].replace(/:/g, '-');
-        doc.save(`activity-log-${type}-${dateStr}_${timeStr}.pdf`);
+        doc.save(`feedback-report-${type}-${dateStr}_${timeStr}.pdf`);
       }
 
       openModal(feedback, isArchived = false) {
