@@ -1887,6 +1887,9 @@
             doc.text(nameLines, xPos, yPos + 5);
 
             xPos += colWidths.name;
+            doc.text(`${rating}.0 / 5.0`, xPos, yPos + 5);
+
+            xPos += colWidths.name;
             doc.text(`${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`, xPos, yPos + 5);
 
             xPos += colWidths.rating;
