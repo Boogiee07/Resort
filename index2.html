@@ -265,6 +265,34 @@
         .filter-chips-container::-webkit-scrollbar {
             display: none;
         }
+
+        .star-rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .star {
+            color: #fbbf24;
+            font-size: 14px;
+        }
+
+        .star.empty {
+            color: #d1d5db;
+        }
+
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            color: #92400e;
+            border: 1px solid #fbbf24;
+        }
     </style>
 </head>
 
@@ -373,6 +401,7 @@
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
                         <option value="bedrooms">Bedrooms: Most First</option>
+                        <option value="rating">Rating: High to Low</option>
                     </select>
                 </div>
 
@@ -415,6 +444,7 @@
                 <div class="flex flex-col gap-3 mb-4">
                     <div class="flex-1">
                         <h3 id="modalTitle" class="text-xl sm:text-3xl font-bold text-gray-900 mb-2"></h3>
+                        <div id="modalRating" class="mb-2"></div>
                         <p id="modalAddress" class="text-sm sm:text-lg text-gray-600 mb-2"></p>
                     </div>
                     <div class="flex justify-between items-center">
@@ -611,6 +641,26 @@
             'premium': 'bg-purple-100 text-purple-800'
         };
 
+        function generateStarRating(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let starsHTML = '<div class="star-rating">';
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<span class="star">★</span>';
+            }
+            if (hasHalfStar) {
+                starsHTML += '<span class="star">★</span>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<span class="star empty">★</span>';
+            }
+            starsHTML += `<span class="ml-1 text-xs font-semibold text-gray-700">${rating.toFixed(1)}</span>`;
+            starsHTML += '</div>';
+            return starsHTML;
+        }
+
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
@@ -710,7 +760,6 @@
             });
             applyFiltersAndSort();
             
-            // Scroll to the resorts grid section
             const resortsSection = document.getElementById('resortsGrid').parentElement;
             const headerHeight = document.querySelector('header').offsetHeight;
             const filterHeight = document.querySelector('.filter-section').offsetHeight;
@@ -741,6 +790,14 @@
                 <span class="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold ${priceBadgeColors[resort.price]} shadow-lg uppercase">
                     ${resort.price}
                 </span>
+                ${resort.rating ? `
+                <div class="absolute bottom-2 left-2">
+                    <div class="rating-badge">
+                        <span>★</span>
+                        <span>${resort.rating.toFixed(1)}</span>
+                    </div>
+                </div>
+                ` : ''}
             </div>
             <div class="p-3">
                 <h4 class="text-base font-bold text-gray-900 mb-1.5">${resort.name}</h4>
@@ -833,6 +890,9 @@
                 if (!resort.amenities) {
                     resort.amenities = [];
                 }
+                if (!resort.rating) {
+                    resort.rating = 3.5 + Math.random() * 1.5;
+                }
                 return resort;
             });
         }
@@ -846,6 +906,8 @@
                     return sorted.sort((a, b) => b.priceNumeric - a.priceNumeric);
                 case 'bedrooms':
                     return sorted.sort((a, b) => b.bedrooms - a.bedrooms);
+                case 'rating':
+                    return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
                 case 'name':
                 default:
                     return sorted.sort((a, b) => a.name.localeCompare(b.name));
