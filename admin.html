@@ -1892,9 +1892,6 @@
             xPos += colWidths.name;
             doc.text(`${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`, xPos, yPos + 5);
 
-            xPos += colWidths.rating;
-            doc.text(timestamp.toLocaleDateString(), xPos, yPos + 5);
-
             xPos += colWidths.date;
             doc.text(messageLines, xPos, yPos + 5);
 
