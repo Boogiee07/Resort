@@ -896,7 +896,7 @@
                     resort.rating = parseFloat(resort.rating);
                     // Clamp rating between 0 and 5
                     if (isNaN(resort.rating)) {
-                        resort.rating = 4.0;
+                        resort.rating = null;
                     } else {
                         if (resort.rating < 0) resort.rating = 0;
                         if (resort.rating > 5) resort.rating = 5;
