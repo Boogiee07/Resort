@@ -1473,7 +1473,7 @@
         const startDateEl = document.getElementById('activity-start-date');
         const endDateEl = document.getElementById('activity-end-date');
         const resortFilterEl = document.getElementById('activity-resort-filter');
-        
+
         if (startDateEl) this.activityStartDate = startDateEl.value;
         if (endDateEl) this.activityEndDate = endDateEl.value;
         if (resortFilterEl) this.activityResortFilter = resortFilterEl.value;
@@ -1799,7 +1799,7 @@
 
         // Render each resort group
         Object.entries(resortGroups).forEach(([resortName, resortFeedbacks]) => {
-          checkNewPage(20);
+          checkNewPage(30);
 
           // Resort Header
           doc.setFontSize(14);
@@ -1811,14 +1811,42 @@
           doc.setFont(undefined, 'normal');
           const resortAvg = (resortFeedbacks.reduce((sum, f) => sum + (f.rating || f.stars || 0), 0) / resortFeedbacks.length).toFixed(1);
           doc.text(`${resortFeedbacks.length} reviews | Average: ${resortAvg} stars`, margin, yPos);
+          yPos += 10;
+
+          // Table Headers
+          const tableStartY = yPos;
+          const colWidths = {
+            no: 10,
+            name: 40,
+            rating: 35,
+            date: 30,
+            feedback: maxWidth - 115
+          };
+
+          doc.setFillColor(59, 130, 246);
+          doc.rect(margin, yPos, maxWidth, 8, 'F');
+
+          doc.setFontSize(8);
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(255, 255, 255);
+
+          let xPos = margin + 2;
+          doc.text('No', xPos, yPos + 5.5);
+          xPos += colWidths.no;
+          doc.text('Name', xPos, yPos + 5.5);
+          xPos += colWidths.name;
+          doc.text('Rating', xPos, yPos + 5.5);
+          xPos += colWidths.rating;
+          doc.text('Date', xPos, yPos + 5.5);
+          xPos += colWidths.date;
+          doc.text('Feedback', xPos, yPos + 5.5);
+
           yPos += 8;
+          doc.setTextColor(0, 0, 0);
 
-          // Resort feedback
+          // Resort feedback rows
           resortFeedbacks.forEach((feedback, index) => {
-            checkNewPage(35);
-
             const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
-            const email = feedback.email || feedback.guestEmail || feedback.userEmail || 'No email';
             const message = feedback.message || feedback.feedback || feedback.comment || 'No message';
             const rating = feedback.rating || feedback.stars || 0;
 
@@ -1836,32 +1864,45 @@
               timestamp = new Date();
             }
 
-            // Feedback entry
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'bold');
-            doc.text(`${index + 1}. ${name}`, margin + 3, yPos);
-            yPos += 5;
+            // Calculate row height based on feedback text
+            const messageLines = doc.splitTextToSize(message, colWidths.feedback - 4);
+            const rowHeight = Math.max(8, messageLines.length * 4 + 4);
+
+            checkNewPage(rowHeight + 2);
+
+            // Alternating row colors
+            if (index % 2 === 0) {
+              doc.setFillColor(248, 250, 252);
+              doc.rect(margin, yPos, maxWidth, rowHeight, 'F');
+            }
 
             doc.setFontSize(8);
             doc.setFont(undefined, 'normal');
-            doc.text(`Email: ${email}`, margin + 3, yPos);
-            yPos += 4;
-            doc.text(`Rating: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)} (${rating}/5)`, margin + 3, yPos);
-            yPos += 4;
-            doc.text(`Date: ${timestamp.toLocaleDateString()}`, margin + 3, yPos);
-            yPos += 5;
 
-            doc.setFont(undefined, 'italic');
-            const messageLines = doc.splitTextToSize(`"${message}"`, maxWidth - 6);
-            doc.text(messageLines, margin + 3, yPos);
-            yPos += (messageLines.length * 4) + 5;
+            xPos = margin + 2;
+            doc.text(`${index + 1}`, xPos, yPos + 5);
 
-            doc.setDrawColor(230);
+            xPos += colWidths.no;
+            const nameLines = doc.splitTextToSize(name, colWidths.name - 4);
+            doc.text(nameLines, xPos, yPos + 5);
+
+            xPos += colWidths.name;
+            doc.text(`${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`, xPos, yPos + 5);
+
+            xPos += colWidths.rating;
+            doc.text(timestamp.toLocaleDateString(), xPos, yPos + 5);
+
+            xPos += colWidths.date;
+            doc.text(messageLines, xPos, yPos + 5);
+
+            yPos += rowHeight;
+
+            // Draw row border
+            doc.setDrawColor(226, 232, 240);
             doc.line(margin, yPos, pageWidth - margin, yPos);
-            yPos += 5;
           });
 
-          yPos += 5;
+          yPos += 8;
         });
 
         // Save PDF
@@ -1874,7 +1915,6 @@
         currentFeedbackId = feedback.id;
 
         const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
-        const email = feedback.email || feedback.guestEmail || feedback.userEmail || '';
         const message = feedback.message || feedback.feedback || feedback.comment || 'No message.';
         const rating = feedback.rating || feedback.stars || 0;
         const category = feedback.category || feedback.type || '';
@@ -1893,12 +1933,12 @@
         }
 
         document.getElementById('modal-name').textContent = name;
-        document.getElementById('modal-email').textContent = email || 'No email provided';
+        document.getElementById('modal-email').style.display = 'none'; // Hide email field
         document.getElementById('modal-message').textContent = message;
         document.getElementById('modal-rating-number').textContent = rating + '.0';
         document.getElementById('modal-rating-stars').innerHTML = this.renderStarRating(rating);
         document.getElementById('modal-date').textContent = date.toLocaleString();
-
+        
         if (resortName || resortId) {
           document.getElementById('modal-resort-section').style.display = 'block';
           document.getElementById('modal-resort').innerHTML = `
