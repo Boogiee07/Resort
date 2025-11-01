@@ -925,15 +925,6 @@
             renderResorts(filtered);
         }
 
-        // Generate consistent rating based on resort ID
-        function generateConsistentRating(resortId) {
-            // Use resort ID to generate a consistent "random" number
-            const seed = resortId * 9301 + 49297;
-            const random = (seed % 233280) / 233280;
-            // Generate rating between 3.5 and 5.0
-            return 3.5 + (random * 1.5);
-        }
-
         // Validate Resort Data
         function validateResortData(resortsArray) {
             return resortsArray.map(resort => {
@@ -949,9 +940,9 @@
                 if (!resort.amenities) {
                     resort.amenities = [];
                 }
-                // Add rating if not present - use consistent generation based on ID
-                if (!resort.rating) {
-                    resort.rating = generateConsistentRating(resort.id);
+                // Use rating from Firebase, default to 0 if not set
+                if (!resort.rating || resort.rating === 0) {
+                    resort.rating = 0;
                 }
                 return resort;
             });
