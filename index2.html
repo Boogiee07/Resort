@@ -925,6 +925,15 @@
             renderResorts(filtered);
         }
 
+        // Generate consistent rating based on resort ID
+        function generateConsistentRating(resortId) {
+            // Use resort ID to generate a consistent "random" number
+            const seed = resortId * 9301 + 49297;
+            const random = (seed % 233280) / 233280;
+            // Generate rating between 3.5 and 5.0
+            return 3.5 + (random * 1.5);
+        }
+
         // Validate Resort Data
         function validateResortData(resortsArray) {
             return resortsArray.map(resort => {
@@ -940,9 +949,9 @@
                 if (!resort.amenities) {
                     resort.amenities = [];
                 }
-                // Add rating if not present (auto-generate between 3.5-5.0)
+                // Add rating if not present - use consistent generation based on ID
                 if (!resort.rating) {
-                    resort.rating = 3.5 + Math.random() * 1.5;
+                    resort.rating = generateConsistentRating(resort.id);
                 }
                 return resort;
             });
