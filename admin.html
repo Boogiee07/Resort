@@ -135,6 +135,40 @@
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+      min-height: 100px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .form-textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
     .error-message {
       min-height: 20px;
       font-size: 13px;
@@ -183,6 +217,15 @@
 
     .btn-danger:hover:not(:disabled) {
       background: #dc2626;
+    }
+
+    .btn-secondary {
+      background: #64748b;
+      color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #475569;
     }
 
     .btn:disabled {
@@ -287,6 +330,10 @@
 
     .icon-orange {
       color: #f97316;
+    }
+
+    .icon-purple {
+      color: #a855f7;
     }
 
     /* Tab Navigation */
@@ -654,6 +701,21 @@
       color: white;
     }
 
+    .badge-resort-added {
+      background: #10b981;
+      color: white;
+    }
+
+    .badge-resort-updated {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .badge-resort-deleted {
+      background: #ef4444;
+      color: white;
+    }
+
     /* Modal Styles */
     .modal-overlay {
       display: none;
@@ -836,6 +898,145 @@
       display: none !important;
     }
 
+    /* Resort Management Styles */
+    .resort-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      border: 1px solid #f1f5f9;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .resort-header {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .resort-image {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .resort-info {
+      flex: 1;
+    }
+
+    .resort-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .resort-address {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+
+    .resort-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-budget {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-mid {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-premium {
+      background: #f3e8ff;
+      color: #6b21a8;
+    }
+
+    .resort-actions {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .resort-body {
+      padding: 20px;
+    }
+
+    .resort-description {
+      color: #374151;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .resort-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .checkbox-label:hover {
+      background: #f8fafc;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .modal-large {
+      max-width: 800px;
+    }
+
     @media (max-width: 768px) {
       .header {
         flex-direction: column;
@@ -879,6 +1080,19 @@
 
       .activity-actions {
         flex-direction: column;
+      }
+
+      .resort-header {
+        flex-direction: column;
+      }
+
+      .resort-image {
+        width: 100%;
+        height: 200px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -945,6 +1159,14 @@
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-info">
+            <p class="stat-label">Total Resorts</p>
+            <p class="stat-value" id="total-resorts">0</p>
+          </div>
+          <i data-lucide="building" class="stat-icon icon-purple"></i>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
             <p class="stat-label">Total Feedback</p>
             <p class="stat-value" id="total-feedback">0</p>
           </div>
@@ -989,6 +1211,10 @@
         <button class="tab-btn" data-tab="activity">
           <i data-lucide="activity" style="width: 18px; height: 18px;"></i>
           Activity Log
+        </button>
+        <button class="tab-btn" data-tab="resorts">
+          <i data-lucide="building" style="width: 18px; height: 18px;"></i>
+          Resort Management
         </button>
       </div>
 
@@ -1118,6 +1344,22 @@
           </div>
         </div>
       </div>
+
+      <!-- Resort Management Tab -->
+      <div class="tab-content" id="tab-resorts">
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <h2 style="font-size: 24px; font-weight: 700;">Resort Management</h2>
+            <p style="color: #64748b; margin-top: 8px;">Add, edit, or remove resorts from your listing</p>
+          </div>
+          <button class="btn btn-success" id="add-resort-btn">
+            <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+            Add New Resort
+          </button>
+        </div>
+
+        <div id="resorts-container"></div>
+      </div>
     </div>
   </div>
 
@@ -1175,9 +1417,131 @@
     </div>
   </div>
 
+  <!-- Resort Modal -->
+  <div class="modal-overlay" id="resort-modal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <h2 class="modal-title" id="resort-modal-title">Add New Resort</h2>
+          <p class="modal-subtitle">Fill in the resort details below</p>
+        </div>
+        <button class="modal-close" id="resort-modal-close">
+          <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="resort-form">
+          <div class="form-group">
+            <label class="form-label">Resort Name *</label>
+            <input type="text" id="resort-name" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Address *</label>
+            <input type="text" id="resort-address" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea id="resort-description" class="form-textarea" required></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Image URL *</label>
+              <input type="url" id="resort-image" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Number of Bedrooms *</label>
+              <input type="number" id="resort-bedrooms" class="form-input" min="1" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Price Category *</label>
+              <select id="resort-price" class="form-select" required>
+                <option value="">Select category</option>
+                <option value="budget">Budget</option>
+                <option value="mid">Mid-Range</option>
+                <option value="premium">Premium</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Price Value *</label>
+              <input type="text" id="resort-price-value" class="form-input" placeholder="₱3,500 - ₱6,000" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Price (Numeric - for sorting) *</label>
+            <input type="number" id="resort-price-numeric" class="form-input" min="0" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Latitude</label>
+              <input type="number" id="resort-latitude" class="form-input" step="0.000001">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Longitude</label>
+              <input type="number" id="resort-longitude" class="form-input" step="0.000001">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Facilities (comma-separated) *</label>
+            <textarea id="resort-facilities" class="form-textarea" placeholder="Swimming pools, Hot spring baths, Cottages" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Amenities</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" name="amenity" value="hot-spring">
+                <span>Hot Spring</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="amenity" value="aircon">
+                <span>Air Conditioning</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="amenity" value="kitchen">
+                <span>Kitchen</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="amenity" value="karaoke">
+                <span>Karaoke/Videoke</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="amenity" value="wifi">
+                <span>WiFi</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="amenity" value="parking">
+                <span>Parking</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="resort-cancel-btn">Cancel</button>
+        <button class="btn btn-success" id="resort-save-btn">
+          <i data-lucide="save" style="width: 18px; height: 18px;"></i>
+          Save Resort
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, push, set, update, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
     import { getFirestore, collection, onSnapshot, doc, deleteDoc, updateDoc, query, where, addDoc, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // Firebase Configuration
@@ -1194,7 +1558,8 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const db = getDatabase(app);
+    const firestore = getFirestore(app);
     const auth = getAuth(app);
 
     let dashboardInstance = null;
@@ -1202,11 +1567,14 @@
     let unsubscribeActivityLog = null;
     let currentFeedbackId = null;
     let currentTab = 'active';
+    let currentEditingResortKey = null;
+    let resortsList = [];
 
-    // Dashboard Class
+    // Dashboard Class (keeping original)
     class FeedbackDashboard {
-      constructor(db, auth, userId, projectId) {
+      constructor(db, firestore, auth, userId, projectId) {
         this.db = db;
+        this.firestore = firestore;
         this.auth = auth;
         this.userId = userId;
         this.projectId = projectId;
@@ -1235,11 +1603,11 @@
       }
 
       getCollectionRef() {
-        return collection(this.db, 'feedback');
+        return collection(this.firestore, 'feedback');
       }
 
       getActivityLogRef() {
-        return collection(this.db, 'activityLogs');
+        return collection(this.firestore, 'activityLogs');
       }
 
       init() {
@@ -1320,7 +1688,6 @@
         );
       }
 
-      // Log Activity Method
       async logActivity(actionType, target, details) {
         try {
           const activityLogRef = this.getActivityLogRef();
@@ -1375,36 +1742,23 @@
       setupEventListeners() {
         if (!this.listenersInitialized) {
 
-          // Feedback report download buttons
           document.getElementById('download-selected-feedback').addEventListener('click', () => this.downloadSelectedFeedback());
           document.getElementById('download-all-feedback').addEventListener('click', () => this.downloadAllFeedback());
 
-          // Feedback report filters
           document.getElementById('feedback-start-date').addEventListener('change', () => this.handleFeedbackReportFilterChange());
           document.getElementById('feedback-end-date').addEventListener('change', () => this.handleFeedbackReportFilterChange());
           document.getElementById('feedback-report-resort').addEventListener('change', () => this.handleFeedbackReportFilterChange());
 
-
-          // Active tab filters
           document.getElementById('search-input').addEventListener('input', () => this.handleFilterChange('active'));
           document.getElementById('rating-filter').addEventListener('change', () => this.handleFilterChange('active'));
           document.getElementById('resort-filter').addEventListener('change', () => this.handleFilterChange('active'));
           document.getElementById('sort-by').addEventListener('change', () => this.handleFilterChange('active'));
 
-          // Archived tab filters
           document.getElementById('search-input-archived').addEventListener('input', () => this.handleFilterChange('archived'));
           document.getElementById('rating-filter-archived').addEventListener('change', () => this.handleFilterChange('archived'));
           document.getElementById('resort-filter-archived').addEventListener('change', () => this.handleFilterChange('archived'));
           document.getElementById('sort-by-archived').addEventListener('change', () => this.handleFilterChange('archived'));
 
-          // Activity log filters
-          document.getElementById('activity-start-date')?.addEventListener('change', () => this.handleActivityFilterChange());
-          document.getElementById('activity-end-date')?.addEventListener('change', () => this.handleActivityFilterChange());
-          document.getElementById('activity-resort-filter')?.addEventListener('change', () => this.handleActivityFilterChange());
-
-
-
-          // Tab switching
           document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
               const tab = btn.getAttribute('data-tab');
@@ -1412,7 +1766,6 @@
             });
           });
 
-          // Modal controls
           document.getElementById('modal-close').addEventListener('click', () => this.closeModal());
           document.getElementById('feedback-modal').addEventListener('click', (e) => {
             if (e.target.id === 'feedback-modal') {
@@ -1435,7 +1788,6 @@
           this.listenersInitialized = true;
         }
       }
-
 
       switchTab(tab) {
         currentTab = tab;
@@ -1491,7 +1843,6 @@
         return feedbacks.filter(f => {
           let matches = true;
 
-          // Get feedback date
           let feedbackDate;
           if (f.timestamp?.toDate) {
             feedbackDate = f.timestamp.toDate();
@@ -1505,7 +1856,6 @@
             return false;
           }
 
-          // Date filtering
           if (this.feedbackStartDate) {
             const startDate = new Date(this.feedbackStartDate);
             startDate.setHours(0, 0, 0, 0);
@@ -1518,7 +1868,6 @@
             if (feedbackDate > endDate) matches = false;
           }
 
-          // Resort filtering
           if (this.feedbackReportResort !== 'all') {
             const resortName = f.resortName || (f.resortId ? `Resort ID: ${f.resortId}` : '');
             if (resortName !== this.feedbackReportResort) {
@@ -1530,9 +1879,7 @@
         });
       }
 
-
       filterAndSortFeedbacks() {
-        // Filter active feedbacks
         this.filteredActiveFeedbacks = this.filterAndSort(
           this.activeFeedbacks,
           this.searchTerm,
@@ -1541,7 +1888,6 @@
           this.sortBy
         );
 
-        // Filter archived feedbacks
         this.filteredArchivedFeedbacks = this.filterAndSort(
           this.archivedFeedbacks,
           this.searchTermArchived,
@@ -1582,6 +1928,10 @@
           });
       }
 
+      filterActivityLogs() {
+        this.filteredActivityLogs = this.activityLogs;
+      }
+
       updateStats() {
         const total = this.activeFeedbacks.length;
         const totalRatingSum = this.activeFeedbacks.reduce((sum, f) => {
@@ -1593,6 +1943,7 @@
         document.getElementById('avg-rating').textContent = total > 0 ? (totalRatingSum / total).toFixed(1) : '0.0';
         document.getElementById('five-star').textContent = this.activeFeedbacks.filter(f => (f.rating || f.stars) === 5).length;
         document.getElementById('archived-count').textContent = this.archivedFeedbacks.length;
+        document.getElementById('total-resorts').textContent = resortsList.length;
       }
 
       render() {
@@ -1619,7 +1970,6 @@
         `;
         } else {
           tbody.innerHTML = this.filteredActivityLogs.map(log => {
-            // Parse timestamp properly
             let timestamp;
             if (log.timestamp?.toDate) {
               timestamp = log.timestamp.toDate();
@@ -1665,6 +2015,18 @@
                 badgeClass = 'badge-user-deleted';
                 badgeText = 'USER DELETED';
                 break;
+              case 'resort_added':
+                badgeClass = 'badge-resort-added';
+                badgeText = 'RESORT ADDED';
+                break;
+              case 'resort_updated':
+                badgeClass = 'badge-resort-updated';
+                badgeText = 'RESORT UPDATED';
+                break;
+              case 'resort_deleted':
+                badgeClass = 'badge-resort-deleted';
+                badgeText = 'RESORT DELETED';
+                break;
             }
 
             return `
@@ -1685,7 +2047,6 @@
       }
 
       downloadSelectedFeedback() {
-        // Check if any filters are applied
         const hasFilters = this.feedbackStartDate || this.feedbackEndDate || this.feedbackReportResort !== 'all';
 
         if (!hasFilters) {
@@ -1731,7 +2092,6 @@
         const maxWidth = pageWidth - (margin * 2);
         let yPos = margin;
 
-        // Helper function to check if we need a new page
         const checkNewPage = (heightNeeded) => {
           if (yPos + heightNeeded > pageHeight - margin) {
             doc.addPage();
@@ -1741,13 +2101,11 @@
           return false;
         };
 
-        // Title
         doc.setFontSize(20);
         doc.setFont(undefined, 'bold');
         doc.text('CUSTOMER FEEDBACK REPORT', pageWidth / 2, yPos, { align: 'center' });
         yPos += 10;
 
-        // Report Info
         doc.setFontSize(10);
         doc.setFont(undefined, 'normal');
         doc.text(`Generated: ${new Date().toLocaleString()}`, margin, yPos);
@@ -1757,7 +2115,6 @@
         doc.text(`Total Records: ${feedbacks.length}`, margin, yPos);
         yPos += 6;
 
-        // Calculate statistics
         const totalRating = feedbacks.reduce((sum, f) => sum + (f.rating || f.stars || 0), 0);
         const avgRating = feedbacks.length > 0 ? (totalRating / feedbacks.length).toFixed(1) : '0.0';
         const fiveStarCount = feedbacks.filter(f => (f.rating || f.stars) === 5).length;
@@ -1787,7 +2144,6 @@
         doc.line(margin, yPos, pageWidth - margin, yPos);
         yPos += 10;
 
-        // Group by resort
         const resortGroups = {};
         feedbacks.forEach(feedback => {
           const resortKey = feedback.resortName || (feedback.resortId ? `Resort ID: ${feedback.resortId}` : 'Unknown Resort');
@@ -1797,11 +2153,9 @@
           resortGroups[resortKey].push(feedback);
         });
 
-        // Render each resort group
         Object.entries(resortGroups).forEach(([resortName, resortFeedbacks]) => {
           checkNewPage(30);
 
-          // Resort Header
           doc.setFontSize(14);
           doc.setFont(undefined, 'bold');
           doc.text(resortName, margin, yPos);
@@ -1813,7 +2167,6 @@
           doc.text(`${resortFeedbacks.length} reviews | Average: ${resortAvg} stars`, margin, yPos);
           yPos += 10;
 
-          // Table Headers
           const tableStartY = yPos;
           const colWidths = {
             no: 10,
@@ -1844,13 +2197,11 @@
           yPos += 8;
           doc.setTextColor(0, 0, 0);
 
-          // Resort feedback rows
           resortFeedbacks.forEach((feedback, index) => {
             const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
             const message = feedback.message || feedback.feedback || feedback.comment || 'No message';
             const rating = feedback.rating || feedback.stars || 0;
 
-            // Parse timestamp
             let timestamp;
             if (feedback.timestamp?.toDate) {
               timestamp = feedback.timestamp.toDate();
@@ -1864,13 +2215,11 @@
               timestamp = new Date();
             }
 
-            // Calculate row height based on feedback text
             const messageLines = doc.splitTextToSize(message, colWidths.feedback - 4);
             const rowHeight = Math.max(8, messageLines.length * 4 + 4);
 
             checkNewPage(rowHeight + 2);
 
-            // Alternating row colors
             if (index % 2 === 0) {
               doc.setFillColor(248, 250, 252);
               doc.rect(margin, yPos, maxWidth, rowHeight, 'F');
@@ -1897,7 +2246,6 @@
 
             yPos += rowHeight;
 
-            // Draw row border
             doc.setDrawColor(226, 232, 240);
             doc.line(margin, yPos, pageWidth - margin, yPos);
           });
@@ -1905,7 +2253,6 @@
           yPos += 8;
         });
 
-        // Save PDF
         const dateStr = new Date().toISOString().split('T')[0];
         const timeStr = new Date().toTimeString().split(' ')[0].replace(/:/g, '-');
         doc.save(`feedback-report-${type}-${dateStr}_${timeStr}.pdf`);
@@ -1915,51 +2262,58 @@
         currentFeedbackId = feedback.id;
 
         const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
-        const message = feedback.message || feedback.feedback || feedback.comment || 'No message.';
+        const message = feedback. message || feedback.feedback || feedback.comment || 'No message provided';
         const rating = feedback.rating || feedback.stars || 0;
-        const category = feedback.category || feedback.type || '';
-        const resortName = feedback.resortName || '';
-        const resortId = feedback.resortId || '';
+        const email = feedback.email || feedback.userEmail || 'Not provided';
+        const resortName = feedback.resortName || (feedback.resortId ? `Resort ID: ${feedback.resortId}` : 'Unknown');
+        const category = feedback.category || 'General';
 
-        let date;
+        let timestamp;
         if (feedback.timestamp?.toDate) {
-          date = feedback.timestamp.toDate();
+          timestamp = feedback.timestamp.toDate();
         } else if (feedback.timestamp instanceof Date) {
-          date = feedback.timestamp;
+          timestamp = feedback.timestamp;
         } else if (typeof feedback.timestamp === 'number') {
-          date = new Date(feedback.timestamp);
+          timestamp = new Date(feedback.timestamp);
+        } else if (feedback.timestamp?.seconds) {
+          timestamp = new Date(feedback.timestamp.seconds * 1000);
         } else {
-          date = new Date();
+          timestamp = new Date();
         }
 
         document.getElementById('modal-name').textContent = name;
-        document.getElementById('modal-email').style.display = 'none'; // Hide email field
+        document.getElementById('modal-email').textContent = email;
+        document.getElementById('modal-resort').innerHTML = `
+          <span class="resort-badge-modal">
+            <i data-lucide="map-pin" style="width: 16px; height: 16px;"></i>
+            ${this.escapeHtml(resortName)}
+          </span>
+        `;
         document.getElementById('modal-message').textContent = message;
-        document.getElementById('modal-rating-number').textContent = rating + '.0';
-        document.getElementById('modal-rating-stars').innerHTML = this.renderStarRating(rating);
-        document.getElementById('modal-date').textContent = date.toLocaleString();
-        
-        if (resortName || resortId) {
-          document.getElementById('modal-resort-section').style.display = 'block';
-          document.getElementById('modal-resort').innerHTML = `
-                        <div class="resort-badge-modal">
-                            <i data-lucide="building" style="width: 16px; height: 16px;"></i>
-                            <span>${resortName || 'Resort'}</span>
-                            ${resortId ? `<span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; font-size: 11px;">ID: ${resortId}</span>` : ''}
-                        </div>
-                    `;
-        } else {
-          document.getElementById('modal-resort-section').style.display = 'none';
+        document.getElementById('modal-category').textContent = category;
+        document.getElementById('modal-rating-number').textContent = `${rating}.0 / 5.0`;
+        document.getElementById('modal-date').textContent = timestamp.toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        const starsContainer = document.getElementById('modal-rating-stars');
+        starsContainer.innerHTML = '';
+        for (let i = 1; i <= 5; i++) {
+          const star = document.createElement('i');
+          star.setAttribute('data-lucide', 'star');
+          star.classList.add('star');
+          if (i <= rating) {
+            star.classList.add('star-filled');
+          } else {
+            star.classList.add('star-empty');
+          }
+          starsContainer.appendChild(star);
         }
 
-        if (category) {
-          document.getElementById('modal-category-section').style.display = 'block';
-          document.getElementById('modal-category').textContent = category;
-        } else {
-          document.getElementById('modal-category-section').style.display = 'none';
-        }
-
-        // Show/hide appropriate action buttons
         if (isArchived) {
           document.getElementById('modal-archive').classList.add('hidden');
           document.getElementById('modal-restore').classList.remove('hidden');
@@ -1977,8 +2331,62 @@
         currentFeedbackId = null;
       }
 
+      async archiveFeedback(feedbackId) {
+        try {
+          const feedbackRef = doc(this.firestore, 'feedback', feedbackId);
+          await updateDoc(feedbackRef, {
+            archived: true,
+            archivedAt: Timestamp.now()
+          });
+
+          const feedbackData = this.activeFeedbacks.find(f => f.id === feedbackId);
+          const feedbackName = feedbackData?.name || feedbackData?.userName || 'Anonymous';
+
+          await this.logActivity('feedback_archived', feedbackName, `Archived feedback from ${feedbackName}`);
+          console.log('Feedback archived successfully');
+        } catch (error) {
+          console.error('Error archiving feedback:', error);
+          alert('Failed to archive feedback. Please try again.');
+        }
+      }
+
+      async restoreFeedback(feedbackId) {
+        try {
+          const feedbackRef = doc(this.firestore, 'feedback', feedbackId);
+          await updateDoc(feedbackRef, {
+            archived: false,
+            archivedAt: null
+          });
+
+          const feedbackData = this.archivedFeedbacks.find(f => f.id === feedbackId);
+          const feedbackName = feedbackData?.name || feedbackData?.userName || 'Anonymous';
+
+          await this.logActivity('feedback_restored', feedbackName, `Restored feedback from ${feedbackName}`);
+          console.log('Feedback restored successfully');
+        } catch (error) {
+          console.error('Error restoring feedback:', error);
+          alert('Failed to restore feedback. Please try again.');
+        }
+      }
+
       renderResortTables(containerId, feedbacks, isArchived) {
         const container = document.getElementById(containerId);
+
+        if (feedbacks.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i data-lucide="${isArchived ? 'archive' : 'inbox'}" class="empty-icon"></i>
+              <h3 class="empty-title">${isArchived ? 'No Archived Feedback' : 'No Active Feedback'}</h3>
+              <p class="empty-text">
+                ${isArchived
+              ? 'Archived feedback will appear here'
+              : 'Customer feedback will appear here once submitted'}
+              </p>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
 
         const resortGroups = {};
         feedbacks.forEach(feedback => {
@@ -1989,142 +2397,133 @@
           resortGroups[resortKey].push(feedback);
         });
 
-        if (Object.keys(resortGroups).length === 0) {
-          container.innerHTML = `
-                        <div class="empty-state">
-                            <i data-lucide="${isArchived ? 'archive' : 'inbox'}" class="empty-icon"></i>
-                            <h3 class="empty-title">${isArchived ? 'No archived feedback' : 'No active feedback'}</h3>
-                            <p class="empty-text">${isArchived ? 'Archived feedback will appear here.' : 'No feedback matches your filters.'}</p>
-                        </div>
-                    `;
-        } else {
-          container.innerHTML = Object.entries(resortGroups).map(([resortName, feedbacks]) => {
-            const avgRating = feedbacks.reduce((sum, f) => sum + (f.rating || f.stars || 0), 0) / feedbacks.length;
-            const totalFeedback = feedbacks.length;
+        container.innerHTML = Object.entries(resortGroups).map(([resortName, resortFeedbacks]) => {
+          const avgRating = (resortFeedbacks.reduce((sum, f) => sum + (f.rating || f.stars || 0), 0) / resortFeedbacks.length).toFixed(1);
+          const fiveStarCount = resortFeedbacks.filter(f => (f.rating || f.stars) === 5).length;
 
-            return `
-                            <div class="resort-table-card">
-                                <div class="resort-table-header ${isArchived ? 'archived' : ''}">
-                                    <div class="resort-table-title">
-                                        <i data-lucide="building" style="width: 24px; height: 24px;"></i>
-                                        <h3>${this.escapeHtml(resortName)}</h3>
-                                    </div>
-                                    <div class="resort-stats">
-                                        <div class="resort-stat">
-                                            <i data-lucide="message-square" style="width: 16px; height: 16px;"></i>
-                                            <span>${totalFeedback} Reviews</span>
-                                        </div>
-                                        <div class="resort-stat">
-                                            <i data-lucide="star" style="width: 16px; height: 16px;" class="star-filled"></i>
-                                            <span>${avgRating.toFixed(1)} Avg</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="table-wrapper">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Guest Name</th>
-                                                <th>Rating</th>
-                                                <th>Feedback</th>
-                                                <th>Date</th>
-                                                <th class="table-actions">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            ${feedbacks.map(feedback => {
-              const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
-              const message = feedback.message || feedback.feedback || feedback.comment || 'No message.';
-              const rating = feedback.rating || feedback.stars || 0;
+          return `
+            <div class="resort-table-card">
+              <div class="resort-table-header ${isArchived ? 'archived' : ''}">
+                <div class="resort-table-title">
+                  <i data-lucide="map-pin" style="width: 24px; height: 24px;"></i>
+                  <h3>${this.escapeHtml(resortName)}</h3>
+                </div>
+                <div class="resort-stats">
+                  <div class="resort-stat">
+                    <i data-lucide="message-square" style="width: 16px; height: 16px;"></i>
+                    <span>${resortFeedbacks.length} reviews</span>
+                  </div>
+                  <div class="resort-stat">
+                    <i data-lucide="star" style="width: 16px; height: 16px;"></i>
+                    <span>${avgRating} avg</span>
+                  </div>
+                  <div class="resort-stat">
+                    <i data-lucide="award" style="width: 16px; height: 16px;"></i>
+                    <span>${fiveStarCount} 5-star</span>
+                  </div>
+                </div>
+              </div>
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>NAME</th>
+                      <th>RATING</th>
+                      <th>FEEDBACK</th>
+                      <th>DATE</th>
+                      <th class="table-actions">ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${resortFeedbacks.map(feedback => this.renderFeedbackRow(feedback, isArchived)).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }).join('');
 
-              let date;
-              if (feedback.timestamp?.toDate) {
-                date = feedback.timestamp.toDate();
-              } else if (feedback.timestamp instanceof Date) {
-                date = feedback.timestamp;
-              } else if (typeof feedback.timestamp === 'number') {
-                date = new Date(feedback.timestamp);
-              } else {
-                date = new Date();
-              }
-
-              return `
-                                                    <tr class="feedback-row" data-id="${feedback.id}" data-archived="${isArchived}">
-                                                        <td class="table-name">${this.escapeHtml(name)}</td>
-                                                        <td>
-                                                            <div class="table-rating">
-                                                                ${this.renderStarRating(rating)}
-                                                                <span>${rating}.0</span>
-                                                            </div>
-                                                        </td>
-                                                        <td class="table-feedback">${this.escapeHtml(message)}</td>
-                                                        <td class="table-date">${date.toLocaleDateString()}</td>
-                                                        <td class="table-actions">
-                                                            ${isArchived ?
-                  `<button class="restore-btn" data-id="${feedback.id}">
-                                                                    <i data-lucide="rotate-ccw" style="width: 18px; height: 18px;"></i>
-                                                                </button>` :
-                  `<button class="archive-btn" data-id="${feedback.id}">
-                                                                    <i data-lucide="archive" style="width: 18px; height: 18px;"></i>
-                                                                </button>`
-                }
-                                                        </td>
-                                                    </tr>
-                                                `;
-            }).join('')}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        `;
-          }).join('');
-
-          container.querySelectorAll('.feedback-row').forEach(row => {
-            row.addEventListener('click', (e) => {
-              if (!e.target.closest('.archive-btn') && !e.target.closest('.restore-btn')) {
-                const id = row.getAttribute('data-id');
-                const archived = row.getAttribute('data-archived') === 'true';
-                const feedbackList = archived ? this.archivedFeedbacks : this.activeFeedbacks;
-                const feedback = feedbackList.find(f => f.id === id);
-                if (feedback) {
-                  this.openModal(feedback, archived);
-                }
-              }
-            });
+        container.querySelectorAll('tbody tr').forEach((row, index) => {
+          const allFeedbacks = Object.values(resortGroups).flat();
+          row.addEventListener('click', (e) => {
+            if (!e.target.closest('button')) {
+              this.openModal(allFeedbacks[index], isArchived);
+            }
           });
+        });
 
-          container.querySelectorAll('.archive-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              const id = btn.getAttribute('data-id');
-              if (confirm('Are you sure you want to archive this feedback? It will be hidden from view.')) {
-                this.archiveFeedback(id);
-              }
-            });
+        container.querySelectorAll('.archive-btn').forEach((btn, index) => {
+          const allFeedbacks = Object.values(resortGroups).flat();
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm('Are you sure you want to archive this feedback?')) {
+              this.archiveFeedback(allFeedbacks[index].id);
+            }
           });
+        });
 
-          container.querySelectorAll('.restore-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              const id = btn.getAttribute('data-id');
-              if (confirm('Are you sure you want to restore this feedback?')) {
-                this.restoreFeedback(id);
-              }
-            });
+        container.querySelectorAll('.restore-btn').forEach((btn, index) => {
+          const allFeedbacks = Object.values(resortGroups).flat();
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm('Are you sure you want to restore this feedback?')) {
+              this.restoreFeedback(allFeedbacks[index].id);
+            }
           });
-        }
+        });
 
         lucide.createIcons();
       }
 
-      renderStarRating(rating) {
+      renderFeedbackRow(feedback, isArchived) {
+        const name = feedback.name || feedback.userName || feedback.guestName || 'Anonymous';
+        const message = feedback.message || feedback.feedback || feedback.comment || 'No message';
+        const rating = feedback.rating || feedback.stars || 0;
+
+        let timestamp;
+        if (feedback.timestamp?.toDate) {
+          timestamp = feedback.timestamp.toDate();
+        } else if (feedback.timestamp instanceof Date) {
+          timestamp = feedback.timestamp;
+        } else if (typeof feedback.timestamp === 'number') {
+          timestamp = new Date(feedback.timestamp);
+        } else if (feedback.timestamp?.seconds) {
+          timestamp = new Date(feedback.timestamp.seconds * 1000);
+        } else {
+          timestamp = new Date();
+        }
+
         return `
-                    <div class="star-rating">
-                        ${[1, 2, 3, 4, 5].map(star => `
-                            <i data-lucide="star" class="star ${star <= rating ? 'star-filled' : 'star-empty'}"></i>
-                        `).join('')}
-                    </div>
-                `;
+          <tr>
+            <td class="table-name">${this.escapeHtml(name)}</td>
+            <td>
+              <div class="table-rating">
+                <div class="star-rating">
+                  ${Array.from({ length: 5 }, (_, i) => `
+                    <i data-lucide="star" class="star ${i < rating ? 'star-filled' : 'star-empty'}"></i>
+                  `).join('')}
+                </div>
+                <span>${rating}.0</span>
+              </div>
+            </td>
+            <td class="table-feedback">${this.escapeHtml(message)}</td>
+            <td class="table-date">${timestamp.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        })}</td>
+            <td class="table-actions">
+              ${isArchived
+            ? `<button class="restore-btn" title="Restore feedback">
+                    <i data-lucide="rotate-ccw" style="width: 20px; height: 20px;"></i>
+                  </button>`
+            : `<button class="archive-btn" title="Archive feedback">
+                    <i data-lucide="archive" style="width: 20px; height: 20px;"></i>
+                  </button>`
+          }
+            </td>
+          </tr>
+        `;
       }
 
       escapeHtml(text) {
@@ -2132,110 +2531,254 @@
         div.textContent = text;
         return div.innerHTML;
       }
-
-      async archiveFeedback(id) {
-        try {
-          const feedback = this.activeFeedbacks.find(f => f.id === id);
-          const resortName = feedback?.resortName || (feedback?.resortId ? `Resort ID: ${feedback.resortId}` : 'Unknown Resort');
-          const guestName = feedback?.name || feedback?.userName || feedback?.guestName || 'Anonymous';
-
-          await updateDoc(doc(this.db, 'feedback', id), {
-            archived: true,
-            archivedAt: new Date()
-          });
-
-          await this.logActivity(
-            'feedback_archived',
-            `${resortName} - ${guestName}`,
-            `Feedback from ${guestName} at ${resortName} was archived`
-          );
-
-          console.log(`Feedback ${id} archived`);
-        } catch (error) {
-          console.error('Error archiving feedback:', error);
-          alert(`Failed to archive feedback: ${error.message}`);
-        }
-      }
-
-      async restoreFeedback(id) {
-        try {
-          const feedback = this.archivedFeedbacks.find(f => f.id === id);
-          const resortName = feedback?.resortName || (feedback?.resortId ? `Resort ID: ${feedback.resortId}` : 'Unknown Resort');
-          const guestName = feedback?.name || feedback?.userName || feedback?.guestName || 'Anonymous';
-
-          await updateDoc(doc(this.db, 'feedback', id), {
-            archived: false,
-            archivedAt: null
-          });
-
-          await this.logActivity(
-            'feedback_restored',
-            `${resortName} - ${guestName}`,
-            `Feedback from ${guestName} at ${resortName} was restored`
-          );
-
-          console.log(`Feedback ${id} restored`);
-        } catch (error) {
-          console.error('Error restoring feedback:', error);
-          alert(`Failed to restore feedback: ${error.message}`);
-        }
-      }
     }
 
-    // Authentication Setup
-    async function setupAuth() {
-      try {
-        await setPersistence(auth, browserLocalPersistence);
-      } catch (error) {
-        console.error("Persistence error:", error);
-      }
-
-      onAuthStateChanged(auth, (user) => {
-        document.getElementById('loading').classList.add('hidden');
-
-        if (user) {
-          console.log('User authenticated:', user.email);
-          document.getElementById('login-container').classList.add('hidden');
-          document.getElementById('main-content').style.display = 'block';
-
-          if (!dashboardInstance) {
-            dashboardInstance = new FeedbackDashboard(db, auth, user.uid, firebaseConfig.projectId);
-            dashboardInstance.init();
-          } else if (dashboardInstance.userId !== user.uid) {
-            dashboardInstance.userId = user.uid;
-            dashboardInstance.init();
-          }
-
-          document.getElementById('user-id-display').textContent = `Admin User ID: ${user.uid}`;
-          lucide.createIcons();
-        } else {
-          console.log('User not authenticated');
-          document.getElementById('main-content').style.display = 'none';
-          document.getElementById('login-container').style.display = 'flex';
-
-          if (unsubscribeFeedback) {
-            unsubscribeFeedback();
-            unsubscribeFeedback = null;
-          }
+    // Resort Management Functions
+    function loadResorts() {
+      const resortsRef = ref(db, 'resorts');
+      onValue(resortsRef, (snapshot) => {
+        resortsList = [];
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          Object.keys(data).forEach(key => {
+            resortsList.push({ key, ...data[key] });
+          });
+        }
+        renderResorts();
+        if (dashboardInstance) {
+          dashboardInstance.updateStats();
         }
       });
     }
 
-    // Login Form Handler
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
-      const errorElement = document.getElementById('login-error');
-      const loginBtn = document.getElementById('login-btn');
+    function renderResorts() {
+      const container = document.getElementById('resorts-container');
 
-      errorElement.textContent = '';
-
-      if (!email || !password) {
-        errorElement.textContent = "Please enter both email and password.";
+      if (resortsList.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i data-lucide="building" class="empty-icon"></i>
+            <h3 class="empty-title">No Resorts Added Yet</h3>
+            <p class="empty-text">Click "Add New Resort" to get started</p>
+          </div>
+        `;
+        lucide.createIcons();
         return;
       }
 
+      container.innerHTML = resortsList.map(resort => `
+        <div class="resort-card">
+          <div class="resort-header">
+            <img src="${resort.image}" alt="${resort.name}" class="resort-image" onerror="this.src='https://via.placeholder.com/120'">
+            <div class="resort-info">
+              <h3 class="resort-name">${resort.name}</h3>
+              <p class="resort-address">
+                <i data-lucide="map-pin" style="width: 14px; height: 14px; display: inline;"></i>
+                ${resort.address}
+              </p>
+              <div class="resort-badges">
+                <span class="badge badge-${resort.price}">${resort.price}</span>
+                <span class="badge" style="background: #e0e7ff; color: #4338ca;">
+                  <i data-lucide="bed" style="width: 12px; height: 12px; display: inline;"></i>
+                  ${resort.bedrooms} Bedrooms
+                </span>
+              </div>
+            </div>
+            <div class="resort-actions">
+              <button class="btn btn-primary" onclick="editResort('${resort.key}')">
+                <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
+                Edit
+              </button>
+              <button class="btn btn-danger" onclick="deleteResort('${resort.key}', '${resort.name}')">
+                <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                Delete
+              </button>
+            </div>
+          </div>
+          <div class="resort-body">
+            <p class="resort-description">${resort.description}</p>
+            <div class="resort-details">
+              <div class="detail-item">
+                <i data-lucide="dollar-sign" style="width: 16px; height: 16px;"></i>
+                <span>${resort.priceValue}</span>
+              </div>
+              ${resort.facilities ? `
+                <div class="detail-item">
+                  <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+                  <span>${resort.facilities.split(',').length} Facilities</span>
+                </div>
+              ` : ''}
+              ${resort.amenities ? `
+                <div class="detail-item">
+                  <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+                  <span>${resort.amenities.length} Amenities</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    window.editResort = function (key) {
+      const resort = resortsList.find(r => r.key === key);
+      if (!resort) return;
+
+      currentEditingResortKey = key;
+      document.getElementById('resort-modal-title').textContent = 'Edit Resort';
+      document.getElementById('resort-name').value = resort.name;
+      document.getElementById('resort-address').value = resort.address;
+      document.getElementById('resort-description').value = resort.description;
+      document.getElementById('resort-image').value = resort.image;
+      document.getElementById('resort-bedrooms').value = resort.bedrooms;
+      document.getElementById('resort-price').value = resort.price;
+      document.getElementById('resort-price-value').value = resort.priceValue;
+      document.getElementById('resort-price-numeric').value = resort.priceNumeric || 0;
+      document.getElementById('resort-latitude').value = resort.latitude || '';
+      document.getElementById('resort-longitude').value = resort.longitude || '';
+      document.getElementById('resort-facilities').value = resort.facilities || '';
+
+      document.querySelectorAll('input[name="amenity"]').forEach(checkbox => {
+        checkbox.checked = resort.amenities && resort.amenities.includes(checkbox.value);
+      });
+
+      document.getElementById('resort-modal').classList.add('active');
+      lucide.createIcons();
+    };
+
+    window.deleteResort = async function (key, name) {
+      if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+        return;
+      }
+
+      try {
+        await remove(ref(db, `resorts/${key}`));
+        if (dashboardInstance) {
+          await dashboardInstance.logActivity('resort_deleted', name, `Deleted resort: ${name}`);
+        }
+        alert('Resort deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting resort:', error);
+        alert('Failed to delete resort. Please try again.');
+      }
+    };
+
+    document.getElementById('add-resort-btn').addEventListener('click', () => {
+      currentEditingResortKey = null;
+      document.getElementById('resort-modal-title').textContent = 'Add New Resort';
+      document.getElementById('resort-form').reset();
+      document.getElementById('resort-modal').classList.add('active');
+      lucide.createIcons();
+    });
+
+    document.getElementById('resort-modal-close').addEventListener('click', () => {
+      document.getElementById('resort-modal').classList.remove('active');
+    });
+
+    document.getElementById('resort-cancel-btn').addEventListener('click', () => {
+      document.getElementById('resort-modal').classList.remove('active');
+    });
+
+    document.getElementById('resort-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'resort-modal') {
+        document.getElementById('resort-modal').classList.remove('active');
+      }
+    });
+
+    document.getElementById('resort-save-btn').addEventListener('click', async () => {
+      const form = document.getElementById('resort-form');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const selectedAmenities = Array.from(document.querySelectorAll('input[name="amenity"]:checked'))
+        .map(cb => cb.value);
+
+      const resortData = {
+        name: document.getElementById('resort-name').value.trim(),
+        address: document.getElementById('resort-address').value.trim(),
+        description: document.getElementById('resort-description').value.trim(),
+        image: document.getElementById('resort-image').value.trim(),
+        bedrooms: parseInt(document.getElementById('resort-bedrooms').value),
+        price: document.getElementById('resort-price').value,
+        priceValue: document.getElementById('resort-price-value').value.trim(),
+        priceNumeric: parseFloat(document.getElementById('resort-price-numeric').value) || 0,
+        latitude: parseFloat(document.getElementById('resort-latitude').value) || null,
+        longitude: parseFloat(document.getElementById('resort-longitude').value) || null,
+        facilities: document.getElementById('resort-facilities').value.trim(),
+        amenities: selectedAmenities
+      };
+
+      try {
+        if (currentEditingResortKey) {
+          await update(ref(db, `resorts/${currentEditingResortKey}`), resortData);
+          if (dashboardInstance) {
+            await dashboardInstance.logActivity('resort_updated', resortData.name, `Updated resort: ${resortData.name}`);
+          }
+          alert('Resort updated successfully!');
+        } else {
+          const newResortRef = push(ref(db, 'resorts'));
+          await set(newResortRef, resortData);
+          if (dashboardInstance) {
+            await dashboardInstance.logActivity('resort_added', resortData.name, `Added new resort: ${resortData.name}`);
+          }
+          alert('Resort added successfully!');
+        }
+        document.getElementById('resort-modal').classList.remove('active');
+      } catch (error) {
+        console.error('Error saving resort:', error);
+        alert('Failed to save resort. Please try again.');
+      }
+    });
+
+    // Authentication Logic
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        console.log('Persistence set to LOCAL');
+      })
+      .catch((error) => {
+        console.error('Error setting persistence:', error);
+      });
+
+    onAuthStateChanged(auth, async (user) => {
+      const loading = document.getElementById('loading');
+      const loginContainer = document.getElementById('login-container');
+      const mainContent = document.getElementById('main-content');
+
+      if (user) {
+        console.log('User logged in:', user.email);
+        document.getElementById('user-id-display').textContent = `Logged in as: ${user.email}`;
+
+        loading.style.display = 'none';
+        loginContainer.style.display = 'none';
+        mainContent.style.display = 'block';
+
+        lucide.createIcons();
+
+        dashboardInstance = new FeedbackDashboard(db, firestore, auth, user.uid, firebaseConfig.projectId);
+        dashboardInstance.init();
+        loadResorts();
+      } else {
+        console.log('No user logged in');
+        loading.style.display = 'none';
+        loginContainer.style.display = 'flex';
+        mainContent.style.display = 'none';
+        lucide.createIcons();
+      }
+    });
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const errorDiv = document.getElementById('login-error');
+      const loginBtn = document.getElementById('login-btn');
+
+      errorDiv.textContent = '';
       loginBtn.disabled = true;
       loginBtn.textContent = 'Signing in...';
 
@@ -2243,58 +2786,51 @@
         await signInWithEmailAndPassword(auth, email, password);
         console.log('Login successful');
       } catch (error) {
-        console.error("Login error:", error);
-        let message = "Login failed. Please check your credentials.";
+        console.error('Login error:', error);
+        let errorMessage = 'Failed to sign in. Please check your credentials.';
 
         if (error.code === 'auth/user-not-found') {
-          message = "No user found with this email.";
+          errorMessage = 'No account found with this email address.';
         } else if (error.code === 'auth/wrong-password') {
-          message = "Incorrect password.";
+          errorMessage = 'Incorrect password. Please try again.';
         } else if (error.code === 'auth/invalid-email') {
-          message = "Invalid email address.";
+          errorMessage = 'Invalid email address format.';
         } else if (error.code === 'auth/too-many-requests') {
-          message = "Too many failed attempts. Please try again later.";
-        } else if (error.code === 'auth/network-request-failed') {
-          message = "Network error. Please check your connection.";
+          errorMessage = 'Too many failed attempts. Please try again later.';
         } else if (error.code === 'auth/invalid-credential') {
-          message = "Invalid credentials. Please check your email and password.";
+          errorMessage = 'Invalid credentials. Please check your email and password.';
         }
 
-        errorElement.textContent = message;
-      } finally {
+        errorDiv.textContent = errorMessage;
         loginBtn.disabled = false;
         loginBtn.textContent = 'Sign In';
       }
     });
 
-    // Sign Out Handler
     document.getElementById('signout-btn').addEventListener('click', async () => {
-      try {
-        // Log the logout activity before signing out
-        if (dashboardInstance && auth.currentUser) {
-          await dashboardInstance.logActivity(
-            'logout',
-            auth.currentUser.email,
-            `Admin user ${auth.currentUser.email} logged out`
-          );
-        }
+      if (confirm('Are you sure you want to sign out?')) {
+        try {
+          if (dashboardInstance) {
+            await dashboardInstance.logActivity('logout', auth.currentUser.email, 'Admin logged out');
+          }
 
-        await signOut(auth);
-        console.log("User signed out");
-        dashboardInstance = null;
-        // Redirect to index.html after successful sign out
-        window.location.href = 'index.html';
-      } catch (error) {
-        console.error("Sign out error:", error);
-        alert('Failed to sign out. Please try again.');
+          if (unsubscribeFeedback) {
+            unsubscribeFeedback();
+            unsubscribeFeedback = null;
+          }
+          if (unsubscribeActivityLog) {
+            unsubscribeActivityLog();
+            unsubscribeActivityLog = null;
+          }
+
+          await signOut(auth);
+          console.log('Sign out successful');
+        } catch (error) {
+          console.error('Sign out error:', error);
+          alert('Failed to sign out. Please try again.');
+        }
       }
     });
-
-    // Initialize icons on page load
-    lucide.createIcons();
-
-    // Start authentication
-    setupAuth();
   </script>
 </body>
 
