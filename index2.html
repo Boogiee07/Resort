@@ -718,9 +718,12 @@
             resortsRef.once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
+                    console.log('Firebase data loaded:', data); // Debug log
                     resorts = validateResortData(Object.values(data));
+                    console.log('Processed resorts:', resorts); // Debug log
                 } else {
                     resorts = [];
+                    console.log('No resorts data found in Firebase');
                 }
                 document.getElementById('loadingOverlay').style.display = 'none';
                 initializePageWithData();
@@ -841,7 +844,7 @@
                             <h4 class="text-base font-bold text-gray-900 flex-1">${resort.name}</h4>
                         </div>
                         <div class="mb-1.5">
-                            ${generateStarRating(resort.rating || 4.0)}
+                            ${resort.rating > 0 ? generateStarRating(resort.rating) : '<span class="text-xs text-gray-500">No rating yet</span>'}
                         </div>
                         <p class="text-xs text-gray-600 mb-1.5 flex items-center">
                             <svg class="w-3 h-3 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -940,9 +943,17 @@
                 if (!resort.amenities) {
                     resort.amenities = [];
                 }
-                // Use rating from Firebase, default to 0 if not set
-                if (!resort.rating || resort.rating === 0) {
-                    resort.rating = 0;
+                // Parse rating from Firebase - ensure it's a valid number
+                if (resort.rating !== undefined && resort.rating !== null) {
+                    resort.rating = parseFloat(resort.rating);
+                    // Ensure rating is between 0 and 5
+                    if (isNaN(resort.rating) || resort.rating < 0) {
+                        resort.rating = 0;
+                    } else if (resort.rating > 5) {
+                        resort.rating = 5;
+                    }
+                } else {
+                    resort.rating = 0; // Default to 0 if no rating exists
                 }
                 return resort;
             });
