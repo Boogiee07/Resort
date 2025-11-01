@@ -1224,9 +1224,6 @@
         this.filterRatingArchived = 'all';
         this.filterResortArchived = 'all';
         this.sortByArchived = 'newest';
-        this.activityStartDate = '';
-        this.activityEndDate = '';
-        this.activityResortFilter = 'all';
         this.resorts = new Set();
         this.setupEventListeners();
         this.feedbackStartDate = '';
@@ -1340,11 +1337,9 @@
       updateResortFilters() {
         const resortFilter = document.getElementById('resort-filter');
         const resortFilterArchived = document.getElementById('resort-filter-archived');
-        const activityResortFilter = document.getElementById('activity-resort-filter');
         const feedbackReportResort = document.getElementById('feedback-report-resort');
         const currentValueActive = resortFilter?.value;
         const currentValueArchived = resortFilterArchived?.value;
-        const currentValueActivity = activityResortFilter?.value;
         const currentValueFeedback = feedbackReportResort?.value;
 
         const sortedResorts = Array.from(this.resorts).sort();
@@ -1355,7 +1350,6 @@
 
         if (resortFilter) resortFilter.innerHTML = options;
         if (resortFilterArchived) resortFilterArchived.innerHTML = options;
-        if (activityResortFilter) activityResortFilter.innerHTML = options;
         if (feedbackReportResort) feedbackReportResort.innerHTML = options;
 
         if (currentValueActive && sortedResorts.includes(currentValueActive) && resortFilter) {
@@ -1363,9 +1357,6 @@
         }
         if (currentValueArchived && sortedResorts.includes(currentValueArchived) && resortFilterArchived) {
           resortFilterArchived.value = currentValueArchived;
-        }
-        if (currentValueActivity && sortedResorts.includes(currentValueActivity) && activityResortFilter) {
-          activityResortFilter.value = currentValueActivity;
         }
         if (currentValueFeedback && sortedResorts.includes(currentValueFeedback) && feedbackReportResort) {
           feedbackReportResort.value = currentValueFeedback;
@@ -1396,13 +1387,6 @@
           document.getElementById('rating-filter-archived').addEventListener('change', () => this.handleFilterChange('archived'));
           document.getElementById('resort-filter-archived').addEventListener('change', () => this.handleFilterChange('archived'));
           document.getElementById('sort-by-archived').addEventListener('change', () => this.handleFilterChange('archived'));
-
-          // Activity log filters
-          document.getElementById('activity-start-date')?.addEventListener('change', () => this.handleActivityFilterChange());
-          document.getElementById('activity-end-date')?.addEventListener('change', () => this.handleActivityFilterChange());
-          document.getElementById('activity-resort-filter')?.addEventListener('change', () => this.handleActivityFilterChange());
-
-
 
           // Tab switching
           document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1469,18 +1453,6 @@
         this.render();
       }
 
-      handleActivityFilterChange() {
-        const startDateEl = document.getElementById('activity-start-date');
-        const endDateEl = document.getElementById('activity-end-date');
-        const resortFilterEl = document.getElementById('activity-resort-filter');
-
-        if (startDateEl) this.activityStartDate = startDateEl.value;
-        if (endDateEl) this.activityEndDate = endDateEl.value;
-        if (resortFilterEl) this.activityResortFilter = resortFilterEl.value;
-        this.filterActivityLogs();
-        this.renderActivityLog();
-      }
-
       handleFeedbackReportFilterChange() {
         this.feedbackStartDate = document.getElementById('feedback-start-date').value;
         this.feedbackEndDate = document.getElementById('feedback-end-date').value;
@@ -1530,6 +1502,10 @@
         });
       }
 
+      filterActivityLogs() {
+        // Show ALL activity logs without any filtering
+        this.filteredActivityLogs = [...this.activityLogs];
+      }
 
       filterAndSortFeedbacks() {
         // Filter active feedbacks
@@ -1609,11 +1585,7 @@
                 <td colspan="5" style="text-align: center; padding: 48px; color: #64748b;">
                     <i data-lucide="activity" style="width: 48px; height: 48px; margin: 0 auto 16px; display: block; color: #cbd5e1;"></i>
                     <div style="font-weight: 600; margin-bottom: 8px;">No activity logs found</div>
-                    <div style="font-size: 13px;">
-                        ${this.activityLogs.length === 0 ?
-              'Activity logs will appear here when actions are performed' :
-              'No logs match your current filters'}
-                    </div>
+                    <div style="font-size: 13px;">Activity logs will appear here when actions are performed</div>
                 </td>
             </tr>
         `;
@@ -1814,13 +1786,12 @@
           yPos += 10;
 
           // Table Headers
-          const tableStartY = yPos;
           const colWidths = {
             no: 10,
             name: 40,
-            rating: 35,
+            rating: 20,
             date: 30,
-            feedback: maxWidth - 115
+            feedback: maxWidth - 100
           };
 
           doc.setFillColor(59, 130, 246);
@@ -1886,6 +1857,9 @@
             const nameLines = doc.splitTextToSize(name, colWidths.name - 4);
             doc.text(nameLines, xPos, yPos + 5);
 
+            xPos += colWidths.name;
+            doc.text(`${rating}.0`, xPos, yPos + 5);
+
             xPos += colWidths.rating;
             doc.text(timestamp.toLocaleDateString(), xPos, yPos + 5);
 
@@ -1930,7 +1904,7 @@
         }
 
         document.getElementById('modal-name').textContent = name;
-        document.getElementById('modal-email').style.display = 'none'; // Hide email field
+        document.getElementById('modal-email').style.display = 'none';
         document.getElementById('modal-message').textContent = message;
         document.getElementById('modal-rating-number').textContent = rating + '.0';
         document.getElementById('modal-rating-stars').innerHTML = this.renderStarRating(rating);
@@ -1956,7 +1930,6 @@
           document.getElementById('modal-category-section').style.display = 'none';
         }
 
-        // Show/hide appropriate action buttons
         if (isArchived) {
           document.getElementById('modal-archive').classList.add('hidden');
           document.getElementById('modal-restore').classList.remove('hidden');
@@ -2203,7 +2176,7 @@
             dashboardInstance.init();
           }
 
-          document.getElementById('user-id-display').textContent = `Admin User ID: ${user.uid}`;
+          document.getElementById('user-id-display').textContent = `Logged in as: ${user.email}`;
           lucide.createIcons();
         } else {
           console.log('User not authenticated');
@@ -2267,7 +2240,6 @@
     // Sign Out Handler
     document.getElementById('signout-btn').addEventListener('click', async () => {
       try {
-        // Log the logout activity before signing out
         if (dashboardInstance && auth.currentUser) {
           await dashboardInstance.logActivity(
             'logout',
@@ -2279,7 +2251,6 @@
         await signOut(auth);
         console.log("User signed out");
         dashboardInstance = null;
-        // Redirect to index.html after successful sign out
         window.location.href = 'index.html';
       } catch (error) {
         console.error("Sign out error:", error);
@@ -2287,10 +2258,7 @@
       }
     });
 
-    // Initialize icons on page load
     lucide.createIcons();
-
-    // Start authentication
     setupAuth();
   </script>
 </body>
