@@ -1217,3 +1217,716 @@
                 document.getElementById('overnightBtn').classList.remove('bg-white', 'text-gray-700');
                 document.getElementById('dayUseBtn').classList.remove('bg-blue-600', 'text-white');
                 document.getElementById('dayUseBtn').classList.add('bg-white', 'text-gray-700');
+            } else {
+                document.getElementById('dayUseInfo').classList.remove('hidden');
+                document.getElementById('dayUseBtn').classList.add('bg-blue-600', 'text-white');
+                document.getElementById('dayUseBtn').classList.remove('bg-white', 'text-gray-700');
+                document.getElementById('overnightBtn').classList.remove('bg-blue-600', 'text-white');
+                document.getElementById('overnightBtn').classList.add('bg-white', 'text-gray-700');
+            }
+        }
+
+        // Amenities Functions
+        function toggleAmenitiesDropdown() {
+            const dropdown = document.getElementById('amenitiesDropdown');
+            const calendarContainer = document.getElementById('calendarContainer');
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+
+            calendarContainer.classList.add('hidden');
+            priceSliderContainer.classList.add('hidden');
+            guestsDropdown.classList.add('hidden');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function toggleAmenity(amenity) {
+            const index = selectedAmenities.indexOf(amenity);
+            if (index > -1) {
+                selectedAmenities.splice(index, 1);
+            } else {
+                selectedAmenities.push(amenity);
+            }
+            updateAmenitiesInput();
+            filterResorts();
+        }
+
+        function updateAmenitiesInput() {
+            const input = document.getElementById('amenitiesInput');
+            if (selectedAmenities.length === 0) {
+                input.value = 'All amenities';
+            } else if (selectedAmenities.length === 1) {
+                const amenityNames = {
+                    'hot-spring': 'Hot Spring',
+                    'wifi': 'WiFi',
+                    'parking': 'Parking',
+                    'kitchen': 'Kitchen',
+                    'aircon': 'Air Conditioning',
+                    'karaoke': 'Karaoke',
+                    'smoking': 'Smoking Allowed',
+                    'no-smoking': 'No Smoking',
+                    'pet-friendly': 'Pet Friendly',
+                    'no-pets': 'No Pets Allowed',
+                    'billiards': 'Billiards',
+                    'no-billiards': 'No Billiards'
+                };
+                input.value = amenityNames[selectedAmenities[0]];
+            } else {
+                input.value = `${selectedAmenities.length} amenities selected`;
+            }
+
+            const checkboxes = document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                const chip = cb.parentElement;
+                if (selectedAmenities.includes(cb.value)) {
+                    chip.classList.add('selected');
+                    cb.checked = true;
+                } else {
+                    chip.classList.remove('selected');
+                    cb.checked = false;
+                }
+            });
+        }
+
+        function clearAmenities() {
+            selectedAmenities = [];
+            updateAmenitiesInput();
+            filterResorts();
+        }
+
+        function toggleCalendar() {
+            const calendar = document.getElementById('calendarContainer');
+            const priceSlider = document.getElementById('priceSliderContainer');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+
+            priceSlider.classList.add('hidden');
+            guestsDropdown.classList.add('hidden');
+            amenitiesDropdown.classList.add('hidden');
+            calendar.classList.remove('hidden');
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+
+            document.getElementById('calendarMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const prevLastDay = new Date(currentYear, currentMonth, 0);
+
+            const firstDayIndex = firstDay.getDay();
+            const lastDayDate = lastDay.getDate();
+            const prevLastDayDate = prevLastDay.getDate();
+
+            const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+            const daysContainer = document.getElementById('calendarDays');
+            daysContainer.innerHTML = '';
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let i = startDay; i > 0; i--) {
+                const day = prevLastDayDate - i + 1;
+                const cell = createDayCell(day, true, new Date(currentYear, currentMonth - 1, day));
+                daysContainer.appendChild(cell);
+            }
+
+            for (let day = 1; day <= lastDayDate; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const cell = createDayCell(day, false, date);
+                daysContainer.appendChild(cell);
+            }
+
+            const totalCells = daysContainer.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const cell = createDayCell(day, true, new Date(currentYear, currentMonth + 1, day));
+                daysContainer.appendChild(cell);
+            }
+        }
+
+        function getAvailableAmenities() {
+            const availableAmenities = new Set();
+            let filteredResorts = resorts;
+
+            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
+            filteredResorts = filteredResorts.filter(resort =>
+                resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
+            );
+
+            filteredResorts.forEach(resort => {
+                if (resort.amenities) {
+                    resort.amenities.forEach(amenity => availableAmenities.add(amenity));
+                }
+            });
+
+            return availableAmenities;
+        }
+
+        function updateAmenitiesDropdown() {
+            const availableAmenities = getAvailableAmenities();
+            const amenityCheckboxes = document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]');
+
+            amenityCheckboxes.forEach(checkbox => {
+                const amenityValue = checkbox.value;
+                const chip = checkbox.parentElement;
+
+                if (!availableAmenities.has(amenityValue)) {
+                    chip.style.display = 'none';
+                } else {
+                    chip.style.display = 'inline-flex';
+                }
+            });
+        }
+
+        function createDayCell(day, isOtherMonth, date) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-day';
+            cell.textContent = day;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (isOtherMonth) {
+                cell.classList.add('other-month');
+            } else if (date < today) {
+                cell.classList.add('disabled');
+            } else {
+                cell.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectDate(date);
+                });
+
+                if (selectedStartDate && date.getTime() === selectedStartDate.getTime()) {
+                    if (stayType === 'dayuse') {
+                        cell.classList.add('single-day');
+                    } else if (!selectedEndDate) {
+                        cell.classList.add('range-start');
+                    } else if (selectedEndDate && selectedStartDate.getTime() === selectedEndDate.getTime()) {
+                        cell.classList.add('single-day');
+                    } else {
+                        cell.classList.add('range-start');
+                    }
+                }
+
+                if (selectedEndDate && date.getTime() === selectedEndDate.getTime() && selectedStartDate.getTime() !== selectedEndDate.getTime()) {
+                    cell.classList.add('range-end');
+                }
+
+                if (stayType === 'overnight' && selectedStartDate && selectedEndDate) {
+                    if (date >= selectedStartDate && date <= selectedEndDate) {
+                        cell.classList.add('in-range');
+                    }
+                }
+            }
+
+            return cell;
+        }
+
+        function selectDate(date) {
+            if (stayType === 'dayuse') {
+                selectedStartDate = date;
+                selectedEndDate = null;
+                updateDateRangeInput();
+                document.getElementById('calendarContainer').classList.add('hidden');
+            } else {
+                if (!selectedStartDate) {
+                    selectedStartDate = date;
+                    selectedEndDate = null;
+                    updateDateRangeInput();
+                    renderCalendar();
+                } else if (!selectedEndDate) {
+                    if (date > selectedStartDate) {
+                        selectedEndDate = date;
+                        updateDateRangeInput();
+                        renderCalendar();
+                        setTimeout(() => {
+                            document.getElementById('calendarContainer').classList.add('hidden');
+                        }, 300);
+                    } else {
+                        selectedStartDate = date;
+                        selectedEndDate = null;
+                        updateDateRangeInput();
+                        renderCalendar();
+                    }
+                } else {
+                    selectedStartDate = date;
+                    selectedEndDate = null;
+                    updateDateRangeInput();
+                    renderCalendar();
+                }
+            }
+        }
+
+        function updateDateRangeInput() {
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            if (selectedStartDate) {
+                const checkInDay = selectedStartDate.getDate();
+                const checkInMonth = monthNames[selectedStartDate.getMonth()];
+                const checkInYear = selectedStartDate.getFullYear();
+
+                if (stayType === 'overnight' && selectedEndDate) {
+                    const checkOutDay = selectedEndDate.getDate();
+                    const checkOutMonth = monthNames[selectedEndDate.getMonth()];
+                    const checkOutYear = selectedEndDate.getFullYear();
+
+                    document.getElementById('dateRangeInput').value =
+                        `${checkInDay} ${checkInMonth} ${checkInYear} - ${checkOutDay} ${checkOutMonth} ${checkOutYear}`;
+
+                    const nights = Math.ceil((selectedEndDate - selectedStartDate) / (1000 * 60 * 60 * 24));
+                    document.getElementById('dateRangeDay').textContent = `${nights} night${nights > 1 ? 's' : ''}`;
+                } else {
+                    document.getElementById('dateRangeInput').value = `${checkInDay} ${checkInMonth} ${checkInYear}`;
+                    document.getElementById('dateRangeDay').textContent = stayType === 'dayuse' ? 'Day Use' : '';
+                }
+            } else {
+                document.getElementById('dateRangeInput').value = '';
+                document.getElementById('dateRangeDay').textContent = '';
+            }
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        function togglePriceSlider() {
+            const priceSlider = document.getElementById('priceSliderContainer');
+            const calendar = document.getElementById('calendarContainer');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+
+            calendar.classList.add('hidden');
+            guestsDropdown.classList.add('hidden');
+            amenitiesDropdown.classList.add('hidden');
+            priceSlider.classList.toggle('hidden');
+        }
+
+        function updatePriceSlider() {
+            const minThumb = document.getElementById('minThumb');
+            const maxThumb = document.getElementById('maxThumb');
+            const priceRange = document.getElementById('priceRange');
+
+            const minPercent = ((minPrice - 0) / (20000 - 0)) * 100;
+            const maxPercent = ((maxPrice - 0) / (20000 - 0)) * 100;
+
+            minThumb.style.left = minPercent + '%';
+            maxThumb.style.left = maxPercent + '%';
+            priceRange.style.left = minPercent + '%';
+            priceRange.style.width = (maxPercent - minPercent) + '%';
+
+            document.getElementById('minPriceLabel').textContent = minPrice;
+            document.getElementById('maxPriceLabel').textContent = maxPrice;
+            document.getElementById('minPriceInput').value = minPrice;
+            document.getElementById('maxPriceInput').value = maxPrice;
+
+            document.getElementById('priceRangeInput').value = `₱${minPrice.toLocaleString()} - ₱${maxPrice.toLocaleString()}`;
+        }
+
+        function updatePriceFromInput(type) {
+            if (type === 'min') {
+                minPrice = Math.max(0, Math.min(parseInt(document.getElementById('minPriceInput').value) || 0, maxPrice - 100));
+            } else {
+                maxPrice = Math.max(minPrice + 100, Math.min(parseInt(document.getElementById('maxPriceInput').value) || 20000, 20000));
+            }
+            updatePriceSlider();
+            filterResorts();
+        }
+
+        document.getElementById('minThumb').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            activeThumb = 'min';
+            e.preventDefault();
+        });
+
+        document.getElementById('maxThumb').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            activeThumb = 'max';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const track = document.querySelector('.price-slider-track');
+            const rect = track.getBoundingClientRect();
+            const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+            const value = Math.round((percent / 100) * 20000);
+
+            if (activeThumb === 'min') {
+                minPrice = Math.min(value, maxPrice - 100);
+            } else {
+                maxPrice = Math.max(value, minPrice + 100);
+            }
+
+            updatePriceSlider();
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                filterResorts();
+            }
+            isDragging = false;
+            activeThumb = null;
+        });
+
+        document.getElementById('minThumb').addEventListener('touchstart', (e) => {
+            isDragging = true;
+            activeThumb = 'min';
+            e.preventDefault();
+        });
+
+        document.getElementById('maxThumb').addEventListener('touchstart', (e) => {
+            isDragging = true;
+            activeThumb = 'max';
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+
+            const track = document.querySelector('.price-slider-track');
+            const rect = track.getBoundingClientRect();
+            const touch = e.touches[0];
+            const percent = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
+            const value = Math.round((percent / 100) * 20000);
+
+            if (activeThumb === 'min') {
+                minPrice = Math.min(value, maxPrice - 100);
+            } else {
+                maxPrice = Math.max(value, minPrice + 100);
+            }
+
+            updatePriceSlider();
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                filterResorts();
+            }
+            isDragging = false;
+            activeThumb = null;
+        });
+
+        function toggleGuestsDropdown() {
+            const dropdown = document.getElementById('guestsDropdown');
+            const calendarContainer = document.getElementById('calendarContainer');
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+
+            calendarContainer.classList.add('hidden');
+            priceSliderContainer.classList.add('hidden');
+            amenitiesDropdown.classList.add('hidden');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function changeGuests(type, delta) {
+            if (type === 'rooms') {
+                rooms = Math.max(1, Math.min(14, rooms + delta));
+                document.getElementById('roomsCount').textContent = rooms;
+            }
+            updateGuestsInput();
+            filterResorts();
+        }
+
+        let maxRooms = 14;
+
+        function updateGuestsInput() {
+            const roomsText = rooms === 1 ? '1 room' : `${rooms} rooms`;
+            document.getElementById('guestsInput').value = roomsText;
+        }
+
+        document.addEventListener('click', function (event) {
+            const searchInput = document.getElementById('searchInput');
+            const dropdown = document.getElementById('resortDropdown');
+            const guestsInput = document.getElementById('guestsInput');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const calendarContainer = document.getElementById('calendarContainer');
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const dateRangeInput = document.getElementById('dateRangeInput');
+            const priceRangeInput = document.getElementById('priceRangeInput');
+            const amenitiesInput = document.getElementById('amenitiesInput');
+            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+
+            if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+
+            if (!guestsInput.contains(event.target) && !guestsDropdown.contains(event.target)) {
+                guestsDropdown.classList.add('hidden');
+            }
+
+            if (!calendarContainer.contains(event.target) && !dateRangeInput.contains(event.target)) {
+                if (stayType === 'dayuse' || (stayType === 'overnight' && selectedStartDate && selectedEndDate)) {
+                    calendarContainer.classList.add('hidden');
+                }
+            }
+
+            if (!priceSliderContainer.contains(event.target) && !priceRangeInput.contains(event.target)) {
+                priceSliderContainer.classList.add('hidden');
+            }
+
+            if (!amenitiesDropdown.contains(event.target) && !amenitiesInput.contains(event.target)) {
+                amenitiesDropdown.classList.add('hidden');
+            }
+        });
+
+        function initializeFirebase() {
+            const resortsRef = database.ref('resorts');
+
+            resortsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    resorts = Object.values(data);
+                    resortsLoaded = true;
+                    filterResorts();
+                } else {
+                    initializeSampleData();
+                }
+            }, (error) => {
+                console.error('Error loading resorts:', error);
+                initializeSampleData();
+            });
+        }
+
+        function initializeSampleData() {
+            const sampleResorts = [
+                {
+                    id: 1,
+                    name: "Laguna Hot Spring Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A popular resort featuring natural hot spring pools and accommodations for families and groups.",
+                    facilities: ["Swimming pools", "Hot spring baths", "Cottages", "Function halls", "Restaurant", "Parking"],
+                    lat: 14.179855690866304,
+                    lng: 121.1837820447193,
+                    bedrooms: 4,
+                    price: "budget",
+                    amenities: ["hot-spring", "parking", "kitchen", "wifi", "no-smoking", "no-pets", "aircon"],
+                    priceValue: "₱3,000 per night",
+                    priceNumeric: 3000,
+                    image: "https://placehold.co/600x400/0ea5e9/ffffff?text=Laguna+Hot+Spring+Resort"
+                },
+                {
+                    id: 2,
+                    name: "Villa Mejia",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A private resort with swimming pools and complete facilities for events and gatherings.",
+                    facilities: ["Private pools", "Event space", "Kitchen facilities", "Barbecue area", "Air-conditioned rooms"],
+                    lat: 14.179350807676604,
+                    lng: 121.18485773727306,
+                    bedrooms: 14,
+                    price: "premium",
+                    amenities: ["aircon", "kitchen", "parking", "wifi", "no-smoking", "pet-friendly"],
+                    priceValue: "₱12,000 per night",
+                    priceNumeric: 12000,
+                    image: "https://placehold.co/600x400/8b5cf6/ffffff?text=Villa+Mejia"
+                },
+                {
+                    id: 3,
+                    name: "Glennette's Haven Private Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "An exclusive private resort with hot spring pools perfect for family outings and celebrations.",
+                    facilities: ["Hot spring baths", "Karaoke", "Videoke", "Outdoor grilling area", "WiFi"],
+                    lat: 14.179889853295485,
+                    lng: 121.1861350014737,
+                    bedrooms: 4,
+                    price: "mid",
+                    amenities: ["hot-spring", "karaoke", "wifi", "aircon", "parking", "kitchen", "no-smoking", "pet-friendly"],
+                    priceValue: "₱7,000 per night",
+                    priceNumeric: 7000,
+                    image: "https://placehold.co/600x400/10b981/ffffff?text=Glennette's+Haven"
+                },
+                {
+                    id: 4,
+                    name: "Elysian Sourire Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A tranquil resort offering relaxing hot spring pools and modern amenities.",
+                    facilities: ["Heated pools", "Spa services", "Gazebo", "Garden area", "Outdoor dining"],
+                    lat: 14.17950049393675,
+                    lng: 121.18694386655233,
+                    bedrooms: 5,
+                    price: "premium",
+                    amenities: ["hot-spring", "wifi", "aircon", "parking", "kitchen", "no-smoking", "no-pets"],
+                    priceValue: "₱15,000 per night",
+                    priceNumeric: 15000,
+                    image: "https://placehold.co/600x400/f59e0b/ffffff?text=Elysian+Sourire"
+                },
+                {
+                    id: 5,
+                    name: "Villa Francesca Private Resort - Pansol",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A spacious private resort ideal for large groups and events with multiple pools.",
+                    facilities: ["Multiple swimming pools", "Function hall", "Videoke", "Cottages", "Playground"],
+                    lat: 14.180012234621406,
+                    lng: 121.1871543967939,
+                    bedrooms: 6,
+                    price: "premium",
+                    amenities: ["karaoke", "aircon", "kitchen", "parking", "wifi", "smoking", "pet-friendly"],
+                    priceValue: "₱18,000 per night",
+                    priceNumeric: 18000,
+                    image: "https://placehold.co/600x400/ec4899/ffffff?text=Villa+Francesca"
+                }
+            ];
+
+            const resortsRef = database.ref('resorts');
+            sampleResorts.forEach(resort => {
+                resortsRef.child(resort.id.toString()).set(resort);
+            });
+
+            resorts = sampleResorts;
+            resortsLoaded = true;
+        }
+
+        function showDropdown() {
+            const dropdown = document.getElementById('resortDropdown');
+            dropdown.classList.remove('hidden');
+            if (resortsLoaded) {
+                filterResorts();
+            }
+        }
+
+        function filterResorts() {
+            if (!resortsLoaded) return;
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const dropdownContent = document.getElementById('dropdownContent');
+
+            let filteredResorts = resorts;
+
+            if (searchTerm) {
+                filteredResorts = resorts.filter(resort =>
+                    resort.name.toLowerCase().includes(searchTerm) ||
+                    resort.address.toLowerCase().includes(searchTerm) ||
+                    resort.description.toLowerCase().includes(searchTerm) ||
+                    resort.facilities.some(facility => facility.toLowerCase().includes(searchTerm)) ||
+                    resort.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
+            filteredResorts = filteredResorts.filter(resort =>
+                resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
+            );
+
+            if (selectedAmenities.length > 0) {
+                filteredResorts = filteredResorts.filter(resort => {
+                    const resortAmenities = resort.amenities || [];
+                    return selectedAmenities.every(amenity => resortAmenities.includes(amenity));
+                });
+            }
+
+            updateAmenitiesDropdown();
+
+            if (filteredResorts.length === 0) {
+                dropdownContent.innerHTML = `
+            <div class="px-5 py-4 text-gray-500 text-sm">
+                No resorts found matching your criteria
+            </div>
+        `;
+            } else {
+                dropdownContent.innerHTML = filteredResorts.map(resort => `
+            <div class="dropdown-item px-5 py-4 cursor-pointer border-b border-gray-100 last:border-b-0" onclick="selectResort('${resort.name.replace(/'/g, "\\'")}')">
+                <div class="flex justify-between items-start w-full">
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-900 mb-1">${resort.name}</div>
+                        <div class="text-sm text-gray-600">${resort.priceValue} • ${resort.bedrooms} bedrooms</div>
+                    </div>
+                    <div class="text-xs text-white bg-blue-600 px-2 py-1 rounded ml-2 shrink-0">
+                        ${resort.price}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+            }
+        }
+
+        function selectResort(resortName) {
+            document.getElementById('searchInput').value = resortName;
+            document.getElementById('resortDropdown').classList.add('hidden');
+        }
+
+        function redirectToFeaturedResorts() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            let url = 'index2.html';
+            const params = new URLSearchParams();
+
+            if (searchTerm) {
+                params.append('search', searchTerm);
+            }
+            if (stayType) {
+                params.append('stayType', stayType);
+            }
+            if (selectedStartDate) {
+                params.append('checkIn', selectedStartDate.toISOString());
+            }
+            if (selectedEndDate) {
+                params.append('checkOut', selectedEndDate.toISOString());
+            }
+            params.append('rooms', rooms);
+            params.append('minPrice', minPrice);
+            params.append('maxPrice', maxPrice);
+
+            if (selectedAmenities.length > 0) {
+                params.append('amenities', selectedAmenities.join(','));
+            }
+
+            const queryString = params.toString();
+            if (queryString) {
+                url += '?' + queryString;
+            }
+
+            window.location.href = url;
+        }
+
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                redirectToFeaturedResorts();
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initializeFirebase();
+            renderCalendar();
+            updatePriceSlider();
+        });
+
+        document.getElementById('calendarContainer').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                const menu = document.getElementById('mobileMenu');
+                const overlay = document.getElementById('mobileMenuOverlay');
+                const hamburger = document.getElementById('hamburger');
+
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
+                hamburger.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+
+</body>
+
+</html>
