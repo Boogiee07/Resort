@@ -8,7 +8,43 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Initialize theme before page renders to prevent flash -->
+    <script>
+        (function() { 
+            const savedTheme = localStorage.getItem('theme') || 'light'; 
+            document.documentElement.setAttribute('data-theme', savedTheme); 
+        })();
+    </script>
+    
     <style>
+        /* Theme Variables */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7f7f7;
+            --bg-tertiary: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-tertiary: #9ca3af;
+            --border-color: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-md: rgba(0, 0, 0, 0.05);
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --bg-tertiary: #374151;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --text-tertiary: #9ca3af;
+            --border-color: #4b5563;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-md: rgba(0, 0, 0, 0.2);
+            --overlay: rgba(0, 0, 0, 0.7);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,9 +54,11 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            color: #1f2937;
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            background-color: var(--bg-secondary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .hero-background {
@@ -74,6 +112,62 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
+        /* Themed elements */
+        header {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .bg-white {
+            background-color: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .bg-gray-50 {
+            background-color: var(--bg-tertiary) !important;
+        }
+
+        .text-gray-900 {
+            color: var(--text-primary) !important;
+        }
+
+        .text-gray-800 {
+            color: var(--text-primary) !important;
+        }
+
+        .text-gray-700 {
+            color: var(--text-secondary) !important;
+        }
+
+        .text-gray-600 {
+            color: var(--text-secondary) !important;
+        }
+
+        .text-gray-500 {
+            color: var(--text-tertiary) !important;
+        }
+
+        .text-gray-400 {
+            color: var(--text-tertiary) !important;
+        }
+
+        .border-gray-300,
+        .border-gray-200,
+        .border-gray-100 {
+            border-color: var(--border-color) !important;
+        }
+
+        input, select, textarea {
+            background-color: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-tertiary) !important;
+        }
+
         .dropdown-item {
             min-height: 60px;
             display: flex;
@@ -81,18 +175,22 @@
         }
 
         .dropdown-item:hover {
-            background-color: #f3f4f6;
+            background-color: var(--bg-tertiary) !important;
         }
 
         .dropdown-item:active {
             background-color: #e5e7eb;
         }
 
+        [data-theme="dark"] .dropdown-item:active {
+            background-color: #4b5563;
+        }
+
         #resortDropdown {
             max-height: 60vh;
             overflow-y: auto;
             z-index: 20;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px var(--shadow), 0 2px 4px -1px var(--shadow-md);
         }
 
         #resortDropdown::-webkit-scrollbar {
@@ -100,21 +198,21 @@
         }
 
         #resortDropdown::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: var(--bg-tertiary);
             border-radius: 10px;
         }
 
         #resortDropdown::-webkit-scrollbar-thumb {
-            background: #888;
+            background: var(--border-color);
             border-radius: 10px;
         }
 
         #resortDropdown::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: var(--text-tertiary);
         }
 
         .loading-spinner {
-            border: 3px solid #f3f3f3;
+            border: 3px solid var(--bg-tertiary);
             border-top: 3px solid #3b82f6;
             border-radius: 50%;
             width: 24px;
@@ -140,8 +238,8 @@
             width: 80%;
             max-width: 300px;
             height: 100vh;
-            background: white;
-            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            background: var(--bg-primary);
+            box-shadow: -2px 0 10px var(--shadow);
             transition: right 0.3s ease;
             z-index: 100;
             overflow-y: auto;
@@ -157,7 +255,7 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
+            background: var(--overlay);
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -182,7 +280,7 @@
         .hamburger span {
             display: block;
             height: 3px;
-            background: #1f2937;
+            background: var(--text-primary);
             border-radius: 3px;
             transition: all 0.3s ease;
         }
@@ -243,9 +341,9 @@
         }
 
         .calendar-container {
-            background: white;
+            background: var(--bg-primary);
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px var(--shadow);
             max-width: 320px;
             margin: 0 auto;
         }
@@ -255,7 +353,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .calendar-header button {
@@ -278,7 +376,7 @@
             font-weight: 600;
             font-size: 0.75rem;
             padding: 0.5rem 0.25rem;
-            color: #6b7280;
+            color: var(--text-secondary);
         }
 
         .calendar-day {
@@ -294,16 +392,16 @@
         }
 
         .calendar-day:hover:not(.disabled):not(.other-month) {
-            background-color: #f3f4f6;
+            background-color: var(--bg-tertiary);
         }
 
         .calendar-day.disabled {
-            color: #d1d5db;
+            color: var(--text-tertiary);
             cursor: not-allowed;
         }
 
         .calendar-day.other-month {
-            color: #d1d5db;
+            color: var(--text-tertiary);
         }
 
         .calendar-day.selected {
@@ -346,7 +444,7 @@
         .price-slider-track {
             position: relative;
             height: 6px;
-            background: #e5e7eb;
+            background: var(--border-color);
             border-radius: 3px;
         }
 
@@ -361,19 +459,18 @@
             position: absolute;
             width: 44px;
             height: 44px;
-            background: white;
-            border: 3px solid #e5e7eb;
+            background: var(--bg-primary);
+            border: 3px solid var(--border-color);
             border-radius: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-
+            box-shadow: 0 2px 8px var(--shadow);
         }
 
         .price-slider-thumb:hover {
             border-color: #3b82f6;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px var(--shadow);
         }
 
         .price-slider-thumb:active {
@@ -383,10 +480,10 @@
         .price-input-box {
             display: flex;
             align-items: center;
-            border: 2px solid #cbd5e1;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             padding: 0.5rem 1rem;
-            background: #f8fafc;
+            background: var(--bg-tertiary);
         }
 
         .price-input-box input {
@@ -394,7 +491,7 @@
             background: transparent;
             font-size: 1.5rem;
             font-weight: 600;
-            color: #1e293b;
+            color: var(--text-primary);
             width: 100%;
             min-height: auto;
         }
@@ -405,8 +502,8 @@
         }
 
         .price-label {
-            background: #1e293b;
-            color: white;
+            background: var(--text-primary);
+            color: var(--bg-primary);
             padding: 0.5rem 1rem;
             border-radius: 8px;
             font-size: 1.25rem;
@@ -419,16 +516,21 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.5rem 1rem;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--border-color);
             border-radius: 9999px;
             cursor: pointer;
             transition: all 0.2s;
             user-select: none;
+            background-color: var(--bg-primary);
         }
 
         .amenity-chip:hover {
             border-color: #3b82f6;
             background-color: #eff6ff;
+        }
+
+        [data-theme="dark"] .amenity-chip:hover {
+            background-color: #1e3a8a;
         }
 
         .amenity-chip.selected {
@@ -439,6 +541,57 @@
 
         .amenity-chip input[type="checkbox"] {
             display: none;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border: none;
+        }
+
+        @media (min-width: 768px) {
+            .theme-toggle {
+                bottom: 30px;
+                left: 30px;
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        .theme-toggle svg {
+            width: 28px;
+            height: 28px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .theme-toggle svg {
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        .theme-toggle:hover svg {
+            transform: rotate(20deg);
         }
     </style>
 </head>
@@ -588,10 +741,10 @@
 
                     <!-- Price Range Button -->
                     <div class="relative">
-    <input type="text" id="priceRangeInput" readonly
-        class="w-full pl-4 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-        value="₱ (Price Range)" onclick="togglePriceSlider()">
-</div>
+                        <input type="text" id="priceRangeInput" readonly
+                            class="w-full pl-4 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+                            value="₱ (Price Range)" onclick="togglePriceSlider()">
+                    </div>
                 </div>
 
                 <div id="calendarContainer" class="hidden calendar-container">
@@ -960,6 +1113,20 @@
         </div>
     </footer>
 
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <svg id="sunIcon" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+            </path>
+        </svg>
+        <svg id="moonIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+            </path>
+        </svg>
+    </button>
+
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -990,6 +1157,35 @@
         let activeThumb = null;
         let selectedAmenities = [];
 
+        // Theme Toggle Functions
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const sunIcon = document.getElementById('sunIcon');
+            const moonIcon = document.getElementById('moonIcon');
+            
+            if (theme === 'dark') {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        }
+
         // Mobile Menu Toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
@@ -1011,7 +1207,6 @@
         function selectStayType(type) {
             stayType = type;
             renderCalendar();
-            // Clear dates when changing type
             selectedStartDate = null;
             selectedEndDate = null;
             updateDateRangeInput();
@@ -1022,752 +1217,3 @@
                 document.getElementById('overnightBtn').classList.remove('bg-white', 'text-gray-700');
                 document.getElementById('dayUseBtn').classList.remove('bg-blue-600', 'text-white');
                 document.getElementById('dayUseBtn').classList.add('bg-white', 'text-gray-700');
-            } else {
-                document.getElementById('dayUseInfo').classList.remove('hidden');
-                document.getElementById('dayUseBtn').classList.add('bg-blue-600', 'text-white');
-                document.getElementById('dayUseBtn').classList.remove('bg-white', 'text-gray-700');
-                document.getElementById('overnightBtn').classList.remove('bg-blue-600', 'text-white');
-                document.getElementById('overnightBtn').classList.add('bg-white', 'text-gray-700');
-            }
-        }
-
-        // Amenities Functions
-        function toggleAmenitiesDropdown() {
-            const dropdown = document.getElementById('amenitiesDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
-            const priceSliderContainer = document.getElementById('priceSliderContainer');
-            const guestsDropdown = document.getElementById('guestsDropdown');
-
-            calendarContainer.classList.add('hidden');
-            priceSliderContainer.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            dropdown.classList.toggle('hidden');
-        }
-
-        function toggleAmenity(amenity) {
-            const index = selectedAmenities.indexOf(amenity);
-            if (index > -1) {
-                selectedAmenities.splice(index, 1);
-            } else {
-                selectedAmenities.push(amenity);
-            }
-            updateAmenitiesInput();
-            filterResorts();
-        }
-
-        function updateAmenitiesInput() {
-            const input = document.getElementById('amenitiesInput');
-            if (selectedAmenities.length === 0) {
-                input.value = 'All amenities';
-            } else if (selectedAmenities.length === 1) {
-                const amenityNames = {
-                    'hot-spring': 'Hot Spring',
-                    'wifi': 'WiFi',
-                    'parking': 'Parking',
-                    'kitchen': 'Kitchen',
-                    'aircon': 'Air Conditioning',
-                    'karaoke': 'Karaoke',
-                    'smoking': 'Smoking Allowed',
-                    'no-smoking': 'No Smoking',
-                    'pet-friendly': 'Pet Friendly',
-                    'no-pets': 'No Pets Allowed',
-                    'billiards': 'Billiards',
-                    'no-billiards': 'No Billiards'
-                };
-                input.value = amenityNames[selectedAmenities[0]];
-            } else {
-                input.value = `${selectedAmenities.length} amenities selected`;
-            }
-
-            // Update checkbox states
-            const checkboxes = document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-                const chip = cb.parentElement;
-                if (selectedAmenities.includes(cb.value)) {
-                    chip.classList.add('selected');
-                    cb.checked = true;
-                } else {
-                    chip.classList.remove('selected');
-                    cb.checked = false;
-                }
-            });
-        }
-
-        function clearAmenities() {
-            selectedAmenities = [];
-            updateAmenitiesInput();
-            filterResorts();
-        }
-
-        function toggleCalendar() {
-            const calendar = document.getElementById('calendarContainer');
-            const priceSlider = document.getElementById('priceSliderContainer');
-            const guestsDropdown = document.getElementById('guestsDropdown');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-
-            priceSlider.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-
-            // Always show calendar when clicked, don't toggle
-            calendar.classList.remove('hidden');
-            renderCalendar();
-        }
-
-        function renderCalendar() {
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'];
-
-            document.getElementById('calendarMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
-
-            const firstDay = new Date(currentYear, currentMonth, 1);
-            const lastDay = new Date(currentYear, currentMonth + 1, 0);
-            const prevLastDay = new Date(currentYear, currentMonth, 0);
-
-            const firstDayIndex = firstDay.getDay();
-            const lastDayDate = lastDay.getDate();
-            const prevLastDayDate = prevLastDay.getDate();
-
-            const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-
-            const daysContainer = document.getElementById('calendarDays');
-            daysContainer.innerHTML = '';
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Previous month days
-            for (let i = startDay; i > 0; i--) {
-                const day = prevLastDayDate - i + 1;
-                const cell = createDayCell(day, true, new Date(currentYear, currentMonth - 1, day));
-                daysContainer.appendChild(cell);
-            }
-
-            // Current month days
-            for (let day = 1; day <= lastDayDate; day++) {
-                const date = new Date(currentYear, currentMonth, day);
-                const cell = createDayCell(day, false, date);
-                daysContainer.appendChild(cell);
-            }
-
-            // Next month days
-            const totalCells = daysContainer.children.length;
-            const remainingCells = 42 - totalCells;
-            for (let day = 1; day <= remainingCells; day++) {
-                const cell = createDayCell(day, true, new Date(currentYear, currentMonth + 1, day));
-                daysContainer.appendChild(cell);
-            }
-        }
-
-        function getAvailableAmenities() {
-            const availableAmenities = new Set();
-
-            // Get resorts that match current filters (except amenities)
-            let filteredResorts = resorts;
-
-            // Apply current filters
-            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
-            filteredResorts = filteredResorts.filter(resort =>
-                resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
-            );
-
-            // Collect all amenities from filtered resorts
-            filteredResorts.forEach(resort => {
-                if (resort.amenities) {
-                    resort.amenities.forEach(amenity => availableAmenities.add(amenity));
-                }
-            });
-
-            return availableAmenities;
-        }
-
-        // Update amenities dropdown to show/hide based on availability
-        function updateAmenitiesDropdown() {
-            const availableAmenities = getAvailableAmenities();
-            const amenityCheckboxes = document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]');
-
-            amenityCheckboxes.forEach(checkbox => {
-                const amenityValue = checkbox.value;
-                const chip = checkbox.parentElement;
-
-                if (!availableAmenities.has(amenityValue)) {
-                    // Hide amenity if no resorts have it
-                    chip.style.display = 'none';
-                } else {
-                    // Show amenity if resorts have it
-                    chip.style.display = 'inline-flex';
-                }
-            });
-        }
-
-        function createDayCell(day, isOtherMonth, date) {
-            const cell = document.createElement('div');
-            cell.className = 'calendar-day';
-            cell.textContent = day;
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            if (isOtherMonth) {
-                cell.classList.add('other-month');
-            } else if (date < today) {
-                cell.classList.add('disabled');
-            } else {
-                cell.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent event from bubbling to document listener
-                    selectDate(date);
-                });
-
-                // Highlight selected dates
-                if (selectedStartDate && date.getTime() === selectedStartDate.getTime()) {
-                    if (stayType === 'dayuse') {
-                        cell.classList.add('single-day');
-                    } else if (!selectedEndDate) {
-                        cell.classList.add('range-start');
-                    } else if (selectedEndDate && selectedStartDate.getTime() === selectedEndDate.getTime()) {
-                        cell.classList.add('single-day');
-                    } else {
-                        cell.classList.add('range-start');
-                    }
-                }
-
-                if (selectedEndDate && date.getTime() === selectedEndDate.getTime() && selectedStartDate.getTime() !== selectedEndDate.getTime()) {
-                    cell.classList.add('range-end');
-                }
-
-                // Highlight range (including start and end dates)
-                if (stayType === 'overnight' && selectedStartDate && selectedEndDate) {
-                    if (date >= selectedStartDate && date <= selectedEndDate) {
-                        cell.classList.add('in-range');
-                    }
-                    }
-            }
-
-            return cell;
-        }
-
-        function selectDate(date) {
-            if (stayType === 'dayuse') {
-                // Day use: select 1 date only and close calendar immediately
-                selectedStartDate = date;
-                selectedEndDate = null;
-                updateDateRangeInput();
-                document.getElementById('calendarContainer').classList.add('hidden');
-            } else {
-                // Overnight stay: requires 2 dates before calendar closes
-                if (!selectedStartDate) {
-                    // First date selected (check-in) - keep calendar open
-                    selectedStartDate = date;
-                    selectedEndDate = null;
-                    updateDateRangeInput();
-                    renderCalendar();
-                } else if (!selectedEndDate) {
-                    // Second date being selected (check-out)
-                    if (date > selectedStartDate) {
-                        // Valid check-out date - set end date and close calendar after delay
-                        selectedEndDate = date;
-                        updateDateRangeInput();
-                        renderCalendar();
-                        // Close calendar after showing both dates
-                        setTimeout(() => {
-                            document.getElementById('calendarContainer').classList.add('hidden');
-                        }, 300);
-                    } else {
-                        // Date is before/equal to check-in, restart selection
-                        selectedStartDate = date;
-                        selectedEndDate = null;
-                        updateDateRangeInput();
-                        renderCalendar();
-                    }
-                } else {
-                    // Both dates already selected, start new selection
-                    selectedStartDate = date;
-                    selectedEndDate = null;
-                    updateDateRangeInput();
-                    renderCalendar();
-                }
-            }
-        }
-
-        function updateDateRangeInput() {
-            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-            if (selectedStartDate) {
-                const checkInDay = selectedStartDate.getDate();
-                const checkInMonth = monthNames[selectedStartDate.getMonth()];
-                const checkInYear = selectedStartDate.getFullYear();
-
-                if (stayType === 'overnight' && selectedEndDate) {
-                    const checkOutDay = selectedEndDate.getDate();
-                    const checkOutMonth = monthNames[selectedEndDate.getMonth()];
-                    const checkOutYear = selectedEndDate.getFullYear();
-
-                    document.getElementById('dateRangeInput').value =
-                        `${checkInDay} ${checkInMonth} ${checkInYear} - ${checkOutDay} ${checkOutMonth} ${checkOutYear}`;
-
-                    const nights = Math.ceil((selectedEndDate - selectedStartDate) / (1000 * 60 * 60 * 24));
-                    document.getElementById('dateRangeDay').textContent = `${nights} night${nights > 1 ? 's' : ''}`;
-                } else {
-                    document.getElementById('dateRangeInput').value = `${checkInDay} ${checkInMonth} ${checkInYear}`;
-                    document.getElementById('dateRangeDay').textContent = stayType === 'dayuse' ? 'Day Use' : '';
-                }
-            } else {
-                document.getElementById('dateRangeInput').value = '';
-                document.getElementById('dateRangeDay').textContent = '';
-            }
-        }
-
-        function previousMonth() {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            renderCalendar();
-        }
-
-        function nextMonth() {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            renderCalendar();
-        }
-
-        // Price Slider Functions
-        function togglePriceSlider() {
-            const priceSlider = document.getElementById('priceSliderContainer');
-            const calendar = document.getElementById('calendarContainer');
-            const guestsDropdown = document.getElementById('guestsDropdown');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-
-            calendar.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-            priceSlider.classList.toggle('hidden');
-        }
-
-        function updatePriceSlider() {
-            const minThumb = document.getElementById('minThumb');
-            const maxThumb = document.getElementById('maxThumb');
-            const priceRange = document.getElementById('priceRange');
-
-            const minPercent = ((minPrice - 0) / (20000 - 0)) * 100;
-            const maxPercent = ((maxPrice - 0) / (20000 - 0)) * 100;
-
-            minThumb.style.left = minPercent + '%';
-            maxThumb.style.left = maxPercent + '%';
-            priceRange.style.left = minPercent + '%';
-            priceRange.style.width = (maxPercent - minPercent) + '%';
-
-            document.getElementById('minPriceLabel').textContent = minPrice;
-            document.getElementById('maxPriceLabel').textContent = maxPrice;
-            document.getElementById('minPriceInput').value = minPrice;
-            document.getElementById('maxPriceInput').value = maxPrice;
-
-            document.getElementById('priceRangeInput').value = `₱${minPrice.toLocaleString()} - ₱${maxPrice.toLocaleString()}`;
-        }
-
-        function updatePriceFromInput(type) {
-            if (type === 'min') {
-                minPrice = Math.max(0, Math.min(parseInt(document.getElementById('minPriceInput').value) || 0, maxPrice - 100));
-            } else {
-                maxPrice = Math.max(minPrice + 100, Math.min(parseInt(document.getElementById('maxPriceInput').value) || 20000, 20000));
-            }
-            updatePriceSlider();
-            filterResorts();
-        }
-
-        // Price Slider Drag Events
-        document.getElementById('minThumb').addEventListener('mousedown', (e) => {
-            isDragging = true;
-            activeThumb = 'min';
-            e.preventDefault();
-        });
-
-        document.getElementById('maxThumb').addEventListener('mousedown', (e) => {
-            isDragging = true;
-            activeThumb = 'max';
-            e.preventDefault();
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-
-            const track = document.querySelector('.price-slider-track');
-            const rect = track.getBoundingClientRect();
-            const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-            const value = Math.round((percent / 100) * 20000);
-
-            if (activeThumb === 'min') {
-                minPrice = Math.min(value, maxPrice - 100);
-            } else {
-                maxPrice = Math.max(value, minPrice + 100);
-            }
-
-            updatePriceSlider();
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                filterResorts();
-            }
-            isDragging = false;
-            activeThumb = null;
-        });
-
-        // Touch events for mobile
-        document.getElementById('minThumb').addEventListener('touchstart', (e) => {
-            isDragging = true;
-            activeThumb = 'min';
-            e.preventDefault();
-        });
-
-        document.getElementById('maxThumb').addEventListener('touchstart', (e) => {
-            isDragging = true;
-            activeThumb = 'max';
-            e.preventDefault();
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-
-            const track = document.querySelector('.price-slider-track');
-            const rect = track.getBoundingClientRect();
-            const touch = e.touches[0];
-            const percent = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
-            const value = Math.round((percent / 100) * 20000);
-
-            if (activeThumb === 'min') {
-                minPrice = Math.min(value, maxPrice - 100);
-            } else {
-                maxPrice = Math.max(value, minPrice + 100);
-            }
-
-            updatePriceSlider();
-        });
-
-        document.addEventListener('touchend', () => {
-            if (isDragging) {
-                filterResorts();
-            }
-            isDragging = false;
-            activeThumb = null;
-        });
-
-        // Guests Dropdown
-        function toggleGuestsDropdown() {
-            const dropdown = document.getElementById('guestsDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
-            const priceSliderContainer = document.getElementById('priceSliderContainer');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-
-            calendarContainer.classList.add('hidden');
-            priceSliderContainer.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-            dropdown.classList.toggle('hidden');
-        }
-
-        function changeGuests(type, delta) {
-            if (type === 'rooms') {
-                rooms = Math.max(1, Math.min(14, rooms + delta));
-                document.getElementById('roomsCount').textContent = rooms;
-            }
-            updateGuestsInput();
-            filterResorts();
-        }
-
-        let maxRooms = 14;
-
-        function updateGuestsInput() {
-            const roomsText = rooms === 1 ? '1 room' : `${rooms} rooms`;
-            document.getElementById('guestsInput').value = roomsText;
-        }
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function (event) {
-            const searchInput = document.getElementById('searchInput');
-            const dropdown = document.getElementById('resortDropdown');
-            const guestsInput = document.getElementById('guestsInput');
-            const guestsDropdown = document.getElementById('guestsDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
-            const priceSliderContainer = document.getElementById('priceSliderContainer');
-            const dateRangeInput = document.getElementById('dateRangeInput');
-            const priceRangeInput = document.getElementById('priceRangeInput');
-            const amenitiesInput = document.getElementById('amenitiesInput');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-
-            if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.add('hidden');
-            }
-
-            if (!guestsInput.contains(event.target) && !guestsDropdown.contains(event.target)) {
-                guestsDropdown.classList.add('hidden');
-            }
-
-            // Only close calendar if clicking outside AND (it's day use OR both dates are selected for overnight)
-            if (!calendarContainer.contains(event.target) && !dateRangeInput.contains(event.target)) {
-                if (stayType === 'dayuse' || (stayType === 'overnight' && selectedStartDate && selectedEndDate)) {
-                    calendarContainer.classList.add('hidden');
-                }
-            }
-
-            if (!priceSliderContainer.contains(event.target) && !priceRangeInput.contains(event.target)) {
-                priceSliderContainer.classList.add('hidden');
-            }
-
-            if (!amenitiesDropdown.contains(event.target) && !amenitiesInput.contains(event.target)) {
-                amenitiesDropdown.classList.add('hidden');
-            }
-        });
-
-        // Initialize Firebase and load data
-        function initializeFirebase() {
-            const resortsRef = database.ref('resorts');
-
-            resortsRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    resorts = Object.values(data);
-                    resortsLoaded = true;
-                    filterResorts();
-                } else {
-                    initializeSampleData();
-                }
-            }, (error) => {
-                console.error('Error loading resorts:', error);
-                initializeSampleData();
-            });
-        }
-
-        function initializeSampleData() {
-            const sampleResorts = [
-                {
-                    id: 1,
-                    name: "Laguna Hot Spring Resort",
-                    address: "Pansol, Calamba, Laguna",
-                    description: "A popular resort featuring natural hot spring pools and accommodations for families and groups.",
-                    facilities: ["Swimming pools", "Hot spring baths", "Cottages", "Function halls", "Restaurant", "Parking"],
-                    lat: 14.179855690866304,
-                    lng: 121.1837820447193,
-                    bedrooms: 4,
-                    price: "budget",
-                    amenities: ["hot-spring", "parking", "kitchen", "wifi", "no-smoking", "no-pets", "aircon"],
-                    priceValue: "₱3,000 per night",
-                    priceNumeric: 3000,
-                    image: "https://placehold.co/600x400/0ea5e9/ffffff?text=Laguna+Hot+Spring+Resort"
-                },
-                {
-                    id: 2,
-                    name: "Villa Mejia",
-                    address: "Pansol, Calamba, Laguna",
-                    description: "A private resort with swimming pools and complete facilities for events and gatherings.",
-                    facilities: ["Private pools", "Event space", "Kitchen facilities", "Barbecue area", "Air-conditioned rooms"],
-                    lat: 14.179350807676604,
-                    lng: 121.18485773727306,
-                    bedrooms: 14,
-                    price: "premium",
-                    amenities: ["aircon", "kitchen", "parking", "wifi", "no-smoking", "pet-friendly"],
-                    priceValue: "₱12,000 per night",
-                    priceNumeric: 12000,
-                    image: "https://placehold.co/600x400/8b5cf6/ffffff?text=Villa+Mejia"
-                },
-                {
-                    id: 3,
-                    name: "Glennette's Haven Private Resort",
-                    address: "Pansol, Calamba, Laguna",
-                    description: "An exclusive private resort with hot spring pools perfect for family outings and celebrations.",
-                    facilities: ["Hot spring baths", "Karaoke", "Videoke", "Outdoor grilling area", "WiFi"],
-                    lat: 14.179889853295485,
-                    lng: 121.1861350014737,
-                    bedrooms: 4,
-                    price: "mid",
-                    amenities: ["hot-spring", "karaoke", "wifi", "aircon", "parking", "kitchen", "no-smoking", "pet-friendly"],
-                    priceValue: "₱7,000 per night",
-                    priceNumeric: 7000,
-                    image: "https://placehold.co/600x400/10b981/ffffff?text=Glennette's+Haven"
-                },
-                {
-                    id: 4,
-                    name: "Elysian Sourire Resort",
-                    address: "Pansol, Calamba, Laguna",
-                    description: "A tranquil resort offering relaxing hot spring pools and modern amenities.",
-                    facilities: ["Heated pools", "Spa services", "Gazebo", "Garden area", "Outdoor dining"],
-                    lat: 14.17950049393675,
-                    lng: 121.18694386655233,
-                    bedrooms: 5,
-                    price: "premium",
-                    amenities: ["hot-spring", "wifi", "aircon", "parking", "kitchen", "no-smoking", "no-pets"],
-                    priceValue: "₱15,000 per night",
-                    priceNumeric: 15000,
-                    image: "https://placehold.co/600x400/f59e0b/ffffff?text=Elysian+Sourire"
-                },
-                {
-                    id: 5,
-                    name: "Villa Francesca Private Resort - Pansol",
-                    address: "Pansol, Calamba, Laguna",
-                    description: "A spacious private resort ideal for large groups and events with multiple pools.",
-                    facilities: ["Multiple swimming pools", "Function hall", "Videoke", "Cottages", "Playground"],
-                    lat: 14.180012234621406,
-                    lng: 121.1871543967939,
-                    bedrooms: 6,
-                    price: "premium",
-                    amenities: ["karaoke", "aircon", "kitchen", "parking", "wifi", "smoking", "pet-friendly"],
-                    priceValue: "₱18,000 per night",
-                    priceNumeric: 18000,
-                    image: "https://placehold.co/600x400/ec4899/ffffff?text=Villa+Francesca"
-                }
-            ];
-
-            const resortsRef = database.ref('resorts');
-            sampleResorts.forEach(resort => {
-                resortsRef.child(resort.id.toString()).set(resort);
-            });
-
-            resorts = sampleResorts;
-            resortsLoaded = true;
-        }
-
-        function showDropdown() {
-            const dropdown = document.getElementById('resortDropdown');
-            dropdown.classList.remove('hidden');
-            if (resortsLoaded) {
-                filterResorts();
-            }
-        }
-
-        function filterResorts() {
-            if (!resortsLoaded) return;
-
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const dropdownContent = document.getElementById('dropdownContent');
-
-            let filteredResorts = resorts;
-
-            // Filter by search term
-            if (searchTerm) {
-                filteredResorts = resorts.filter(resort =>
-                    resort.name.toLowerCase().includes(searchTerm) ||
-                    resort.address.toLowerCase().includes(searchTerm) ||
-                    resort.description.toLowerCase().includes(searchTerm) ||
-                    resort.facilities.some(facility => facility.toLowerCase().includes(searchTerm)) ||
-                    resort.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm))
-                );
-            }
-
-            // Filter by number of rooms (bedrooms) - EXACT OR GREATER
-            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
-
-            // Filter by price range
-            filteredResorts = filteredResorts.filter(resort =>
-                resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
-            );
-
-            // Filter by selected amenities - ALL must be present (AND logic)
-            if (selectedAmenities.length > 0) {
-                filteredResorts = filteredResorts.filter(resort => {
-                    const resortAmenities = resort.amenities || [];
-                    return selectedAmenities.every(amenity => resortAmenities.includes(amenity));
-                });
-            }
-
-            // Update amenities dropdown based on available resorts
-            updateAmenitiesDropdown();
-
-            if (filteredResorts.length === 0) {
-                dropdownContent.innerHTML = `
-            <div class="px-5 py-4 text-gray-500 text-sm">
-                No resorts found matching your criteria
-            </div>
-        `;
-            } else {
-                dropdownContent.innerHTML = filteredResorts.map(resort => `
-            <div class="dropdown-item px-5 py-4 cursor-pointer border-b border-gray-100 last:border-b-0" onclick="selectResort('${resort.name.replace(/'/g, "\\'")}')">
-                <div class="flex justify-between items-start w-full">
-                    <div class="flex-1">
-                        <div class="font-semibold text-gray-900 mb-1">${resort.name}</div>
-                        <div class="text-sm text-gray-600">${resort.priceValue} • ${resort.bedrooms} bedrooms</div>
-                    </div>
-                    <div class="text-xs text-white bg-blue-600 px-2 py-1 rounded ml-2 shrink-0">
-                        ${resort.price}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-            }
-        }
-
-
-        function selectResort(resortName) {
-            document.getElementById('searchInput').value = resortName;
-            document.getElementById('resortDropdown').classList.add('hidden');
-        }
-
-        function redirectToFeaturedResorts() {
-            const searchTerm = document.getElementById('searchInput').value.trim();
-            let url = 'index2.html';
-            const params = new URLSearchParams();
-
-            if (searchTerm) {
-                params.append('search', searchTerm);
-            }
-            if (stayType) {
-                params.append('stayType', stayType);
-            }
-            if (selectedStartDate) {
-                params.append('checkIn', selectedStartDate.toISOString());
-            }
-            if (selectedEndDate) {
-                params.append('checkOut', selectedEndDate.toISOString());
-            }
-            params.append('rooms', rooms);
-            params.append('minPrice', minPrice);
-            params.append('maxPrice', maxPrice);
-
-            if (selectedAmenities.length > 0) {
-                params.append('amenities', selectedAmenities.join(','));
-            }
-
-            const queryString = params.toString();
-            if (queryString) {
-                url += '?' + queryString;
-            }
-
-            window.location.href = url;
-        }
-
-        function handleEnterKey(event) {
-            if (event.key === 'Enter') {
-                redirectToFeaturedResorts();
-            }
-        }
-
-        // Initialize Firebase on page load
-        initializeFirebase();
-        renderCalendar();
-        updatePriceSlider();
-
-        // Prevent calendar from closing when clicking inside it
-        document.getElementById('calendarContainer').addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-
-        // Close mobile menu when window is resized to desktop
-        window.addEventListener('resize', function () {
-            if (window.innerWidth >= 768) {
-                const menu = document.getElementById('mobileMenu');
-                const overlay = document.getElementById('mobileMenuOverlay');
-                const hamburger = document.getElementById('hamburger');
-
-                menu.classList.remove('active');
-                overlay.classList.remove('active');
-                hamburger.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-    </script>
-
-</body>
-
-</html>
