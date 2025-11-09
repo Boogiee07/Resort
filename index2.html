@@ -83,6 +83,7 @@
                 opacity: 0;
                 transform: scale(0.95);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1);
@@ -110,11 +111,13 @@
             background: #555;
         }
 
-        button, a {
+        button,
+        a {
             transition: all 0.2s ease;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             outline: none;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
@@ -164,8 +167,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .mobile-menu {
@@ -237,11 +245,11 @@
             .hero-bg {
                 padding: 1.5rem 0.75rem;
             }
-            
+
             .filter-section {
                 padding: 0.75rem 0.75rem;
             }
-            
+
             .resort-card {
                 margin-bottom: 0.75rem;
             }
@@ -300,14 +308,18 @@
                 <h2 class="text-xl font-bold text-gray-900">Menu</h2>
                 <button onclick="closeMobileMenu()" class="p-2 hover:bg-gray-100 rounded-lg">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
             <nav class="space-y-4">
-                <a href="index.html" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
-                <a href="index2.html" class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
-                <a href="#contact" onclick="closeMobileMenu()" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Contact</a>
+                <a href="index.html"
+                    class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
+                <a href="index2.html"
+                    class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
+                <a href="#contact" onclick="closeMobileMenu()"
+                    class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Contact</a>
             </nav>
         </div>
     </div>
@@ -316,7 +328,9 @@
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition">
                 <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                    </path>
                 </svg>
                 <div>
                     <h1 class="text-base sm:text-xl font-extrabold text-gray-900">Pansol Resorts</h1>
@@ -341,12 +355,14 @@
     <div class="hero-bg py-8 sm:py-24 px-3">
         <div class="max-w-7xl mx-auto text-center">
             <h2 class="text-xl sm:text-5xl md:text-6xl font-black mb-3 sm:mb-6 drop-shadow-2xl">
-                <span class="bg-white text-gray-900 px-3 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl inline-block">
+                <span
+                    class="bg-white text-gray-900 px-3 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl inline-block">
                     Resorts in Pansol
                 </span>
             </h2>
             <p class="text-xs sm:text-2xl drop-shadow-lg max-w-3xl mx-auto mt-2">
-                <span class="bg-white text-gray-900 px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold sm:font-bold shadow-lg inline-block">
+                <span
+                    class="bg-white text-gray-900 px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold sm:font-bold shadow-lg inline-block">
                     Discover our handpicked selection of the best hot spring resorts
                 </span>
             </p>
@@ -358,36 +374,48 @@
             <div class="flex flex-col gap-3">
                 <div class="w-full">
                     <div class="relative">
-                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <input type="text" id="searchInput" placeholder="Search resorts..." class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                        <input type="text" id="searchInput" placeholder="Search resorts..."
+                            class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                     </div>
                 </div>
 
                 <div class="filter-chips-container -mx-3 px-3 sm:mx-0 sm:px-0">
                     <div class="flex gap-2 pb-1">
-                        <button onclick="toggleFilter('all')" class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-600 text-white whitespace-nowrap flex-shrink-0" data-filter="all">
+                        <button onclick="toggleFilter('all')"
+                            class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-600 text-white whitespace-nowrap flex-shrink-0"
+                            data-filter="all">
                             All Resorts
                         </button>
-                        <button onclick="toggleFilter('budget')" class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700 whitespace-nowrap flex-shrink-0" data-filter="budget">
+                        <button onclick="toggleFilter('budget')"
+                            class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700 whitespace-nowrap flex-shrink-0"
+                            data-filter="budget">
                             Budget
                         </button>
-                        <button onclick="toggleFilter('mid')" class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700 whitespace-nowrap flex-shrink-0" data-filter="mid">
+                        <button onclick="toggleFilter('mid')"
+                            class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700 whitespace-nowrap flex-shrink-0"
+                            data-filter="mid">
                             Mid-Range
                         </button>
-                        <button onclick="toggleFilter('premium')" class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700 whitespace-nowrap flex-shrink-0" data-filter="premium">
+                        <button onclick="toggleFilter('premium')"
+                            class="filter-chip px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-700 whitespace-nowrap flex-shrink-0"
+                            data-filter="premium">
                             Premium
                         </button>
                     </div>
                 </div>
 
                 <div class="w-full">
-                    <select id="sortSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm">
+                    <select id="sortSelect"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm">
                         <option value="name">Sort by Name</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
-                        <option value="bedrooms">Bedrooms: Most First</option>
+                        <option value="Pax">Pax: Highest First</option>
                         <option value="rating">Highest Rated</option>
                     </select>
                 </div>
@@ -405,12 +433,15 @@
             </div>
 
             <div id="noResults" class="hidden text-center py-8 sm:py-16">
-                <svg class="w-12 h-12 sm:w-20 sm:h-20 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <svg class="w-12 h-12 sm:w-20 sm:h-20 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <p class="text-lg sm:text-2xl font-bold text-gray-600 mb-2">No resorts found</p>
                 <p class="text-sm text-gray-500 mb-4">Try adjusting your filters or search terms</p>
-                <button onclick="resetFilters()" class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm">
+                <button onclick="resetFilters()"
+                    class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm">
                     Clear All Filters
                 </button>
             </div>
@@ -418,11 +449,14 @@
     </section>
 
     <div id="resortModal" class="modal">
-        <div class="bg-white rounded-none sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-screen sm:max-h-[90vh] overflow-y-auto m-0 sm:m-4">
+        <div
+            class="bg-white rounded-none sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-screen sm:max-h-[90vh] overflow-y-auto m-0 sm:m-4">
             <div class="relative">
-                <button onclick="closeModal()" class="absolute top-3 right-3 z-10 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-100 transition">
+                <button onclick="closeModal()"
+                    class="absolute top-3 right-3 z-10 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-100 transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
                 <img id="modalImage" class="w-full h-40 sm:h-64 object-cover" src="" alt="">
@@ -461,7 +495,8 @@
                 </div>
 
                 <div class="border-t pt-3">
-                    <p class="text-xs text-gray-500 italic">For informational purposes only. Contact the resort directly for availability and booking details.</p>
+                    <p class="text-xs text-gray-500 italic">For informational purposes only. Contact the resort directly
+                        for availability and booking details.</p>
                 </div>
             </div>
         </div>
@@ -572,7 +607,8 @@
                     <div class="mt-6 pt-4 border-t border-gray-700">
                         <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring
                             resort for your relaxation and family bonding needs.</p>
-                            <a href="admin.html" class="text-xs text-blue-400 hover:text-blue-300 transition mt-1 inline-block">Dev</a>
+                        <a href="admin.html"
+                            class="text-xs text-blue-400 hover:text-blue-300 transition mt-1 inline-block">Dev</a>
                     </div>
                 </div>
 
@@ -686,23 +722,23 @@
             const fullStars = Math.floor(rating);
             const hasHalfStar = rating % 1 >= 0.5;
             let starsHTML = '<div class="star-rating">';
-            
+
             // Full stars
             for (let i = 0; i < fullStars; i++) {
                 starsHTML += '<svg class="w-4 h-4 star" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>';
             }
-            
+
             // Half star
             if (hasHalfStar) {
                 starsHTML += '<svg class="w-4 h-4 star" fill="currentColor" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path fill="url(#half)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>';
             }
-            
+
             // Empty stars
             const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
             for (let i = 0; i < emptyStars; i++) {
                 starsHTML += '<svg class="w-4 h-4 star-empty" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>';
             }
-            
+
             starsHTML += `<span class="ml-1 text-xs text-gray-600 font-semibold">${rating.toFixed(1)}</span>`;
             if (count > 0) {
                 starsHTML += `<span class="ml-1 text-xs text-gray-500">(${count})</span>`;
@@ -717,9 +753,9 @@
                 const snapshot = await firestore.collection('feedback')
                     .where('archived', '==', false)
                     .get();
-                
+
                 const ratingsByResort = {};
-                
+
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     if (data.rating && data.resortId) {
@@ -729,7 +765,7 @@
                         ratingsByResort[data.resortId].push(data);
                     }
                 });
-                
+
                 // Calculate averages
                 Object.keys(ratingsByResort).forEach(resortId => {
                     const feedbackList = ratingsByResort[resortId];
@@ -740,7 +776,7 @@
                         count: feedbackList.length
                     };
                 });
-                
+
                 console.log('Loaded ratings for resorts:', resortRatings);
             } catch (error) {
                 console.error('Error loading ratings:', error);
@@ -769,15 +805,15 @@
             try {
                 // Load ratings first
                 await loadAllRatings();
-                
+
                 const resortsRef = database.ref('resorts');
                 const snapshot = await resortsRef.once('value');
                 const data = snapshot.val();
-                
+
                 if (data) {
                     console.log('Firebase data loaded:', data);
                     resorts = validateResortData(Object.values(data));
-                    
+
                     // Add ratings to resorts
                     resorts = resorts.map(resort => {
                         const ratingData = resortRatings[resort.id] || { average: 0, count: 0 };
@@ -787,13 +823,13 @@
                             reviewCount: ratingData.count
                         };
                     });
-                    
+
                     console.log('Processed resorts with ratings:', resorts);
                 } else {
                     resorts = [];
                     console.log('No resorts data found in Firebase');
                 }
-                
+
                 document.getElementById('loadingOverlay').style.display = 'none';
                 initializePageWithData();
             } catch (error) {
@@ -871,13 +907,13 @@
                 }
             });
             applyFiltersAndSort();
-            
+
             // Scroll to the resorts grid section
             const resortsSection = document.getElementById('resortsGrid').parentElement;
             const headerHeight = document.querySelector('header').offsetHeight;
             const filterHeight = document.querySelector('.filter-section').offsetHeight;
             const scrollPosition = resortsSection.offsetTop - headerHeight - filterHeight;
-            
+
             window.scrollTo({
                 top: scrollPosition,
                 behavior: 'smooth'
@@ -889,17 +925,17 @@
             const grid = document.getElementById('resortsGrid');
             const noResults = document.getElementById('noResults');
             const resultsCount = document.getElementById('resultsCount');
-            
+
             if (resortsToShow.length === 0) {
                 grid.innerHTML = '';
                 noResults.classList.remove('hidden');
                 resultsCount.textContent = 'No resorts found';
                 return;
             }
-            
+
             noResults.classList.add('hidden');
             resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
-            
+
             grid.innerHTML = resortsToShow.map(resort => `
                 <div class="resort-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="showResortDetails(${resort.id})">
                     <div class="relative">
@@ -925,10 +961,10 @@
                         <div class="flex justify-between items-center mb-2 pb-2 border-b border-gray-200">
                             <div class="text-xs text-gray-600 flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                                </svg>
-                                ${resort.bedrooms} bed
-                            </div>
+                                    <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                             </svg>
+                             ${resort.Pax} pax
+                        /div>
                             <div class="font-bold text-blue-600 text-base">
                                 ${resort.priceValue.split(' ')[0]}
                             </div>
@@ -955,15 +991,15 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const urlParams = getUrlParams();
             let filtered = resorts;
-            
+
             if (activeFilter !== 'all') {
                 filtered = filtered.filter(resort => resort.price === activeFilter);
             }
-            
+
             if (urlParams.rooms) {
                 filtered = filtered.filter(resort => resort.bedrooms >= urlParams.rooms);
             }
-            
+
             if (urlParams.minPrice !== null || urlParams.maxPrice !== null) {
                 const min = urlParams.minPrice !== null ? urlParams.minPrice : 0;
                 const max = urlParams.maxPrice !== null ? urlParams.maxPrice : 999999;
@@ -972,14 +1008,14 @@
                     return resortPrice >= min && resortPrice <= max;
                 });
             }
-            
+
             if (urlParams.amenities && urlParams.amenities.length > 0) {
                 filtered = filtered.filter(resort => {
                     const resortAmenities = resort.amenities || [];
                     return urlParams.amenities.every(amenity => resortAmenities.includes(amenity));
                 });
             }
-            
+
             if (searchTerm) {
                 const exactMatch = filtered.filter(r => r.name.toLowerCase() === searchTerm);
                 if (exactMatch.length > 0) {
@@ -992,7 +1028,7 @@
                     );
                 }
             }
-            
+
             filtered = sortResorts(filtered, currentSort);
             renderResorts(filtered);
         }
