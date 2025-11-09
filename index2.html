@@ -722,7 +722,7 @@
             return {
                 search: params.get('search') || '',
                 sort: params.get('sort') || 'name',
-                rooms: params.get('rooms') ? parseInt(params.get('rooms')) : null,
+                pax: params.get('pax') ? parseInt(params.get('pax')) : null,
                 stayType: params.get('stayType') || '',
                 checkIn: params.get('checkIn') || '',
                 checkOut: params.get('checkOut') || '',
@@ -787,7 +787,7 @@
                 document.getElementById('sortSelect').value = urlParams.sort;
                 currentSort = urlParams.sort;
             }
-            if (urlParams.rooms || urlParams.adults || urlParams.stayType ||
+            if (urlParams.pax || urlParams.adults || urlParams.stayType ||
                 urlParams.minPrice || urlParams.maxPrice ||
                 (urlParams.amenities && urlParams.amenities.length > 0)) {
                 displayFilterInfo(urlParams);
@@ -807,7 +807,7 @@
             filterInfoHTML += '<div class="flex-1"><div class="font-semibold text-blue-900 mb-1 text-sm">Active Filters:</div>';
             filterInfoHTML += '<div class="text-xs text-blue-800">';
             const filters = [];
-            if (params.rooms) filters.push(`${params.rooms} room${params.rooms > 1 ? 's' : ''}`);
+            if (params.pax) filters.push(`${params.pax} pax`);
             if (params.adults) filters.push(`${params.adults} adult${params.adults > 1 ? 's' : ''}`);
             if (params.stayType) filters.push(params.stayType === 'overnight' ? 'Overnight' : 'Day use');
             if (params.minPrice !== null || params.maxPrice !== null) {
@@ -934,10 +934,10 @@
                 filtered = filtered.filter(resort => resort.price === activeFilter);
             }
             
-            if (urlParams.rooms) {
+            if (urlParams.pax) {
                 filtered = filtered.filter(resort => {
-                    const pax = resort.pax || resort.capacity || resort.bedrooms || 0;
-                    return pax >= urlParams.rooms;
+                    const resortPax = resort.pax || resort.capacity || resort.bedrooms || 0;
+                    return resortPax >= urlParams.pax;
                 });
             }
             
