@@ -387,7 +387,7 @@
                         <option value="name">Sort by Name</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
-                        <option value="bedrooms">Bedrooms: Most First</option>
+                        <option value="capacity">Capacity: Most First</option>
                         <option value="rating">Highest Rated</option>
                     </select>
                 </div>
@@ -435,7 +435,7 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <div id="modalPrice" class="text-lg sm:text-2xl font-bold text-blue-600"></div>
-                        <div id="modalBedrooms" class="text-sm text-gray-600"></div>
+                        <div id="modalCapacity" class="text-sm text-gray-600"></div>
                     </div>
                 </div>
 
@@ -925,9 +925,9 @@
                         <div class="flex justify-between items-center mb-2 pb-2 border-b border-gray-200">
                             <div class="text-xs text-gray-600 flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
                                 </svg>
-                                ${resort.bedrooms} bed
+                                ${resort.capacity || resort.bedrooms} pax
                             </div>
                             <div class="font-bold text-blue-600 text-base">
                                 ${resort.priceValue.split(' ')[0]}
@@ -961,7 +961,7 @@
             }
             
             if (urlParams.rooms) {
-                filtered = filtered.filter(resort => resort.bedrooms >= urlParams.rooms);
+                filtered = filtered.filter(resort => (resort.capacity || resort.bedrooms) >= urlParams.rooms);
             }
             
             if (urlParams.minPrice !== null || urlParams.maxPrice !== null) {
@@ -1012,6 +1012,10 @@
                 if (!resort.amenities) {
                     resort.amenities = [];
                 }
+                // Ensure capacity exists, fallback to bedrooms if not
+                if (!resort.capacity && resort.bedrooms) {
+                    resort.capacity = resort.bedrooms;
+                }
                 return resort;
             });
         }
@@ -1024,8 +1028,8 @@
                     return sorted.sort((a, b) => a.priceNumeric - b.priceNumeric);
                 case 'price-high':
                     return sorted.sort((a, b) => b.priceNumeric - a.priceNumeric);
-                case 'bedrooms':
-                    return sorted.sort((a, b) => b.bedrooms - a.bedrooms);
+                case 'capacity':
+                    return sorted.sort((a, b) => (b.capacity || b.bedrooms || 0) - (a.capacity || a.bedrooms || 0));
                 case 'rating':
                     return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
                 case 'name':
