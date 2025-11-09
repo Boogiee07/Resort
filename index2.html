@@ -120,17 +120,8 @@
         }
 
         .hero-bg {
-            background-image: url('picture/back.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: scroll;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             position: relative;
-        }
-
-        @media (min-width: 768px) {
-            .hero-bg {
-                background-attachment: fixed;
-            }
         }
 
         .filter-chip {
@@ -233,30 +224,6 @@
             }
         }
 
-        @media (max-width: 360px) {
-            .hero-bg {
-                padding: 1.5rem 0.75rem;
-            }
-            
-            .filter-section {
-                padding: 0.75rem 0.75rem;
-            }
-            
-            .resort-card {
-                margin-bottom: 0.75rem;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .modal.active>div {
-                border-radius: 0;
-                max-height: 100vh;
-                margin: 0;
-                width: 100%;
-                min-height: 100vh;
-            }
-        }
-
         .filter-chips-container {
             overflow-x: auto;
             scrollbar-width: none;
@@ -305,8 +272,8 @@
                 </button>
             </div>
             <nav class="space-y-4">
-                <a href="index.html" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
-                <a href="index2.html" class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
+                <a href="#" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
+                <a href="#" class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
                 <a href="#contact" onclick="closeMobileMenu()" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Contact</a>
             </nav>
         </div>
@@ -314,7 +281,7 @@
 
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-            <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition">
+            <a href="#" class="flex items-center space-x-2 hover:opacity-80 transition">
                 <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                 </svg>
@@ -325,8 +292,8 @@
             </a>
 
             <nav class="hidden md:flex space-x-8 text-sm font-semibold">
-                <a href="index.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
-                <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
+                <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
                 <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
             </nav>
 
@@ -340,15 +307,11 @@
 
     <div class="hero-bg py-8 sm:py-24 px-3">
         <div class="max-w-7xl mx-auto text-center">
-            <h2 class="text-xl sm:text-5xl md:text-6xl font-black mb-3 sm:mb-6 drop-shadow-2xl">
-                <span class="bg-white text-gray-900 px-3 py-2 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl inline-block">
-                    Resorts in Pansol
-                </span>
+            <h2 class="text-xl sm:text-5xl md:text-6xl font-black mb-3 sm:mb-6 drop-shadow-2xl text-white">
+                Resorts in Pansol
             </h2>
-            <p class="text-xs sm:text-2xl drop-shadow-lg max-w-3xl mx-auto mt-2">
-                <span class="bg-white text-gray-900 px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold sm:font-bold shadow-lg inline-block">
-                    Discover our handpicked selection of the best hot spring resorts
-                </span>
+            <p class="text-xs sm:text-2xl text-white drop-shadow-lg max-w-3xl mx-auto mt-2 font-semibold sm:font-bold">
+                Discover our handpicked selection of the best hot spring resorts
             </p>
         </div>
     </div>
@@ -431,6 +394,7 @@
                 <div class="flex flex-col gap-3 mb-4">
                     <div class="flex-1">
                         <h3 id="modalTitle" class="text-xl sm:text-3xl font-bold text-gray-900 mb-2"></h3>
+                        <div id="modalRating" class="mb-2"></div>
                         <p id="modalAddress" class="text-sm sm:text-lg text-gray-600 mb-2"></p>
                     </div>
                     <div class="flex justify-between items-center">
@@ -458,6 +422,9 @@
                     <h4 class="text-sm sm:text-lg font-bold text-gray-900 mb-2">📍 Location</h4>
                     <p id="modalLocation" class="text-sm text-gray-700 mb-2"></p>
                     <p class="text-xs text-gray-600">Coordinates: <span id="modalCoords"></span></p>
+                </div>
+
+                <div id="modalFacebook" class="mb-5">
                 </div>
 
                 <div class="border-t pt-3">
@@ -572,7 +539,6 @@
                     <div class="mt-6 pt-4 border-t border-gray-700">
                         <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring
                             resort for your relaxation and family bonding needs.</p>
-                            <a href="admin.html" class="text-xs text-blue-400 hover:text-blue-300 transition mt-1 inline-block">Dev</a>
                     </div>
                 </div>
 
@@ -661,7 +627,10 @@
             'kitchen': '🍳 Kitchen',
             'karaoke': '🎤 Karaoke/Videoke',
             'wifi': '📶 WiFi',
-            'parking': '🅿️ Parking'
+            'parking': '🅿️ Parking',
+            'pet-friendly': '🐾 Pet Friendly',
+            'smoking': '🚬 Smoking Area',
+            'billiards': '🎱 Billiards'
         };
 
         // Price Badge Colors
@@ -678,7 +647,7 @@
             }
             const totalRating = feedbackList.reduce((sum, feedback) => sum + feedback.rating, 0);
             const average = totalRating / feedbackList.length;
-            return { average: average, count: feedbackList.count };
+            return { average: average, count: feedbackList.length };
         }
 
         // Generate Star Rating HTML
@@ -1068,7 +1037,69 @@
 
         // Show Resort Details
         function showResortDetails(resortId) {
-            window.location.href = `resort-details.html?id=${resortId}`;
+            const resort = resorts.find(r => r.id === resortId);
+            if (!resort) {
+                console.error('Resort not found:', resortId);
+                return;
+            }
+            
+            // Get rating data
+            const ratingData = resortRatings[resortId] || { average: 0, count: 0 };
+            
+            // Populate modal
+            document.getElementById('modalTitle').textContent = resort.name;
+            document.getElementById('modalImage').src = resort.image;
+            document.getElementById('modalImage').alt = resort.name;
+            document.getElementById('modalAddress').textContent = resort.address;
+            document.getElementById('modalDescription').textContent = resort.description;
+            document.getElementById('modalPrice').textContent = resort.priceValue;
+            document.getElementById('modalCapacity').textContent = `Capacity: ${resort.pax || resort.capacity || 'N/A'} pax`;
+            document.getElementById('modalLocation').textContent = resort.address;
+            document.getElementById('modalCoords').textContent = `${resort.lat}, ${resort.lng}`;
+            
+            // Rating
+            const ratingHTML = ratingData.average > 0 
+                ? generateStarRating(ratingData.average, ratingData.count)
+                : '<span class="text-sm text-gray-500">No reviews yet</span>';
+            document.getElementById('modalRating').innerHTML = ratingHTML;
+            
+            // Facilities
+            const facilitiesHTML = (resort.facilities || []).map(facility => `
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                    <img src="${facilityImages[facility] || 'https://placehold.co/80x80/6b7280/ffffff?text=Facility'}" 
+                         alt="${facility}" 
+                         class="w-12 h-12 rounded-lg object-cover">
+                    <span class="text-xs font-medium text-gray-700">${facility}</span>
+                </div>
+            `).join('');
+            document.getElementById('modalFacilities').innerHTML = facilitiesHTML || '<p class="text-sm text-gray-500">No facilities listed</p>';
+            
+            // Amenities
+            const amenitiesHTML = (resort.amenities || []).map(amenity => `
+                <span class="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+                    ${amenityLabels[amenity] || amenity}
+                </span>
+            `).join('');
+            document.getElementById('modalAmenities').innerHTML = amenitiesHTML || '<p class="text-sm text-gray-500">No amenities listed</p>';
+            
+            // Facebook link
+            if (resort.facebookUrl) {
+                document.getElementById('modalFacebook').innerHTML = `
+                    <a href="${resort.facebookUrl}" target="_blank" rel="noopener noreferrer" 
+                       class="flex items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Visit Facebook Page
+                    </a>
+                `;
+            } else {
+                document.getElementById('modalFacebook').innerHTML = '';
+            }
+            
+            // Show modal
+            document.getElementById('resortModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         // Close Modal
@@ -1099,6 +1130,14 @@
         // Modal Click Outside to Close
         document.getElementById('resortModal').addEventListener('click', (e) => {
             if (e.target.id === 'resortModal') closeModal();
+        });
+
+        // Keyboard ESC to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeMobileMenu();
+            }
         });
 
         // Initialize - Load Resorts from Firebase
