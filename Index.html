@@ -242,12 +242,30 @@
             }
         }
 
+        .calendar-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .calendar-modal.active {
+            display: flex;
+        }
+
         .calendar-container {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             max-width: 320px;
             margin: 0 auto;
+            position: relative;
         }
 
         .calendar-header {
@@ -414,31 +432,42 @@
             display: inline-block;
         }
 
-        .amenity-chip {
-            display: inline-flex;
+        .inclusions-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .inclusion-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .inclusion-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .inclusion-item:last-child {
+            border-bottom: none;
+        }
+
+        .inclusion-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.75rem;
+            cursor: pointer;
+            accent-color: #3b82f6;
+        }
+
+        .inclusion-label {
+            display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 9999px;
+            flex: 1;
             cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-        }
-
-        .amenity-chip:hover {
-            border-color: #3b82f6;
-            background-color: #eff6ff;
-        }
-
-        .amenity-chip.selected {
-            background-color: #3b82f6;
-            border-color: #3b82f6;
-            color: white;
-        }
-
-        .amenity-chip input[type="checkbox"] {
-            display: none;
         }
     </style>
 </head>
@@ -588,39 +617,45 @@
 
                     <!-- Price Range Button -->
                     <div class="relative">
-    <input type="text" id="priceRangeInput" readonly
-        class="w-full pl-4 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-        value="₱ (Price Range)" onclick="togglePriceSlider()">
-</div>
+                        <input type="text" id="priceRangeInput" readonly
+                            class="w-full pl-4 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+                            value="₱ (Price Range)" onclick="togglePriceSlider()">
+                    </div>
                 </div>
 
-                <div id="calendarContainer" class="hidden calendar-container">
-                    <div class="calendar-header">
-                        <button onclick="event.stopPropagation(); previousMonth()" class="p-1 hover:bg-gray-100 rounded-lg">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 19l-7-7 7-7"></path>
-                            </svg>
-                        </button>
-                        <div class="font-semibold text-lg" id="calendarMonth"></div>
-                        <button onclick="event.stopPropagation(); nextMonth()" class="p-1 hover:bg-gray-100 rounded-lg">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="p-2">
-                        <div class="calendar-grid">
-                            <div class="calendar-day-header">Mo</div>
-                            <div class="calendar-day-header">Tu</div>
-                            <div class="calendar-day-header">We</div>
-                            <div class="calendar-day-header">Th</div>
-                            <div class="calendar-day-header">Fr</div>
-                            <div class="calendar-day-header">Sa</div>
-                            <div class="calendar-day-header">Su</div>
+                <!-- Calendar Modal -->
+                <div id="calendarModal" class="calendar-modal" onclick="closeCalendarModal(event)">
+                    <div class="calendar-container" onclick="event.stopPropagation()">
+                        <div class="calendar-header">
+                            <button onclick="event.stopPropagation(); previousMonth()"
+                                class="p-1 hover:bg-gray-100 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="font-semibold text-lg" id="calendarMonth"></div>
+                            <button onclick="event.stopPropagation(); nextMonth()"
+                                class="p-1 hover:bg-gray-100 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7">
+                                    </path>
+                                </svg>
+                            </button>
                         </div>
-                        <div class="calendar-grid" id="calendarDays"></div>
+                        <div class="p-2">
+                            <div class="calendar-grid">
+                                <div class="calendar-day-header">Mo</div>
+                                <div class="calendar-day-header">Tu</div>
+                                <div class="calendar-day-header">We</div>
+                                <div class="calendar-day-header">Th</div>
+                                <div class="calendar-day-header">Fr</div>
+                                <div class="calendar-day-header">Sa</div>
+                                <div class="calendar-day-header">Su</div>
+                            </div>
+                            <div class="calendar-grid" id="calendarDays"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -660,31 +695,31 @@
                     </div>
                 </div>
 
-                <!-- Guests and Amenities Row -->
+                <!-- Guests and Inclusions Row -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Rooms -->
+                    <!-- Pax -->
                     <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                             </path>
                         </svg>
                         <input type="text" id="guestsInput" readonly
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-                            value="1 room" onclick="toggleGuestsDropdown()">
+                            value="1 pax" onclick="toggleGuestsDropdown()">
 
-                        <!-- Rooms Dropdown -->
+                        <!-- Pax Dropdown -->
                         <div id="guestsDropdown"
                             class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-700">Rooms</span>
+                                    <span class="text-gray-700">Pax (Persons)</span>
                                     <div class="flex items-center gap-3">
-                                        <button onclick="changeGuests('rooms', -1)"
+                                        <button onclick="changeGuests('pax', -1)"
                                             class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">-</button>
-                                        <span id="roomsCount" class="w-8 text-center">1</span>
-                                        <button onclick="changeGuests('rooms', 1)"
+                                        <span id="paxCount" class="w-8 text-center">1</span>
+                                        <button onclick="changeGuests('pax', 1)"
                                             class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">+</button>
                                     </div>
                                 </div>
@@ -692,138 +727,188 @@
                         </div>
                     </div>
 
-                    <!-- Amenities Filter -->
+                    <!-- Inclusions Filter -->
                     <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
                             </path>
                         </svg>
-                        <input type="text" id="amenitiesInput" readonly
+                        <input type="text" id="inclusionsInput" readonly
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-                            value="All amenities" onclick="toggleAmenitiesDropdown()">
+                            value="All inclusions" onclick="toggleInclusionsDropdown()">
 
-                        <!-- Amenities Dropdown -->
-                        <div id="amenitiesDropdown"
-                            class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20 max-h-80 overflow-y-auto">
-                            <h4 class="font-semibold text-gray-900 mb-3">Filter by Amenities</h4>
-                            <div class="space-y-3">
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="hot-spring" onchange="toggleAmenity('hot-spring')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                    </svg>
-                                    <span>Hot Spring</span>
+                        <!-- Inclusions Dropdown -->
+                        <div id="inclusionsDropdown"
+                            class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg z-20">
+                            <div class="p-4 border-b border-gray-200">
+                                <h4 class="font-semibold text-gray-900">Filter by Inclusions</h4>
+                            </div>
+                            <div class="inclusions-container">
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="hot-spring"
+                                        onchange="toggleInclusion('hot-spring')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                        <span>Hot Spring</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="wifi" onchange="toggleAmenity('wifi')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0">
-                                        </path>
-                                    </svg>
-                                    <span>WiFi</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="wifi"
+                                        onchange="toggleInclusion('wifi')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0">
+                                            </path>
+                                        </svg>
+                                        <span>WiFi</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="parking" onchange="toggleAmenity('parking')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
-                                        </path>
-                                    </svg>
-                                    <span>Parking</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="parking"
+                                        onchange="toggleInclusion('parking')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                                            </path>
+                                        </svg>
+                                        <span>Parking</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="kitchen" onchange="toggleAmenity('kitchen')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
-                                        </path>
-                                    </svg>
-                                    <span>Kitchen</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="kitchen"
+                                        onchange="toggleInclusion('kitchen')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                                            </path>
+                                        </svg>
+                                        <span>Kitchen</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="aircon" onchange="toggleAmenity('aircon')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                                    </svg>
-                                    <span>Air Conditioning</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="aircon"
+                                        onchange="toggleInclusion('aircon')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                                        </svg>
+                                        <span>Air Conditioning</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="karaoke" onchange="toggleAmenity('karaoke')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3">
-                                        </path>
-                                    </svg>
-                                    <span>Karaoke</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="karaoke"
+                                        onchange="toggleInclusion('karaoke')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3">
+                                            </path>
+                                        </svg>
+                                        <span>Karaoke</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="smoking" onchange="toggleAmenity('smoking')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                        </path>
-                                    </svg>
-                                    <span>Smoking Allowed</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="smoking"
+                                        onchange="toggleInclusion('smoking')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                            </path>
+                                        </svg>
+                                        <span>Smoking Allowed</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="no-smoking" onchange="toggleAmenity('no-smoking')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
-                                        </path>
-                                    </svg>
-                                    <span>No Smoking</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="no-smoking"
+                                        onchange="toggleInclusion('no-smoking')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                            </path>
+                                        </svg>
+                                        <span>No Smoking</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="pet-friendly"
-                                        onchange="toggleAmenity('pet-friendly')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                        </path>
-                                    </svg>
-                                    <span>Pet Friendly</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="pet-friendly"
+                                        onchange="toggleInclusion('pet-friendly')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                            </path>
+                                        </svg>
+                                        <span>Pet Friendly</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="no-pets" onchange="toggleAmenity('no-pets')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
-                                        </path>
-                                    </svg>
-                                    <span>No Pets Allowed</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="no-pets"
+                                        onchange="toggleInclusion('no-pets')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                            </path>
+                                        </svg>
+                                        <span>No Pets Allowed</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="billiards" onchange="toggleAmenity('billiards')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                        </path>
-                                    </svg>
-                                    <span>Billiards</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="billiards"
+                                        onchange="toggleInclusion('billiards')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                            </path>
+                                        </svg>
+                                        <span>Billiards</span>
+                                    </div>
                                 </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="no-billiards"
-                                        onchange="toggleAmenity('no-billiards')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
-                                        </path>
-                                    </svg>
-                                    <span>No Billiards</span>
+                                <label class="inclusion-item">
+                                    <input type="checkbox" class="inclusion-checkbox" value="no-billiards"
+                                        onchange="toggleInclusion('no-billiards')">
+                                    <div class="inclusion-label">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                            </path>
+                                        </svg>
+                                        <span>No Billiards</span>
+                                    </div>
                                 </label>
                             </div>
-                            <button onclick="clearAmenities()"
-                                class="mt-4 w-full py-2 text-sm text-blue-600 hover:text-blue-700 font-semibold">
-                                Clear All Filters
-                            </button>
+                            <div class="p-4 border-t border-gray-200">
+                                <button onclick="clearInclusions()"
+                                    class="w-full py-2 text-sm text-blue-600 hover:text-blue-700 font-semibold">
+                                    Clear All Filters
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -983,12 +1068,12 @@
         let currentYear = new Date().getFullYear();
         let selectedStartDate = null;
         let selectedEndDate = null;
-        let rooms = 1;
+        let pax = 1;
         let minPrice = 0;
         let maxPrice = 20000;
         let isDragging = false;
         let activeThumb = null;
-        let selectedAmenities = [];
+        let selectedInclusions = [];
 
         // Mobile Menu Toggle
         function toggleMobileMenu() {
@@ -1031,36 +1116,36 @@
             }
         }
 
-        // Amenities Functions
-        function toggleAmenitiesDropdown() {
-            const dropdown = document.getElementById('amenitiesDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
+        // Inclusions Functions
+        function toggleInclusionsDropdown() {
+            const dropdown = document.getElementById('inclusionsDropdown');
+            const calendarModal = document.getElementById('calendarModal');
             const priceSliderContainer = document.getElementById('priceSliderContainer');
             const guestsDropdown = document.getElementById('guestsDropdown');
 
-            calendarContainer.classList.add('hidden');
+            calendarModal.classList.remove('active');
             priceSliderContainer.classList.add('hidden');
             guestsDropdown.classList.add('hidden');
             dropdown.classList.toggle('hidden');
         }
 
-        function toggleAmenity(amenity) {
-            const index = selectedAmenities.indexOf(amenity);
+        function toggleInclusion(inclusion) {
+            const index = selectedInclusions.indexOf(inclusion);
             if (index > -1) {
-                selectedAmenities.splice(index, 1);
+                selectedInclusions.splice(index, 1);
             } else {
-                selectedAmenities.push(amenity);
+                selectedInclusions.push(inclusion);
             }
-            updateAmenitiesInput();
+            updateInclusionsInput();
             filterResorts();
         }
 
-        function updateAmenitiesInput() {
-            const input = document.getElementById('amenitiesInput');
-            if (selectedAmenities.length === 0) {
-                input.value = 'All amenities';
-            } else if (selectedAmenities.length === 1) {
-                const amenityNames = {
+        function updateInclusionsInput() {
+            const input = document.getElementById('inclusionsInput');
+            if (selectedInclusions.length === 0) {
+                input.value = 'All inclusions';
+            } else if (selectedInclusions.length === 1) {
+                const inclusionNames = {
                     'hot-spring': 'Hot Spring',
                     'wifi': 'WiFi',
                     'parking': 'Parking',
@@ -1074,44 +1159,45 @@
                     'billiards': 'Billiards',
                     'no-billiards': 'No Billiards'
                 };
-                input.value = amenityNames[selectedAmenities[0]];
+                input.value = inclusionNames[selectedInclusions[0]];
             } else {
-                input.value = `${selectedAmenities.length} amenities selected`;
+                input.value = `${selectedInclusions.length} inclusions selected`;
             }
 
             // Update checkbox states
-            const checkboxes = document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]');
+            const checkboxes = document.querySelectorAll('#inclusionsDropdown input[type="checkbox"]');
             checkboxes.forEach(cb => {
-                const chip = cb.parentElement;
-                if (selectedAmenities.includes(cb.value)) {
-                    chip.classList.add('selected');
-                    cb.checked = true;
-                } else {
-                    chip.classList.remove('selected');
-                    cb.checked = false;
-                }
+                cb.checked = selectedInclusions.includes(cb.value);
             });
         }
 
-        function clearAmenities() {
-            selectedAmenities = [];
-            updateAmenitiesInput();
+        function clearInclusions() {
+            selectedInclusions = [];
+            updateInclusionsInput();
             filterResorts();
         }
 
         function toggleCalendar() {
-            const calendar = document.getElementById('calendarContainer');
+            const calendarModal = document.getElementById('calendarModal');
             const priceSlider = document.getElementById('priceSliderContainer');
             const guestsDropdown = document.getElementById('guestsDropdown');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
 
             priceSlider.classList.add('hidden');
             guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
+            inclusionsDropdown.classList.add('hidden');
 
-            // Always show calendar when clicked, don't toggle
-            calendar.classList.remove('hidden');
+            calendarModal.classList.add('active');
             renderCalendar();
+        }
+
+        function closeCalendarModal(event) {
+            if (event.target.id === 'calendarModal') {
+                // Only close if day use OR both dates selected for overnight
+                if (stayType === 'dayuse' || (stayType === 'overnight' && selectedStartDate && selectedEndDate)) {
+                    document.getElementById('calendarModal').classList.remove('active');
+                }
+            }
         }
 
         function renderCalendar() {
@@ -1159,43 +1245,43 @@
             }
         }
 
-        function getAvailableAmenities() {
-            const availableAmenities = new Set();
+        function getAvailableInclusions() {
+            const availableInclusions = new Set();
 
-            // Get resorts that match current filters (except amenities)
+            // Get resorts that match current filters (except inclusions)
             let filteredResorts = resorts;
 
             // Apply current filters
-            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
+            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= Math.ceil(pax / 4));
             filteredResorts = filteredResorts.filter(resort =>
                 resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
             );
 
-            // Collect all amenities from filtered resorts
+            // Collect all inclusions from filtered resorts
             filteredResorts.forEach(resort => {
                 if (resort.amenities) {
-                    resort.amenities.forEach(amenity => availableAmenities.add(amenity));
+                    resort.amenities.forEach(amenity => availableInclusions.add(amenity));
                 }
             });
 
-            return availableAmenities;
+            return availableInclusions;
         }
 
-        // Update amenities dropdown to show/hide based on availability
-        function updateAmenitiesDropdown() {
-            const availableAmenities = getAvailableAmenities();
-            const amenityCheckboxes = document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]');
+        // Update inclusions dropdown to show/hide based on availability
+        function updateInclusionsDropdown() {
+            const availableInclusions = getAvailableInclusions();
+            const inclusionCheckboxes = document.querySelectorAll('#inclusionsDropdown input[type="checkbox"]');
 
-            amenityCheckboxes.forEach(checkbox => {
-                const amenityValue = checkbox.value;
-                const chip = checkbox.parentElement;
+            inclusionCheckboxes.forEach(checkbox => {
+                const inclusionValue = checkbox.value;
+                const item = checkbox.closest('.inclusion-item');
 
-                if (!availableAmenities.has(amenityValue)) {
-                    // Hide amenity if no resorts have it
-                    chip.style.display = 'none';
+                if (!availableInclusions.has(inclusionValue)) {
+                    // Hide inclusion if no resorts have it
+                    item.style.display = 'none';
                 } else {
-                    // Show amenity if resorts have it
-                    chip.style.display = 'inline-flex';
+                    // Show inclusion if resorts have it
+                    item.style.display = 'flex';
                 }
             });
         }
@@ -1214,7 +1300,7 @@
                 cell.classList.add('disabled');
             } else {
                 cell.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent event from bubbling to document listener
+                    e.stopPropagation();
                     selectDate(date);
                 });
 
@@ -1240,7 +1326,7 @@
                     if (date >= selectedStartDate && date <= selectedEndDate) {
                         cell.classList.add('in-range');
                     }
-                    }
+                }
             }
 
             return cell;
@@ -1252,7 +1338,7 @@
                 selectedStartDate = date;
                 selectedEndDate = null;
                 updateDateRangeInput();
-                document.getElementById('calendarContainer').classList.add('hidden');
+                document.getElementById('calendarModal').classList.remove('active');
             } else {
                 // Overnight stay: requires 2 dates before calendar closes
                 if (!selectedStartDate) {
@@ -1270,7 +1356,7 @@
                         renderCalendar();
                         // Close calendar after showing both dates
                         setTimeout(() => {
-                            document.getElementById('calendarContainer').classList.add('hidden');
+                            document.getElementById('calendarModal').classList.remove('active');
                         }, 300);
                     } else {
                         // Date is before/equal to check-in, restart selection
@@ -1338,13 +1424,13 @@
         // Price Slider Functions
         function togglePriceSlider() {
             const priceSlider = document.getElementById('priceSliderContainer');
-            const calendar = document.getElementById('calendarContainer');
+            const calendarModal = document.getElementById('calendarModal');
             const guestsDropdown = document.getElementById('guestsDropdown');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
 
-            calendar.classList.add('hidden');
+            calendarModal.classList.remove('active');
             guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
+            inclusionsDropdown.classList.add('hidden');
             priceSlider.classList.toggle('hidden');
         }
 
@@ -1459,30 +1545,28 @@
         // Guests Dropdown
         function toggleGuestsDropdown() {
             const dropdown = document.getElementById('guestsDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
+            const calendarModal = document.getElementById('calendarModal');
             const priceSliderContainer = document.getElementById('priceSliderContainer');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
 
-            calendarContainer.classList.add('hidden');
+            calendarModal.classList.remove('active');
             priceSliderContainer.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
+            inclusionsDropdown.classList.add('hidden');
             dropdown.classList.toggle('hidden');
         }
 
         function changeGuests(type, delta) {
-            if (type === 'rooms') {
-                rooms = Math.max(1, Math.min(14, rooms + delta));
-                document.getElementById('roomsCount').textContent = rooms;
+            if (type === 'pax') {
+                pax = Math.max(1, Math.min(50, pax + delta));
+                document.getElementById('paxCount').textContent = pax;
             }
             updateGuestsInput();
             filterResorts();
         }
 
-        let maxRooms = 14;
-
         function updateGuestsInput() {
-            const roomsText = rooms === 1 ? '1 room' : `${rooms} rooms`;
-            document.getElementById('guestsInput').value = roomsText;
+            const paxText = pax === 1 ? '1 pax' : `${pax} pax`;
+            document.getElementById('guestsInput').value = paxText;
         }
 
         // Close dropdowns when clicking outside
@@ -1491,12 +1575,11 @@
             const dropdown = document.getElementById('resortDropdown');
             const guestsInput = document.getElementById('guestsInput');
             const guestsDropdown = document.getElementById('guestsDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
             const priceSliderContainer = document.getElementById('priceSliderContainer');
             const dateRangeInput = document.getElementById('dateRangeInput');
             const priceRangeInput = document.getElementById('priceRangeInput');
-            const amenitiesInput = document.getElementById('amenitiesInput');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+            const inclusionsInput = document.getElementById('inclusionsInput');
+            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
 
             if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
                 dropdown.classList.add('hidden');
@@ -1506,19 +1589,12 @@
                 guestsDropdown.classList.add('hidden');
             }
 
-            // Only close calendar if clicking outside AND (it's day use OR both dates are selected for overnight)
-            if (!calendarContainer.contains(event.target) && !dateRangeInput.contains(event.target)) {
-                if (stayType === 'dayuse' || (stayType === 'overnight' && selectedStartDate && selectedEndDate)) {
-                    calendarContainer.classList.add('hidden');
-                }
-            }
-
             if (!priceSliderContainer.contains(event.target) && !priceRangeInput.contains(event.target)) {
                 priceSliderContainer.classList.add('hidden');
             }
 
-            if (!amenitiesDropdown.contains(event.target) && !amenitiesInput.contains(event.target)) {
-                amenitiesDropdown.classList.add('hidden');
+            if (!inclusionsDropdown.contains(event.target) && !inclusionsInput.contains(event.target)) {
+                inclusionsDropdown.classList.add('hidden');
             }
         });
 
@@ -1656,24 +1732,24 @@
                 );
             }
 
-            // Filter by number of rooms (bedrooms) - EXACT OR GREATER
-            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= rooms);
+            // Filter by number of pax (bedrooms capacity)
+            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= Math.ceil(pax / 4));
 
             // Filter by price range
             filteredResorts = filteredResorts.filter(resort =>
                 resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
             );
 
-            // Filter by selected amenities - ALL must be present (AND logic)
-            if (selectedAmenities.length > 0) {
+            // Filter by selected inclusions - ALL must be present (AND logic)
+            if (selectedInclusions.length > 0) {
                 filteredResorts = filteredResorts.filter(resort => {
                     const resortAmenities = resort.amenities || [];
-                    return selectedAmenities.every(amenity => resortAmenities.includes(amenity));
+                    return selectedInclusions.every(inclusion => resortAmenities.includes(inclusion));
                 });
             }
 
-            // Update amenities dropdown based on available resorts
-            updateAmenitiesDropdown();
+            // Update inclusions dropdown based on available resorts
+            updateInclusionsDropdown();
 
             if (filteredResorts.length === 0) {
                 dropdownContent.innerHTML = `
@@ -1698,7 +1774,6 @@
             }
         }
 
-
         function selectResort(resortName) {
             document.getElementById('searchInput').value = resortName;
             document.getElementById('resortDropdown').classList.add('hidden');
@@ -1721,12 +1796,12 @@
             if (selectedEndDate) {
                 params.append('checkOut', selectedEndDate.toISOString());
             }
-            params.append('rooms', rooms);
+            params.append('pax', pax);
             params.append('minPrice', minPrice);
             params.append('maxPrice', maxPrice);
 
-            if (selectedAmenities.length > 0) {
-                params.append('amenities', selectedAmenities.join(','));
+            if (selectedInclusions.length > 0) {
+                params.append('inclusions', selectedInclusions.join(','));
             }
 
             const queryString = params.toString();
@@ -1747,11 +1822,6 @@
         initializeFirebase();
         renderCalendar();
         updatePriceSlider();
-
-        // Prevent calendar from closing when clicking inside it
-        document.getElementById('calendarContainer').addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
 
         // Close mobile menu when window is resized to desktop
         window.addEventListener('resize', function () {
