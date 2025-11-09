@@ -927,7 +927,7 @@
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
                                 </svg>
-                                ${resort.capacity || resort.bedrooms} pax
+                                ${resort.pax || resort.capacity || resort.bedrooms || 'N/A'} pax
                             </div>
                             <div class="font-bold text-blue-600 text-base">
                                 ${resort.priceValue.split(' ')[0]}
@@ -961,7 +961,10 @@
             }
             
             if (urlParams.rooms) {
-                filtered = filtered.filter(resort => (resort.capacity || resort.bedrooms) >= urlParams.rooms);
+                filtered = filtered.filter(resort => {
+                    const pax = resort.pax || resort.capacity || resort.bedrooms || 0;
+                    return pax >= urlParams.rooms;
+                });
             }
             
             if (urlParams.minPrice !== null || urlParams.maxPrice !== null) {
@@ -1012,9 +1015,17 @@
                 if (!resort.amenities) {
                     resort.amenities = [];
                 }
-                // Ensure capacity exists, fallback to bedrooms if not
-                if (!resort.capacity && resort.bedrooms) {
-                    resort.capacity = resort.bedrooms;
+                // Ensure pax field exists with fallbacks
+                if (!resort.pax) {
+                    if (resort.capacity) {
+                        resort.pax = resort.capacity;
+                    } else if (resort.bedrooms) {
+                        resort.pax = resort.bedrooms;
+                    } else if (resort.bedroom) {
+                        resort.pax = resort.bedroom;
+                    } else {
+                        resort.pax = 0;
+                    }
                 }
                 return resort;
             });
@@ -1029,7 +1040,11 @@
                 case 'price-high':
                     return sorted.sort((a, b) => b.priceNumeric - a.priceNumeric);
                 case 'capacity':
-                    return sorted.sort((a, b) => (b.capacity || b.bedrooms || 0) - (a.capacity || a.bedrooms || 0));
+                    return sorted.sort((a, b) => {
+                        const aPax = b.pax || b.capacity || b.bedrooms || 0;
+                        const bPax = a.pax || a.capacity || a.bedrooms || 0;
+                        return aPax - bPax;
+                    });
                 case 'rating':
                     return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
                 case 'name':
