@@ -51,49 +51,6 @@
             }
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 0;
-        }
-
-        @media (min-width: 768px) {
-            .modal.active {
-                align-items: center;
-                padding: 1rem;
-            }
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .modal.active>div {
-            animation: modalFadeIn 0.3s ease;
-        }
-
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -241,30 +198,6 @@
             }
         }
 
-        @media (max-width: 360px) {
-            .hero-bg {
-                padding: 1.5rem 0.75rem;
-            }
-
-            .filter-section {
-                padding: 0.75rem 0.75rem;
-            }
-
-            .resort-card {
-                margin-bottom: 0.75rem;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .modal.active>div {
-                border-radius: 0;
-                max-height: 100vh;
-                margin: 0;
-                width: 100%;
-                min-height: 100vh;
-            }
-        }
-
         .filter-chips-container {
             overflow-x: auto;
             scrollbar-width: none;
@@ -339,8 +272,8 @@
             </a>
 
             <nav class="hidden md:flex space-x-8 text-sm font-semibold">
-                <a href="index.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
-                <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
+                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
+                <a href="index2.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Resorts</a>
                 <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
             </nav>
 
@@ -447,60 +380,6 @@
             </div>
         </div>
     </section>
-
-    <div id="resortModal" class="modal">
-        <div
-            class="bg-white rounded-none sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-screen sm:max-h-[90vh] overflow-y-auto m-0 sm:m-4">
-            <div class="relative">
-                <button onclick="closeModal()"
-                    class="absolute top-3 right-3 z-10 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-100 transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
-                <img id="modalImage" class="w-full h-40 sm:h-64 object-cover" src="" alt="">
-            </div>
-            <div class="p-4 sm:p-8">
-                <div class="flex flex-col gap-3 mb-4">
-                    <div class="flex-1">
-                        <h3 id="modalTitle" class="text-xl sm:text-3xl font-bold text-gray-900 mb-2"></h3>
-                        <p id="modalAddress" class="text-sm sm:text-lg text-gray-600 mb-2"></p>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div id="modalPrice" class="text-lg sm:text-2xl font-bold text-blue-600"></div>
-                        <div id="modalBedrooms" class="text-sm text-gray-600"></div>
-                    </div>
-                </div>
-
-                <div class="mb-5">
-                    <h4 class="text-base sm:text-xl font-bold text-gray-900 mb-2">About This Resort</h4>
-                    <p id="modalDescription" class="text-sm sm:text-base text-gray-700 leading-relaxed"></p>
-                </div>
-
-                <div class="mb-5">
-                    <h4 class="text-base sm:text-xl font-bold text-gray-900 mb-3">Facilities Available</h4>
-                    <div id="modalFacilities" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
-                </div>
-
-                <div class="mb-5">
-                    <h4 class="text-base sm:text-xl font-bold text-gray-900 mb-3">Amenities</h4>
-                    <div id="modalAmenities" class="flex flex-wrap gap-2"></div>
-                </div>
-
-                <div class="mb-5 bg-blue-50 p-3 rounded-lg">
-                    <h4 class="text-sm sm:text-lg font-bold text-gray-900 mb-2">📍 Location</h4>
-                    <p id="modalLocation" class="text-sm text-gray-700 mb-2"></p>
-                    <p class="text-xs text-gray-600">Coordinates: <span id="modalCoords"></span></p>
-                </div>
-
-                <div class="border-t pt-3">
-                    <p class="text-xs text-gray-500 italic">For informational purposes only. Contact the resort directly
-                        for availability and booking details.</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <footer class="bg-gray-800 text-gray-300 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -657,33 +536,6 @@
         const database = firebase.database();
         const firestore = firebase.firestore();
 
-        // Facility Images
-        const facilityImages = {
-            'Swimming pools': 'https://placehold.co/80x80/0ea5e9/ffffff?text=Pool',
-            'Hot spring baths': 'https://placehold.co/80x80/f59e0b/ffffff?text=Hot+Spring',
-            'Cottages': 'https://placehold.co/80x80/10b981/ffffff?text=Cottage',
-            'Function halls': 'https://placehold.co/80x80/8b5cf6/ffffff?text=Hall',
-            'Restaurant': 'https://placehold.co/80x80/ef4444/ffffff?text=Food',
-            'Parking': 'https://placehold.co/80x80/6b7280/ffffff?text=Parking',
-            'Private pools': 'https://placehold.co/80x80/06b6d4/ffffff?text=Private',
-            'Event space': 'https://placehold.co/80x80/ec4899/ffffff?text=Event',
-            'Kitchen facilities': 'https://placehold.co/80x80/f97316/ffffff?text=Kitchen',
-            'Barbecue area': 'https://placehold.co/80x80/dc2626/ffffff?text=BBQ',
-            'Air-conditioned rooms': 'https://placehold.co/80x80/3b82f6/ffffff?text=AC',
-            'Karaoke': 'https://placehold.co/80x80/a855f7/ffffff?text=Karaoke',
-            'Videoke': 'https://placehold.co/80x80/a855f7/ffffff?text=Videoke',
-            'Outdoor grilling area': 'https://placehold.co/80x80/ea580c/ffffff?text=Grill',
-            'WiFi': 'https://placehold.co/80x80/0891b2/ffffff?text=WiFi',
-            'Heated pools': 'https://placehold.co/80x80/f59e0b/ffffff?text=Heated',
-            'Spa services': 'https://placehold.co/80x80/ec4899/ffffff?text=Spa',
-            'Gazebo': 'https://placehold.co/80x80/14b8a6/ffffff?text=Gazebo',
-            'Garden area': 'https://placehold.co/80x80/22c55e/ffffff?text=Garden',
-            'Outdoor dining': 'https://placehold.co/80x80/f59e0b/ffffff?text=Dining',
-            'Multiple swimming pools': 'https://placehold.co/80x80/0ea5e9/ffffff?text=Pools',
-            'Function hall': 'https://placehold.co/80x80/8b5cf6/ffffff?text=Hall',
-            'Playground': 'https://placehold.co/80x80/facc15/ffffff?text=Play'
-        };
-
         // Global Variables
         let resorts = [];
         let activeFilter = 'all';
@@ -714,7 +566,7 @@
             }
             const totalRating = feedbackList.reduce((sum, feedback) => sum + feedback.rating, 0);
             const average = totalRating / feedbackList.length;
-            return { average: average, count: feedbackList.count };
+            return { average: average, count: feedbackList.length };
         }
 
         // Generate Star Rating HTML
@@ -937,7 +789,7 @@
             resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
 
             grid.innerHTML = resortsToShow.map(resort => `
-                <div class="resort-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="showResortDetails(${resort.id})">
+                <div class="resort-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="showResortDetails('${resort.id}')">
                     <div class="relative">
                         <img class="w-full h-44 object-cover" src="${resort.image}" alt="${resort.name}">
                         <span class="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold ${priceBadgeColors[resort.price]} shadow-lg uppercase">
@@ -963,8 +815,8 @@
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                              </svg>
-                             ${resort.Pax} pax
-                        /div>
+                             ${resort.Pax || resort.bedrooms || resort.capacity || 'N/A'} pax
+                        </div>
                             <div class="font-bold text-blue-600 text-base">
                                 ${resort.priceValue.split(' ')[0]}
                             </div>
@@ -1060,8 +912,8 @@
                     return sorted.sort((a, b) => a.priceNumeric - b.priceNumeric);
                 case 'price-high':
                     return sorted.sort((a, b) => b.priceNumeric - a.priceNumeric);
-                case 'bedrooms':
-                    return sorted.sort((a, b) => b.bedrooms - a.bedrooms);
+                case 'Pax':
+                    return sorted.sort((a, b) => (b.Pax || b.bedrooms || 0) - (a.Pax || a.bedrooms || 0));
                 case 'rating':
                     return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
                 case 'name':
@@ -1083,15 +935,10 @@
             });
         }
 
-        // Show Resort Details
+        // Show Resort Details - FIXED: Now passes resort ID correctly
         function showResortDetails(resortId) {
+            // Navigate to the resort details page with the correct parameter
             window.location.href = `resort-details.html?id=${resortId}`;
-        }
-
-        // Close Modal
-        function closeModal() {
-            document.getElementById('resortModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
         }
 
         // Reset Filters
@@ -1112,11 +959,6 @@
             window.history.replaceState({}, '', window.location.pathname);
             applyFiltersAndSort();
         }
-
-        // Modal Click Outside to Close
-        document.getElementById('resortModal').addEventListener('click', (e) => {
-            if (e.target.id === 'resortModal') closeModal();
-        });
 
         // Initialize - Load Resorts from Firebase
         loadResortsFromFirebase();
