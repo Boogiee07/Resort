@@ -745,7 +745,12 @@
                 
                 if (data) {
                     console.log('Firebase data loaded:', data);
-                    resorts = validateResortData(Object.values(data));
+                    // Convert object to array while preserving the ID from the key
+                    resorts = Object.entries(data).map(([key, value]) => ({
+                        ...value,
+                        id: parseInt(key) || value.id // Use the key as ID if it's not already set
+                    }));
+                    resorts = validateResortData(resorts);
                     
                     // Add ratings to resorts
                     resorts = resorts.map(resort => {
