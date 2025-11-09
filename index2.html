@@ -1035,71 +1035,9 @@
             });
         }
 
-        // Show Resort Details
+        // Show Resort Details - Redirect to resort-details.html
         function showResortDetails(resortId) {
-            const resort = resorts.find(r => r.id === resortId);
-            if (!resort) {
-                console.error('Resort not found:', resortId);
-                return;
-            }
-            
-            // Get rating data
-            const ratingData = resortRatings[resortId] || { average: 0, count: 0 };
-            
-            // Populate modal
-            document.getElementById('modalTitle').textContent = resort.name;
-            document.getElementById('modalImage').src = resort.image;
-            document.getElementById('modalImage').alt = resort.name;
-            document.getElementById('modalAddress').textContent = resort.address;
-            document.getElementById('modalDescription').textContent = resort.description;
-            document.getElementById('modalPrice').textContent = resort.priceValue;
-            document.getElementById('modalCapacity').textContent = `Capacity: ${resort.pax || resort.capacity || 'N/A'} pax`;
-            document.getElementById('modalLocation').textContent = resort.address;
-            document.getElementById('modalCoords').textContent = `${resort.lat}, ${resort.lng}`;
-            
-            // Rating
-            const ratingHTML = ratingData.average > 0 
-                ? generateStarRating(ratingData.average, ratingData.count)
-                : '<span class="text-sm text-gray-500">No reviews yet</span>';
-            document.getElementById('modalRating').innerHTML = ratingHTML;
-            
-            // Facilities
-            const facilitiesHTML = (resort.facilities || []).map(facility => `
-                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                    <img src="${facilityImages[facility] || 'https://placehold.co/80x80/6b7280/ffffff?text=Facility'}" 
-                         alt="${facility}" 
-                         class="w-12 h-12 rounded-lg object-cover">
-                    <span class="text-xs font-medium text-gray-700">${facility}</span>
-                </div>
-            `).join('');
-            document.getElementById('modalFacilities').innerHTML = facilitiesHTML || '<p class="text-sm text-gray-500">No facilities listed</p>';
-            
-            // Amenities
-            const amenitiesHTML = (resort.amenities || []).map(amenity => `
-                <span class="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
-                    ${amenityLabels[amenity] || amenity}
-                </span>
-            `).join('');
-            document.getElementById('modalAmenities').innerHTML = amenitiesHTML || '<p class="text-sm text-gray-500">No amenities listed</p>';
-            
-            // Facebook link
-            if (resort.facebookUrl) {
-                document.getElementById('modalFacebook').innerHTML = `
-                    <a href="${resort.facebookUrl}" target="_blank" rel="noopener noreferrer" 
-                       class="flex items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                        </svg>
-                        Visit Facebook Page
-                    </a>
-                `;
-            } else {
-                document.getElementById('modalFacebook').innerHTML = '';
-            }
-            
-            // Show modal
-            document.getElementById('resortModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            window.location.href = `resort-details.html?id=${resortId}`;
         }
 
         // Close Modal
