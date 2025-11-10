@@ -7,6 +7,7 @@
     <title>Resorts - Pansol Hot Spring Resorts</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
@@ -274,9 +275,36 @@
                     </svg>
                 </button>
             </div>
+            
+            <!-- User Section -->
+            <div class="mb-6 pb-6 border-b border-gray-200">
+                <!-- Guest State -->
+                <div id="guestMenuMobile" class="hidden">
+                    <button onclick="window.location.href='index.html#signin'" class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                        Sign In
+                    </button>
+                </div>
+                
+                <!-- Signed In State -->
+                <div id="signedInMenuMobile" class="hidden">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                            <span id="userInitialMobile">U</span>
+                        </div>
+                        <div class="flex-1">
+                            <p id="userNameMobile" class="font-bold text-gray-900">User</p>
+                            <p id="userEmailMobile" class="text-sm text-gray-600 truncate">email@example.com</p>
+                        </div>
+                    </div>
+                    <button onclick="signOut()" class="w-full px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-semibold text-sm">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+            
             <nav class="space-y-4">
-                <a href="#" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
-                <a href="#" class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
+                <a href="index.html" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Home</a>
+                <a href="index2.html" class="block py-3 px-4 text-blue-600 bg-blue-50 rounded-lg font-semibold">Resorts</a>
                 <a href="#contact" onclick="closeMobileMenu()" class="block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold">Contact</a>
             </nav>
         </div>
@@ -284,7 +312,7 @@
 
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-2 hover:opacity-80 transition">
+            <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition">
                 <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                 </svg>
@@ -294,10 +322,43 @@
                 </div>
             </a>
 
-            <nav class="hidden md:flex space-x-8 text-sm font-semibold">
-                <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold">
+                <a href="index.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Home</a>
+                <a href="index2.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Resorts</a>
                 <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
+                
+                <!-- User Menu -->
+                <div id="userMenuDesktop" class="relative">
+                    <!-- Guest State -->
+                    <div id="guestMenuDesktop" class="hidden">
+                        <button onclick="window.location.href='index.html#signin'" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            Sign In
+                        </button>
+                    </div>
+                    
+                    <!-- Signed In State -->
+                    <div id="signedInMenuDesktop" class="hidden">
+                        <button onclick="toggleUserDropdown()" class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                            <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                                <span id="userInitialDesktop">U</span>
+                            </div>
+                            <span id="userNameDesktop" class="text-gray-700">User</span>
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
+                            <div class="px-4 py-2 border-b border-gray-200">
+                                <p id="userEmailDesktop" class="text-sm text-gray-600 truncate">email@example.com</p>
+                            </div>
+                            <button onclick="signOut()" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
+                                Sign Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </nav>
 
             <button class="md:hidden hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
@@ -577,6 +638,21 @@
             document.body.style.overflow = 'auto';
         }
 
+        // User Dropdown Functions
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('userDropdown');
+            const userMenu = document.getElementById('signedInMenuDesktop');
+            if (dropdown && userMenu && !userMenu.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
         // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDoILyFqD0iuOe4DfA2YoyjNiu30Mzw_DM",
@@ -593,6 +669,69 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const firestore = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Check Authentication State
+        function checkAuthState() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // User is signed in
+                    showSignedInState(user);
+                } else {
+                    // User is signed out
+                    showGuestState();
+                }
+            });
+        }
+
+        // Show Signed In State
+        function showSignedInState(user) {
+            // Desktop
+            document.getElementById('guestMenuDesktop').classList.add('hidden');
+            document.getElementById('signedInMenuDesktop').classList.remove('hidden');
+            
+            // Mobile
+            document.getElementById('guestMenuMobile').classList.add('hidden');
+            document.getElementById('signedInMenuMobile').classList.remove('hidden');
+            
+            // Set user info
+            const displayName = user.displayName || user.email.split('@')[0];
+            const initial = displayName.charAt(0).toUpperCase();
+            
+            // Desktop
+            document.getElementById('userInitialDesktop').textContent = initial;
+            document.getElementById('userNameDesktop').textContent = displayName;
+            document.getElementById('userEmailDesktop').textContent = user.email;
+            
+            // Mobile
+            document.getElementById('userInitialMobile').textContent = initial;
+            document.getElementById('userNameMobile').textContent = displayName;
+            document.getElementById('userEmailMobile').textContent = user.email;
+        }
+
+        // Show Guest State
+        function showGuestState() {
+            // Desktop
+            document.getElementById('guestMenuDesktop').classList.remove('hidden');
+            document.getElementById('signedInMenuDesktop').classList.add('hidden');
+            
+            // Mobile
+            document.getElementById('guestMenuMobile').classList.remove('hidden');
+            document.getElementById('signedInMenuMobile').classList.add('hidden');
+        }
+
+        // Sign Out Function
+        function signOut() {
+            auth.signOut().then(() => {
+                console.log('User signed out successfully');
+                closeMobileMenu();
+                // Optionally redirect to home page
+                // window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+                alert('Error signing out. Please try again.');
+            });
+        }
 
         // Facility Images
         const facilityImages = {
@@ -1090,7 +1229,8 @@
             }
         });
 
-        // Initialize - Load Resorts from Firebase
+        // Initialize - Load Resorts from Firebase and Check Auth
+        checkAuthState();
         loadResortsFromFirebase();
     </script>
 
