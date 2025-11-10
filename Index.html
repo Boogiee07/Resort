@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -242,43 +243,82 @@
             }
         }
 
+        .calendar-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .calendar-modal.active {
+            display: flex;
+        }
+
         .calendar-container {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            max-width: 320px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 100%;
             margin: 0 auto;
+            position: relative;
+        }
+
+        @media (min-width: 480px) {
+            .calendar-container {
+                max-width: 440px;
+            }
+        }
+
+        @media (min-width: 640px) {
+            .calendar-container {
+                max-width: 520px;
+            }
         }
 
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 1.25rem 1rem;
+            border-bottom: 2px solid #e5e7eb;
         }
 
         .calendar-header button {
-            padding: 0.25rem;
+            padding: 0.5rem;
             min-height: auto;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .calendar-header button:hover {
+            background-color: #f3f4f6;
         }
 
         .calendar-header .font-semibold {
-            font-size: 0.95rem;
+            font-size: 1.125rem;
+            font-weight: 700;
         }
 
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 0;
+            gap: 4px;
         }
 
         .calendar-day-header {
             text-align: center;
-            font-weight: 600;
-            font-size: 0.75rem;
-            padding: 0.5rem 0.25rem;
-            color: #6b7280;
+            font-weight: 700;
+            font-size: 0.875rem;
+            padding: 1rem 0.5rem;
+            color: #4b5563;
         }
 
         .calendar-day {
@@ -288,13 +328,23 @@
             justify-content: center;
             cursor: pointer;
             position: relative;
-            font-size: 0.75rem;
+            font-size: 1rem;
+            font-weight: 500;
             transition: all 0.2s;
-            padding: 0.25rem;
+            border-radius: 8px;
+            min-height: 44px;
+        }
+
+        @media (min-width: 640px) {
+            .calendar-day {
+                font-size: 1.125rem;
+                min-height: 52px;
+            }
         }
 
         .calendar-day:hover:not(.disabled):not(.other-month) {
             background-color: #f3f4f6;
+            transform: scale(1.05);
         }
 
         .calendar-day.disabled {
@@ -309,12 +359,12 @@
         .calendar-day.selected {
             background-color: #3b82f6;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .calendar-day.in-range {
-            background-color: #3b82f6;
-            color: white;
+            background-color: #dbeafe;
+            color: #1e40af;
         }
 
         .calendar-day.range-start {
@@ -368,7 +418,6 @@
             transform: translate(-50%, -50%);
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-
         }
 
         .price-slider-thumb:hover {
@@ -414,31 +463,147 @@
             display: inline-block;
         }
 
-        .amenity-chip {
-            display: inline-flex;
+        .inclusions-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .inclusion-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .inclusion-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .inclusion-item:last-child {
+            border-bottom: none;
+        }
+
+        .inclusion-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.75rem;
+            cursor: pointer;
+            accent-color: #3b82f6;
+        }
+
+        .inclusion-label {
+            display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 9999px;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            padding: 1rem;
+        }
+
+        .auth-modal.active {
+            display: flex;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            user-select: none;
+            color: #6b7280;
         }
 
-        .amenity-chip:hover {
-            border-color: #3b82f6;
-            background-color: #eff6ff;
+        .auth-tab.active {
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+            margin-bottom: -2px;
         }
 
-        .amenity-chip.selected {
-            background-color: #3b82f6;
-            border-color: #3b82f6;
-            color: white;
-        }
-
-        .amenity-chip input[type="checkbox"] {
+        .auth-form {
             display: none;
+            padding: 2rem;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 0.875rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .auth-button:hover {
+            background: #2563eb;
+        }
+
+        .auth-button:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -470,6 +635,9 @@
                 <li><a href="#contact"
                         class="block py-3 px-4 text-lg text-gray-600 hover:bg-gray-100 rounded-lg transition">Contact</a>
                 </li>
+                <li><button onclick="openAuthModal(); toggleMobileMenu();"
+                        class="w-full text-left py-3 px-4 text-lg text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition font-semibold">Sign In</button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -490,10 +658,13 @@
             </div>
 
             <!-- Desktop Navigation -->
-            <nav class="hidden md:flex space-x-8 text-sm font-semibold">
+            <nav class="hidden md:flex space-x-8 text-sm font-semibold items-center">
                 <a href="index.html" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
                 <a href="index2.html" class="text-gray-600 hover:text-blue-600 transition duration-150">Resorts</a>
                 <a href="#contact" class="text-gray-600 hover:text-blue-600 transition duration-150">Contact</a>
+                <button onclick="openAuthModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150">
+                    Sign In
+                </button>
             </nav>
 
             <!-- Mobile Hamburger -->
@@ -594,33 +765,39 @@
                     </div>
                 </div>
 
-                <div id="calendarContainer" class="hidden calendar-container">
-                    <div class="calendar-header">
-                        <button onclick="event.stopPropagation(); previousMonth()" class="p-1 hover:bg-gray-100 rounded-lg">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 19l-7-7 7-7"></path>
-                            </svg>
-                        </button>
-                        <div class="font-semibold text-lg" id="calendarMonth"></div>
-                        <button onclick="event.stopPropagation(); nextMonth()" class="p-1 hover:bg-gray-100 rounded-lg">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="p-2">
-                        <div class="calendar-grid">
-                            <div class="calendar-day-header">Mo</div>
-                            <div class="calendar-day-header">Tu</div>
-                            <div class="calendar-day-header">We</div>
-                            <div class="calendar-day-header">Th</div>
-                            <div class="calendar-day-header">Fr</div>
-                            <div class="calendar-day-header">Sa</div>
-                            <div class="calendar-day-header">Su</div>
+                <!-- Calendar Modal -->
+                <div id="calendarModal" class="calendar-modal" onclick="closeCalendarModal(event)">
+                    <div class="calendar-container" onclick="event.stopPropagation()">
+                        <div class="calendar-header">
+                            <button onclick="event.stopPropagation(); previousMonth()"
+                                class="p-1 hover:bg-gray-100 rounded-lg">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="font-semibold text-lg" id="calendarMonth"></div>
+                            <button onclick="event.stopPropagation(); nextMonth()"
+                                class="p-1 hover:bg-gray-100 rounded-lg">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7">
+                                    </path>
+                                </svg>
+                            </button>
                         </div>
-                        <div class="calendar-grid" id="calendarDays"></div>
+                        <div class="p-3">
+                            <div class="calendar-grid">
+                                <div class="calendar-day-header">Mo</div>
+                                <div class="calendar-day-header">Tu</div>
+                                <div class="calendar-day-header">We</div>
+                                <div class="calendar-day-header">Th</div>
+                                <div class="calendar-day-header">Fr</div>
+                                <div class="calendar-day-header">Sa</div>
+                                <div class="calendar-day-header">Su</div>
+                            </div>
+                            <div class="calendar-grid" id="calendarDays"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -660,9 +837,9 @@
                     </div>
                 </div>
 
-                <!-- Guests/PAX and Inclusions Row -->
+                <!-- PAX and Inclusions Row -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Rooms & PAX -->
+                    <!-- PAX -->
                     <div class="relative">
                         <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -672,30 +849,29 @@
                         </svg>
                         <input type="text" id="guestsInput" readonly
                             class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-                            value="1 room, 1 pax" onclick="toggleGuestsDropdown()">
+                            value="1 pax" onclick="toggleGuestsDropdown()">
 
-                        <!-- Rooms & PAX Dropdown -->
+                        <!-- PAX Dropdown -->
                         <div id="guestsDropdown"
                             class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20">
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-700">Rooms</span>
+                                    <span class="text-gray-700 font-semibold">Number of Guests</span>
                                     <div class="flex items-center gap-3">
-                                        <button onclick="changeGuests('rooms', -1)"
-                                            class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">-</button>
-                                        <span id="roomsCount" class="w-8 text-center">1</span>
-                                        <button onclick="changeGuests('rooms', 1)"
-                                            class="w-8 h-8 rounded-full border border-gray-300 hover:bg-gray-100">+</button>
+                                        <button onclick="decrementPax()" 
+                                            class="w-10 h-10 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-lg font-bold text-lg">
+                                            −
+                                        </button>
+                                        <input type="number" id="paxInput" value="1" min="1" max="200"
+                                            class="w-20 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-lg"
+                                            onchange="updatePax()" oninput="validatePaxInput()">
+                                        <button onclick="incrementPax()" 
+                                            class="w-10 h-10 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-lg font-bold text-lg">
+                                            +
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-gray-700">PAX (Persons)</span>
-                                    <div class="flex items-center gap-3">
-                                        <input type="number" id="paxInput" value="1" min="1" max="100"
-                                            class="w-20 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            onchange="updatePax()" oninput="updatePax()">
-                                    </div>
-                                </div>
+                                <p class="text-xs text-gray-500">Estimate 4 guests per bedroom</p>
                             </div>
                         </div>
                     </div>
@@ -715,149 +891,51 @@
                         <!-- Inclusions Dropdown -->
                         <div id="inclusionsDropdown"
                             class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20 max-h-80 overflow-y-auto">
-                            <h4 class="font-semibold text-gray-900 mb-3">Filter by Inclusions</h4>
-                            <div class="space-y-3" id="inclusionsList">
-                                <!-- Inclusions will be populated dynamically -->
-                            </div>
-                            <button onclick="clearInclusions()"
-                                class="mt-4 w-full py-2 text-sm text-blue-600 hover:text-blue-700 font-semibold">
-                                Clear All Filters
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Amenities Section (New Row) -->
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- Amenities Filter -->
-                    <div class="relative">
-                        <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
-                            </path>
-                        </svg>
-                        <input type="text" id="amenitiesInput" readonly
-                            class="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-                            value="All amenities" onclick="toggleAmenitiesDropdown()">
-
-                        <!-- Amenities Dropdown -->
-                        <div id="amenitiesDropdown"
-                            class="hidden absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg p-4 z-20 max-h-80 overflow-y-auto">
                             <h4 class="font-semibold text-gray-900 mb-3">Filter by Amenities</h4>
-                            <div class="space-y-3">
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="hot-spring" onchange="toggleAmenity('hot-spring')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                    </svg>
-                                    <span>Hot Spring</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="wifi" onchange="toggleAmenity('wifi')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0">
-                                        </path>
-                                    </svg>
-                                    <span>WiFi</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="parking" onchange="toggleAmenity('parking')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
-                                        </path>
-                                    </svg>
-                                    <span>Parking</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="kitchen" onchange="toggleAmenity('kitchen')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
-                                        </path>
-                                    </svg>
-                                    <span>Kitchen</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="aircon" onchange="toggleAmenity('aircon')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                                    </svg>
-                                    <span>Air Conditioning</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="karaoke" onchange="toggleAmenity('karaoke')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3">
-                                        </path>
-                                    </svg>
-                                    <span>Karaoke</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="smoking" onchange="toggleAmenity('smoking')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                        </path>
-                                    </svg>
-                                    <span>Smoking Allowed</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="no-smoking" onchange="toggleAmenity('no-smoking')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
-                                        </path>
-                                    </svg>
-                                    <span>No Smoking</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="pet-friendly"
-                                        onchange="toggleAmenity('pet-friendly')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                        </path>
-                                    </svg>
-                                    <span>Pet Friendly</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="no-pets" onchange="toggleAmenity('no-pets')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
-                                        </path>
-                                    </svg>
-                                    <span>No Pets Allowed</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="billiards" onchange="toggleAmenity('billiards')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                        </path>
-                                    </svg>
-                                    <span>Billiards</span>
-                                </label>
-                                <label class="amenity-chip">
-                                    <input type="checkbox" value="no-billiards"
-                                        onchange="toggleAmenity('no-billiards')">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 715.636 5.636m12.728 12.728L5.636 5.636">
-                                        </path>
-                                    </svg>
-                                    <span>No Billiards</span>
-                                </label>
+                            
+                            <!-- Amenities Section -->
+                            <div class="mb-4">
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="hot-spring" onchange="toggleAmenity('hot-spring')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">Hot Spring</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="wifi" onchange="toggleAmenity('wifi')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">WiFi</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="parking" onchange="toggleAmenity('parking')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">Parking</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="kitchen" onchange="toggleAmenity('kitchen')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">Kitchen</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="aircon" onchange="toggleAmenity('aircon')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">Air Conditioning</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="karaoke" onchange="toggleAmenity('karaoke')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">Karaoke</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="smoking" onchange="toggleAmenity('smoking')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">Smoking Allowed</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="pet-friendly" onchange="toggleAmenity('pet-friendly')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">Pet Friendly</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                        <input type="checkbox" value="billiards" onchange="toggleAmenity('billiards')" class="w-4 h-4 text-blue-600 rounded">
+                                        <span class="text-sm text-gray-700">Billiards</span>
+                                    </label>
+                                </div>
                             </div>
-                            <button onclick="clearAmenities()"
+
+                            <button onclick="clearAllFilters()"
                                 class="mt-4 w-full py-2 text-sm text-blue-600 hover:text-blue-700 font-semibold">
                                 Clear All Filters
                             </button>
@@ -872,6 +950,85 @@
                         SEARCH
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (Sign In / Sign Up) -->
+    <div id="authModal" class="auth-modal" onclick="closeAuthModal(event)">
+        <div class="auth-container" onclick="event.stopPropagation()">
+            <div class="flex justify-end p-4">
+                <button onclick="closeAuthModal()" class="p-2 hover:bg-gray-100 rounded-lg transition">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="signinTab" onclick="switchAuthTab('signin')">Sign In</div>
+                <div class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')">Sign Up</div>
+            </div>
+
+            <!-- Sign In Form -->
+            <div id="signinForm" class="auth-form active">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Welcome Back</h2>
+                <form onsubmit="handleSignIn(event)">
+                    <div class="form-group">
+                        <label for="signinEmail">Email Address</label>
+                        <input type="email" id="signinEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signinPassword">Password</label>
+                        <input type="password" id="signinPassword" placeholder="Enter your password" required>
+                    </div>
+                    <div class="flex justify-between items-center mb-6">
+                        <label class="flex items-center gap-2 text-sm text-gray-600">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-blue-600 hover:text-blue-700">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="auth-button">Sign In</button>
+                </form>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Don't have an account? 
+                    <a href="#" onclick="switchAuthTab('signup'); return false;" class="text-blue-600 hover:text-blue-700 font-semibold">Sign Up</a>
+                </p>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div id="signupForm" class="auth-form">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Account</h2>
+                <form onsubmit="handleSignUp(event)">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required minlength="6">
+                    </div>
+                    <div class="mb-6">
+                        <label class="flex items-start gap-2 text-sm text-gray-600">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded mt-0.5" required>
+                            <span>I agree to the <a href="#" class="text-blue-600 hover:text-blue-700">Terms of Service</a> and <a href="#" class="text-blue-600 hover:text-blue-700">Privacy Policy</a></span>
+                        </label>
+                    </div>
+                    <button type="submit" class="auth-button">Sign Up</button>
+                </form>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Already have an account? 
+                    <a href="#" onclick="switchAuthTab('signin'); return false;" class="text-blue-600 hover:text-blue-700 font-semibold">Sign In</a>
+                </p>
             </div>
         </div>
     </div>
@@ -1012,6 +1169,7 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        const auth = firebase.auth();
 
         let resorts = [];
         let resortsLoaded = false;
@@ -1020,15 +1178,231 @@
         let currentYear = new Date().getFullYear();
         let selectedStartDate = null;
         let selectedEndDate = null;
-        let rooms = 1;
         let pax = 1;
         let minPrice = 0;
         let maxPrice = 20000;
         let isDragging = false;
         let activeThumb = null;
-        let selectedAmenities = [];
         let selectedInclusions = [];
-        let availableInclusions = new Set();
+
+        // Auth Modal Functions
+        function openAuthModal() {
+            document.getElementById('authModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAuthModal(event) {
+            if (!event || event.target.id === 'authModal') {
+                document.getElementById('authModal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function switchAuthTab(tab) {
+            const signinTab = document.getElementById('signinTab');
+            const signupTab = document.getElementById('signupTab');
+            const signinForm = document.getElementById('signinForm');
+            const signupForm = document.getElementById('signupForm');
+
+            if (tab === 'signin') {
+                signinTab.classList.add('active');
+                signupTab.classList.remove('active');
+                signinForm.classList.add('active');
+                signupForm.classList.remove('active');
+            } else {
+                signupTab.classList.add('active');
+                signinTab.classList.remove('active');
+                signupForm.classList.add('active');
+                signinForm.classList.remove('active');
+            }
+        }
+
+        async function handleSignIn(event) {
+            event.preventDefault();
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+            const submitButton = event.target.querySelector('button[type="submit"]');
+
+            try {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Signing in...';
+
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                alert(`Welcome back, ${user.email}!`);
+                
+                document.getElementById('signinEmail').value = '';
+                document.getElementById('signinPassword').value = '';
+                
+                closeAuthModal();
+                updateAuthUI(user);
+
+            } catch (error) {
+                console.error('Sign in error:', error);
+                
+                let errorMessage = 'Failed to sign in. Please try again.';
+                
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email address.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password. Please try again.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address format.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'This account has been disabled.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed attempts. Please try again later.';
+                        break;
+                }
+                
+                alert(errorMessage);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Sign In';
+            }
+        }
+
+        async function handleSignUp(event) {
+            event.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const submitButton = event.target.querySelector('button[type="submit"]');
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                return;
+            }
+
+            try {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Creating account...';
+
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                await user.updateProfile({
+                    displayName: name
+                });
+
+                await database.ref('users/' + user.uid).set({
+                    name: name,
+                    email: email,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString()
+                });
+
+                alert(`Account created successfully! Welcome, ${name}!`);
+                
+                document.getElementById('signupName').value = '';
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
+                document.getElementById('signupConfirmPassword').value = '';
+                
+                closeAuthModal();
+                updateAuthUI(user);
+
+            } catch (error) {
+                console.error('Sign up error:', error);
+                
+                let errorMessage = 'Failed to create account. Please try again.';
+                
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'An account with this email already exists.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address format.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Password is too weak. Please use a stronger password.';
+                        break;
+                    case 'auth/operation-not-allowed':
+                        errorMessage = 'Email/password accounts are not enabled. Please contact support.';
+                        break;
+                }
+                
+                alert(errorMessage);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Sign Up';
+            }
+        }
+
+        async function handleSignOut() {
+            try {
+                await auth.signOut();
+                alert('You have been signed out successfully.');
+                updateAuthUI(null);
+            } catch (error) {
+                console.error('Sign out error:', error);
+                alert('Failed to sign out. Please try again.');
+            }
+        }
+
+        function updateAuthUI(user) {
+            const desktopAuthButton = document.querySelector('nav.hidden button');
+            const mobileAuthButton = document.querySelector('.mobile-menu ul li:last-child button');
+
+            if (user) {
+                const displayName = user.displayName || user.email.split('@')[0];
+                
+                if (desktopAuthButton) {
+                    desktopAuthButton.textContent = displayName;
+                    desktopAuthButton.onclick = () => {
+                        if (confirm(`Signed in as ${user.email}\n\nWould you like to sign out?`)) {
+                            handleSignOut();
+                        }
+                    };
+                }
+                
+                if (mobileAuthButton) {
+                    mobileAuthButton.textContent = displayName;
+                    mobileAuthButton.onclick = () => {
+                        toggleMobileMenu();
+                        if (confirm(`Signed in as ${user.email}\n\nWould you like to sign out?`)) {
+                            handleSignOut();
+                        }
+                    };
+                }
+            } else {
+                if (desktopAuthButton) {
+                    desktopAuthButton.textContent = 'Sign In';
+                    desktopAuthButton.onclick = openAuthModal;
+                }
+                
+                if (mobileAuthButton) {
+                    mobileAuthButton.textContent = 'Sign In';
+                    mobileAuthButton.onclick = () => {
+                        openAuthModal();
+                        toggleMobileMenu();
+                    };
+                }
+            }
+        }
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log('User is signed in:', user.email);
+                updateAuthUI(user);
+                database.ref('users/' + user.uid + '/lastLogin').set(new Date().toISOString());
+            } else {
+                console.log('User is signed out');
+                updateAuthUI(null);
+            }
+        });
 
         // Mobile Menu Toggle
         function toggleMobileMenu() {
@@ -1051,6 +1425,7 @@
         function selectStayType(type) {
             stayType = type;
             renderCalendar();
+            // Clear dates when changing type
             selectedStartDate = null;
             selectedEndDate = null;
             updateDateRangeInput();
@@ -1070,55 +1445,64 @@
             }
         }
 
+        // PAX Functions
+        function incrementPax() {
+            const input = document.getElementById('paxInput');
+            pax = Math.min(200, parseInt(input.value) + 1);
+            input.value = pax;
+            updateGuestsInput();
+            filterResorts();
+        }
+
+        function decrementPax() {
+            const input = document.getElementById('paxInput');
+            pax = Math.max(1, parseInt(input.value) - 1);
+            input.value = pax;
+            updateGuestsInput();
+            filterResorts();
+        }
+
+        function validatePaxInput() {
+            const input = document.getElementById('paxInput');
+            let value = parseInt(input.value) || 1;
+            value = Math.max(1, Math.min(200, value));
+            input.value = value;
+            pax = value;
+            updateGuestsInput();
+        }
+
+        function updatePax() {
+            const input = document.getElementById('paxInput');
+            pax = Math.max(1, Math.min(200, parseInt(input.value) || 1));
+            input.value = pax;
+            updateGuestsInput();
+            filterResorts();
+        }
+
+        function updateGuestsInput() {
+            const input = document.getElementById('guestsInput');
+            input.value = `${pax} pax`;
+        }
+
         // Inclusions Functions
         function toggleInclusionsDropdown() {
             const dropdown = document.getElementById('inclusionsDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
+            const calendarModal = document.getElementById('calendarModal');
             const priceSliderContainer = document.getElementById('priceSliderContainer');
             const guestsDropdown = document.getElementById('guestsDropdown');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
 
-            calendarContainer.classList.add('hidden');
+            calendarModal.classList.remove('active');
             priceSliderContainer.classList.add('hidden');
             guestsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
             dropdown.classList.toggle('hidden');
         }
 
-        function populateInclusions() {
-            availableInclusions.clear();
-            resorts.forEach(resort => {
-                if (resort.inclusions && Array.isArray(resort.inclusions)) {
-                    resort.inclusions.forEach(inclusion => availableInclusions.add(inclusion));
-                }
-            });
-
-            const inclusionsList = document.getElementById('inclusionsList');
-            if (availableInclusions.size === 0) {
-                inclusionsList.innerHTML = '<div class="text-sm text-gray-500">No inclusions available</div>';
-                return;
-            }
-
-            const sortedInclusions = Array.from(availableInclusions).sort();
-            
-            inclusionsList.innerHTML = sortedInclusions.map(inclusion => `
-                <label class="amenity-chip">
-                    <input type="checkbox" value="${inclusion}" onchange="toggleInclusion('${inclusion.replace(/'/g, "\\'")}')">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>${inclusion}</span>
-                </label>
-            `).join('');
-        }
-
-        function toggleInclusion(inclusion) {
-            const index = selectedInclusions.indexOf(inclusion);
+        function toggleAmenity(amenity) {
+            const index = selectedInclusions.indexOf(amenity);
             if (index > -1) {
                 selectedInclusions.splice(index, 1);
             } else {
-                selectedInclusions.push(inclusion);
+                selectedInclusions.push(amenity);
             }
             updateInclusionsInput();
             filterResorts();
@@ -1129,62 +1513,7 @@
             if (selectedInclusions.length === 0) {
                 input.value = 'All inclusions';
             } else if (selectedInclusions.length === 1) {
-                input.value = selectedInclusions[0];
-            } else {
-                input.value = `${selectedInclusions.length} inclusions selected`;
-            }
-
-            const checkboxes = document.querySelectorAll('#inclusionsDropdown input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-                const chip = cb.parentElement;
-                if (selectedInclusions.includes(cb.value)) {
-                    chip.classList.add('selected');
-                    cb.checked = true;
-                } else {
-                    chip.classList.remove('selected');
-                    cb.checked = false;
-                }
-            });
-        }
-
-        function clearInclusions() {
-            selectedInclusions = [];
-            updateInclusionsInput();
-            filterResorts();
-        }
-
-        // Amenities Functions
-        function toggleAmenitiesDropdown() {
-            const dropdown = document.getElementById('amenitiesDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
-            const priceSliderContainer = document.getElementById('priceSliderContainer');
-            const guestsDropdown = document.getElementById('guestsDropdown');
-            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
-
-            calendarContainer.classList.add('hidden');
-            priceSliderContainer.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            inclusionsDropdown.classList.add('hidden');
-            dropdown.classList.toggle('hidden');
-        }
-
-        function toggleAmenity(amenity) {
-            const index = selectedAmenities.indexOf(amenity);
-            if (index > -1) {
-                selectedAmenities.splice(index,1);
-            } else {
-                selectedAmenities.push(amenity);
-            }
-            updateAmenitiesInput();
-            filterResorts();
-        }
-
-        function updateAmenitiesInput() {
-            const input = document.getElementById('amenitiesInput');
-            if (selectedAmenities.length === 0) {
-                input.value = 'All amenities';
-            } else if (selectedAmenities.length === 1) {
-                const amenityNames = {
+                const inclusionNames = {
                     'hot-spring': 'Hot Spring',
                     'wifi': 'WiFi',
                     'parking': 'Parking',
@@ -1192,184 +1521,210 @@
                     'aircon': 'Air Conditioning',
                     'karaoke': 'Karaoke',
                     'smoking': 'Smoking Allowed',
-                    'no-smoking': 'No Smoking',
                     'pet-friendly': 'Pet Friendly',
-                    'no-pets': 'No Pets Allowed',
-                    'billiards': 'Billiards',
-                    'no-billiards': 'No Billiards'
+                    'billiards': 'Billiards'
                 };
-                input.value = amenityNames[selectedAmenities[0]] || selectedAmenities[0];
+                input.value = inclusionNames[selectedInclusions[0]];
             } else {
-                input.value = `${selectedAmenities.length} amenities selected`;
+                input.value = `${selectedInclusions.length} amenities selected`;
             }
 
-            const checkboxes = document.querySelectorAll('#amenitiesDropdown input[type="checkbox"]');
+            // Update checkbox states
+            const checkboxes = document.querySelectorAll('#inclusionsDropdown input[type="checkbox"]');
             checkboxes.forEach(cb => {
-                const chip = cb.parentElement;
-                if (selectedAmenities.includes(cb.value)) {
-                    chip.classList.add('selected');
-                    cb.checked = true;
-                } else {
-                    chip.classList.remove('selected');
-                    cb.checked = false;
-                }
+                cb.checked = selectedInclusions.includes(cb.value);
             });
         }
 
-        function clearAmenities() {
-            selectedAmenities = [];
-            updateAmenitiesInput();
+        function clearAllFilters() {
+            selectedInclusions = [];
+            updateInclusionsInput();
             filterResorts();
         }
 
-        // Guests Functions
-        function toggleGuestsDropdown() {
-            const dropdown = document.getElementById('guestsDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
-            const priceSliderContainer = document.getElementById('priceSliderContainer');
-            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-
-            calendarContainer.classList.add('hidden');
-            priceSliderContainer.classList.add('hidden');
-            inclusionsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-            dropdown.classList.toggle('hidden');
-        }
-
-        function changeGuests(type, delta) {
-            if (type === 'rooms') {
-                rooms = Math.max(1, rooms + delta);
-                document.getElementById('roomsCount').textContent = rooms;
-            }
-            updateGuestsInput();
-        }
-
-        function updatePax() {
-            const input = document.getElementById('paxInput');
-            pax = Math.max(1, Math.min(100, parseInt(input.value) || 1));
-            input.value = pax;
-            updateGuestsInput();
-        }
-
-        function updateGuestsInput() {
-            const input = document.getElementById('guestsInput');
-            input.value = `${rooms} room${rooms > 1 ? 's' : ''}, ${pax} pax`;
-        }
-
-        // Price Slider Functions
-        function togglePriceSlider() {
-            const container = document.getElementById('priceSliderContainer');
-            const calendarContainer = document.getElementById('calendarContainer');
+        function toggleCalendar() {
+            const calendarModal = document.getElementById('calendarModal');
+            const priceSlider = document.getElementById('priceSliderContainer');
             const guestsDropdown = document.getElementById('guestsDropdown');
             const inclusionsDropdown = document.getElementById('inclusionsDropdown');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
 
-            calendarContainer.classList.add('hidden');
+            priceSlider.classList.add('hidden');
             guestsDropdown.classList.add('hidden');
             inclusionsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-            container.classList.toggle('hidden');
+
+            calendarModal.classList.add('active');
+            renderCalendar();
         }
 
-        function initPriceSlider() {
-            const minThumb = document.getElementById('minThumb');
-            const maxThumb = document.getElementById('maxThumb');
-            const track = minThumb.parentElement;
+        function closeCalendarModal(event) {
+            if (event.target.id === 'calendarModal') {
+                // Only close if day use OR both dates selected for overnight
+                if (stayType === 'dayuse' || (stayType === 'overnight' && selectedStartDate && selectedEndDate)) {
+                    document.getElementById('calendarModal').classList.remove('active');
+                }
+            }
+        }
 
-            function handleMouseDown(e, thumb) {
-                e.preventDefault();
-                isDragging = true;
-                activeThumb = thumb;
-                document.body.style.userSelect = 'none';
+        function renderCalendar() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+
+            document.getElementById('calendarMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const prevLastDay = new Date(currentYear, currentMonth, 0);
+
+            const firstDayIndex = firstDay.getDay();
+            const lastDayDate = lastDay.getDate();
+            const prevLastDayDate = prevLastDay.getDate();
+
+            const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+            const daysContainer = document.getElementById('calendarDays');
+            daysContainer.innerHTML = '';
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Previous month days
+            for (let i = startDay; i > 0; i--) {
+                const day = prevLastDayDate - i + 1;
+                const cell = createDayCell(day, true, new Date(currentYear, currentMonth - 1, day));
+                daysContainer.appendChild(cell);
             }
 
-            function handleMouseMove(e) {
-                if (!isDragging || !activeThumb) return;
+            // Current month days
+            for (let day = 1; day <= lastDayDate; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const cell = createDayCell(day, false, date);
+                daysContainer.appendChild(cell);
+            }
 
-                const rect = track.getBoundingClientRect();
-                const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
-                const percentage = (x / rect.width) * 100;
-                const price = Math.round((percentage / 100) * 20000);
+            // Next month days
+            const totalCells = daysContainer.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const cell = createDayCell(day, true, new Date(currentYear, currentMonth + 1, day));
+                daysContainer.appendChild(cell);
+            }
+        }
 
-                if (activeThumb === minThumb) {
-                    minPrice = Math.min(price, maxPrice - 100);
-                    updatePriceDisplay();
-                } else {
-                    maxPrice = Math.max(price, minPrice + 100);
-                    updatePriceDisplay();
+        function createDayCell(day, isOtherMonth, date) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-day';
+            cell.textContent = day;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (isOtherMonth) {
+                cell.classList.add('other-month');
+            } else if (date < today) {
+                cell.classList.add('disabled');
+            } else {
+                cell.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectDate(date);
+                });
+
+                // Highlight selected dates
+                if (selectedStartDate && date.getTime() === selectedStartDate.getTime()) {
+                    if (stayType === 'dayuse') {
+                        cell.classList.add('single-day');
+                    } else if (!selectedEndDate) {
+                        cell.classList.add('range-start');
+                    } else if (selectedEndDate && selectedStartDate.getTime() === selectedEndDate.getTime()) {
+                        cell.classList.add('single-day');
+                    } else {
+                        cell.classList.add('range-start');
+                    }
+                }
+
+                if (selectedEndDate && date.getTime() === selectedEndDate.getTime() && selectedStartDate.getTime() !== selectedEndDate.getTime()) {
+                    cell.classList.add('range-end');
+                }
+
+                // Highlight range (including start and end dates)
+                if (stayType === 'overnight' && selectedStartDate && selectedEndDate) {
+                    if (date > selectedStartDate && date < selectedEndDate) {
+                        cell.classList.add('in-range');
+                    }
                 }
             }
 
-            function handleMouseUp() {
-                isDragging = false;
-                activeThumb = null;
-                document.body.style.userSelect = '';
-                filterResorts();
-            }
-
-            minThumb.addEventListener('mousedown', (e) => handleMouseDown(e, minThumb));
-            maxThumb.addEventListener('mousedown', (e) => handleMouseDown(e, maxThumb));
-            minThumb.addEventListener('touchstart', (e) => handleMouseDown(e.touches[0], minThumb));
-            maxThumb.addEventListener('touchstart', (e) => handleMouseDown(e.touches[0], maxThumb));
-
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-            document.addEventListener('touchmove', (e) => handleMouseMove(e.touches[0]));
-            document.addEventListener('touchend', handleMouseUp);
-
-            updatePriceDisplay();
+            return cell;
         }
 
-        function updatePriceDisplay() {
-            const minThumb = document.getElementById('minThumb');
-            const maxThumb = document.getElementById('maxThumb');
-            const priceRange = document.getElementById('priceRange');
-
-            const minPercent = (minPrice / 20000) * 100;
-            const maxPercent = (maxPrice / 20000) * 100;
-
-            minThumb.style.left = minPercent + '%';
-            maxThumb.style.left = maxPercent + '%';
-            priceRange.style.left = minPercent + '%';
-            priceRange.style.width = (maxPercent - minPercent) + '%';
-
-            document.getElementById('minPriceLabel').textContent = minPrice;
-            document.getElementById('maxPriceLabel').textContent = maxPrice;
-            document.getElementById('minPriceInput').value = minPrice;
-            document.getElementById('maxPriceInput').value = maxPrice;
-
-            const priceInput = document.getElementById('priceRangeInput');
-            priceInput.value = `₱${minPrice} - ₱${maxPrice}`;
-        }
-
-        function updatePriceFromInput(type) {
-            if (type === 'min') {
-                const input = document.getElementById('minPriceInput');
-                minPrice = Math.max(0, Math.min(parseInt(input.value) || 0, maxPrice - 100));
-                input.value = minPrice;
+        function selectDate(date) {
+            if (stayType === 'dayuse') {
+                // Day use: select 1 date only and close calendar immediately
+                selectedStartDate = date;
+                selectedEndDate = null;
+                updateDateRangeInput();
+                document.getElementById('calendarModal').classList.remove('active');
             } else {
-                const input = document.getElementById('maxPriceInput');
-                maxPrice = Math.min(20000, Math.max(parseInt(input.value) || 20000, minPrice + 100));
-                input.value = maxPrice;
+                // Overnight stay: requires 2 dates before calendar closes
+                if (!selectedStartDate) {
+                    // First date selected (check-in) - keep calendar open
+                    selectedStartDate = date;
+                    selectedEndDate = null;
+                    updateDateRangeInput();
+                    renderCalendar();
+                } else if (!selectedEndDate) {
+                    // Second date being selected (check-out)
+                    if (date > selectedStartDate) {
+                        // Valid check-out date - set end date and close calendar after delay
+                        selectedEndDate = date;
+                        updateDateRangeInput();
+                        renderCalendar();
+                        // Close calendar after showing both dates
+                        setTimeout(() => {
+                            document.getElementById('calendarModal').classList.remove('active');
+                        }, 300);
+                    } else {
+                        // Date is before/equal to check-in, restart selection
+                        selectedStartDate = date;
+                        selectedEndDate = null;
+                        updateDateRangeInput();
+                        renderCalendar();
+                    }
+                } else {
+                    // Both dates already selected, start new selection
+                    selectedStartDate = date;
+                    selectedEndDate = null;
+                    updateDateRangeInput();
+                    renderCalendar();
+                }
             }
-            updatePriceDisplay();
-            filterResorts();
         }
 
-        // Calendar Functions
-        function toggleCalendar() {
-            const container = document.getElementById('calendarContainer');
-            const priceSliderContainer = document.getElementById('priceSliderContainer');
-            const guestsDropdown = document.getElementById('guestsDropdown');
-            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
+        function updateDateRangeInput() {
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-            priceSliderContainer.classList.add('hidden');
-            guestsDropdown.classList.add('hidden');
-            inclusionsDropdown.classList.add('hidden');
-            amenitiesDropdown.classList.add('hidden');
-            container.classList.toggle('hidden');
+            if (selectedStartDate) {
+                const checkInDay = selectedStartDate.getDate();
+                const checkInMonth = monthNames[selectedStartDate.getMonth()];
+                const checkInYear = selectedStartDate.getFullYear();
+
+                if (stayType === 'overnight' && selectedEndDate) {
+                    const checkOutDay = selectedEndDate.getDate();
+                    const checkOutMonth = monthNames[selectedEndDate.getMonth()];
+                    const checkOutYear = selectedEndDate.getFullYear();
+
+                    document.getElementById('dateRangeInput').value =
+                        `${checkInDay} ${checkInMonth} ${checkInYear} - ${checkOutDay} ${checkOutMonth} ${checkOutYear}`;
+
+                    const nights = Math.ceil((selectedEndDate - selectedStartDate) / (1000 * 60 * 60 * 24));
+                    document.getElementById('dateRangeDay').textContent = `${nights} night${nights > 1 ? 's' : ''}`;
+                } else {
+                    document.getElementById('dateRangeInput').value = `${checkInDay} ${checkInMonth} ${checkInYear}`;
+                    document.getElementById('dateRangeDay').textContent = stayType === 'dayuse' ? 'Day Use' : '';
+                }
+            } else {
+                document.getElementById('dateRangeInput').value = '';
+                document.getElementById('dateRangeDay').textContent = '';
+            }
         }
 
         function previousMonth() {
@@ -1390,145 +1745,280 @@
             renderCalendar();
         }
 
-        function renderCalendar() {
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'];
+        // Price Slider Functions
+        function togglePriceSlider() {
+            const priceSlider = document.getElementById('priceSliderContainer');
+            const calendarModal = document.getElementById('calendarModal');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
 
-            document.getElementById('calendarMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
-
-            const firstDay = new Date(currentYear, currentMonth, 1);
-            const lastDay = new Date(currentYear, currentMonth + 1, 0);
-            const prevLastDay = new Date(currentYear, currentMonth, 0);
-
-            let firstDayOfWeek = firstDay.getDay();
-            firstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
-
-            const calendarDays = document.getElementById('calendarDays');
-            calendarDays.innerHTML = '';
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Previous month days
-            for (let i = firstDayOfWeek; i > 0; i--) {
-                const day = prevLastDay.getDate() - i + 1;
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day other-month disabled';
-                dayElement.textContent = day;
-                calendarDays.appendChild(dayElement);
-            }
-
-            // Current month days
-            for (let day = 1; day <= lastDay.getDate(); day++) {
-                const date = new Date(currentYear, currentMonth, day);
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day';
-                dayElement.textContent = day;
-
-                if (date < today) {
-                    dayElement.classList.add('disabled');
-                } else {
-                    dayElement.onclick = () => selectDate(date);
-
-                    if (selectedStartDate && selectedEndDate) {
-                        if (date.getTime() === selectedStartDate.getTime() && date.getTime() === selectedEndDate.getTime()) {
-                            dayElement.classList.add('single-day');
-                        } else if (date.getTime() === selectedStartDate.getTime()) {
-                            dayElement.classList.add('range-start');
-                        } else if (date.getTime() === selectedEndDate.getTime()) {
-                            dayElement.classList.add('range-end');
-                        } else if (date > selectedStartDate && date < selectedEndDate) {
-                            dayElement.classList.add('in-range');
-                        }
-                    } else if (selectedStartDate && date.getTime() === selectedStartDate.getTime()) {
-                        dayElement.classList.add('selected');
-                    }
-                }
-
-                calendarDays.appendChild(dayElement);
-            }
-
-            // Next month days
-            const remainingDays = 42 - calendarDays.children.length;
-            for (let day = 1; day <= remainingDays; day++) {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day other-month disabled';
-                dayElement.textContent = day;
-                calendarDays.appendChild(dayElement);
-            }
+            calendarModal.classList.remove('active');
+            guestsDropdown.classList.add('hidden');
+            inclusionsDropdown.classList.add('hidden');
+            priceSlider.classList.toggle('hidden');
         }
 
-        function selectDate(date) {
-            if (stayType === 'dayuse') {
-                selectedStartDate = date;
-                selectedEndDate = date;
+        function updatePriceSlider() {
+            const minThumb = document.getElementById('minThumb');
+            const maxThumb = document.getElementById('maxThumb');
+            const priceRange = document.getElementById('priceRange');
+
+            const minPercent = ((minPrice - 0) / (20000 - 0)) * 100;
+            const maxPercent = ((maxPrice - 0) / (20000 - 0)) * 100;
+
+            minThumb.style.left = minPercent + '%';
+            maxThumb.style.left = maxPercent + '%';
+            priceRange.style.left = minPercent + '%';
+            priceRange.style.width = (maxPercent - minPercent) + '%';
+
+            document.getElementById('minPriceLabel').textContent = minPrice;
+            document.getElementById('maxPriceLabel').textContent = maxPrice;
+            document.getElementById('minPriceInput').value = minPrice;
+            document.getElementById('maxPriceInput').value = maxPrice;
+
+            document.getElementById('priceRangeInput').value = `₱${minPrice.toLocaleString()} - ₱${maxPrice.toLocaleString()}`;
+        }
+
+        function updatePriceFromInput(type) {
+            if (type === 'min') {
+                minPrice = Math.max(0, Math.min(parseInt(document.getElementById('minPriceInput').value) || 0, maxPrice - 100));
             } else {
-                if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-                    selectedStartDate = date;
-                    selectedEndDate = null;
-                } else if (date < selectedStartDate) {
-                    selectedEndDate = selectedStartDate;
-                    selectedStartDate = date;
-                } else {
-                    selectedEndDate = date;
-                }
+                maxPrice = Math.max(minPrice + 100, Math.min(parseInt(document.getElementById('maxPriceInput').value) || 20000, 20000));
             }
-
-            updateDateRangeInput();
-            renderCalendar();
+            updatePriceSlider();
+            filterResorts();
         }
 
-        function updateDateRangeInput() {
-            const input = document.getElementById('dateRangeInput');
-            const daySpan = document.getElementById('dateRangeDay');
+        // Price Slider Drag Events
+        document.getElementById('minThumb').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            activeThumb = 'min';
+            e.preventDefault();
+        });
 
-            if (!selectedStartDate) {
-                input.value = '';
-                daySpan.textContent = '';
-                return;
-            }
+        document.getElementById('maxThumb').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            activeThumb = 'max';
+            e.preventDefault();
+        });
 
-            const formatDate = (date) => {
-                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-            };
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
 
-            if (stayType === 'dayuse') {
-                input.value = formatDate(selectedStartDate);
-                daySpan.textContent = 'Day Use';
-            } else if (selectedEndDate) {
-                input.value = `${formatDate(selectedStartDate)} - ${formatDate(selectedEndDate)}`;
-                const days = Math.ceil((selectedEndDate - selectedStartDate) / (1000 * 60 * 60 * 24));
-                daySpan.textContent = days === 1 ? '1 day' : `${days} days`;
+            const track = document.querySelector('.price-slider-track');
+            const rect = track.getBoundingClientRect();
+            const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+            const value = Math.round((percent / 100) * 20000);
+
+            if (activeThumb === 'min') {
+                minPrice = Math.min(value, maxPrice - 100);
             } else {
-                input.value = formatDate(selectedStartDate);
-                daySpan.textContent = '';
+                maxPrice = Math.max(value, minPrice + 100);
             }
-        }
 
-        // Resort Search Functions
-        function loadResorts() {
-            const resortRef = database.ref('resorts');
-            resortRef.once('value', (snapshot) => {
-                resorts = [];
-                snapshot.forEach((childSnapshot) => {
-                    const resort = childSnapshot.val();
-                    resort.id = childSnapshot.key;
-                    resorts.push(resort);
-                });
-                resortsLoaded = true;
-                populateInclusions();
+            updatePriceSlider();
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
                 filterResorts();
+            }
+            isDragging = false;
+            activeThumb = null;
+        });
+
+        // Touch events for mobile
+        document.getElementById('minThumb').addEventListener('touchstart', (e) => {
+            isDragging = true;
+            activeThumb = 'min';
+            e.preventDefault();
+        });
+
+        document.getElementById('maxThumb').addEventListener('touchstart', (e) => {
+            isDragging = true;
+            activeThumb = 'max';
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+
+            const track = document.querySelector('.price-slider-track');
+            const rect = track.getBoundingClientRect();
+            const touch = e.touches[0];
+            const percent = Math.max(0, Math.min(100, ((touch.clientX - rect.left) / rect.width) * 100));
+            const value = Math.round((percent / 100) * 20000);
+
+            if (activeThumb === 'min') {
+                minPrice = Math.min(value, maxPrice - 100);
+            } else {
+                maxPrice = Math.max(value, minPrice + 100);
+            }
+
+            updatePriceSlider();
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                filterResorts();
+            }
+            isDragging = false;
+            activeThumb = null;
+        });
+
+        // Guests Dropdown
+        function toggleGuestsDropdown() {
+            const dropdown = document.getElementById('guestsDropdown');
+            const calendarModal = document.getElementById('calendarModal');
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
+
+            calendarModal.classList.remove('active');
+            priceSliderContainer.classList.add('hidden');
+            inclusionsDropdown.classList.add('hidden');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function (event) {
+            const searchInput = document.getElementById('searchInput');
+            const dropdown = document.getElementById('resortDropdown');
+            const guestsInput = document.getElementById('guestsInput');
+            const guestsDropdown = document.getElementById('guestsDropdown');
+            const priceSliderContainer = document.getElementById('priceSliderContainer');
+            const dateRangeInput = document.getElementById('dateRangeInput');
+            const priceRangeInput = document.getElementById('priceRangeInput');
+            const inclusionsInput = document.getElementById('inclusionsInput');
+            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
+
+            if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+
+            if (!guestsInput.contains(event.target) && !guestsDropdown.contains(event.target)) {
+                guestsDropdown.classList.add('hidden');
+            }
+
+            if (!priceSliderContainer.contains(event.target) && !priceRangeInput.contains(event.target)) {
+                priceSliderContainer.classList.add('hidden');
+            }
+
+            if (!inclusionsDropdown.contains(event.target) && !inclusionsInput.contains(event.target)) {
+                inclusionsDropdown.classList.add('hidden');
+            }
+        });
+
+        // Initialize Firebase and load data
+        function initializeFirebase() {
+            const resortsRef = database.ref('resorts');
+
+            resortsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    resorts = Object.values(data);
+                    resortsLoaded = true;
+                    filterResorts();
+                } else {
+                    initializeSampleData();
+                }
+            }, (error) => {
+                console.error('Error loading resorts:', error);
+                initializeSampleData();
             });
+        }
+
+        function initializeSampleData() {
+            const sampleResorts = [
+                {
+                    id: 1,
+                    name: "Laguna Hot Spring Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A popular resort featuring natural hot spring pools and accommodations for families and groups.",
+                    facilities: ["Swimming pools", "Hot spring baths", "Cottages", "Function halls", "Restaurant", "Parking"],
+                    lat: 14.179855690866304,
+                    lng: 121.1837820447193,
+                    bedrooms: 4,
+                    price: "budget",
+                    amenities: ["hot-spring", "parking", "kitchen", "wifi"],
+                    priceValue: "₱3,000 per night",
+                    priceNumeric: 3000,
+                    image: "https://placehold.co/600x400/0ea5e9/ffffff?text=Laguna+Hot+Spring+Resort"
+                },
+                {
+                    id: 2,
+                    name: "Villa Mejia",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A private resort with swimming pools and complete facilities for events and gatherings.",
+                    facilities: ["Private pools", "Event space", "Kitchen facilities", "Barbecue area", "Air-conditioned rooms"],
+                    lat: 14.179350807676604,
+                    lng: 121.18485773727306,
+                    bedrooms: 14,
+                    price: "premium",
+                    amenities: ["aircon", "kitchen", "parking", "wifi", "pet-friendly"],
+                    priceValue: "₱12,000 per night",
+                    priceNumeric: 12000,
+                    image: "https://placehold.co/600x400/8b5cf6/ffffff?text=Villa+Mejia"
+                },
+                {
+                    id: 3,
+                    name: "Glennette's Haven Private Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "An exclusive private resort with hot spring pools perfect for family outings and celebrations.",
+                    facilities: ["Hot spring baths", "Karaoke", "Videoke", "Outdoor grilling area", "WiFi"],
+                    lat: 14.179889853295485,
+                    lng: 121.1861350014737,
+                    bedrooms: 4,
+                    price: "mid",
+                    amenities: ["hot-spring", "karaoke", "wifi", "aircon", "parking", "kitchen", "pet-friendly"],
+                    priceValue: "₱7,000 per night",
+                    priceNumeric: 7000,
+                    image: "https://placehold.co/600x400/10b981/ffffff?text=Glennette's+Haven"
+                },
+                {
+                    id: 4,
+                    name: "Elysian Sourire Resort",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A tranquil resort offering relaxing hot spring pools and modern amenities.",
+                    facilities: ["Heated pools", "Spa services", "Gazebo", "Garden area", "Outdoor dining"],
+                    lat: 14.17950049393675,
+                    lng: 121.18694386655233,
+                    bedrooms: 5,
+                    price: "premium",
+                    amenities: ["hot-spring", "wifi", "aircon", "parking", "kitchen"],
+                    priceValue: "₱15,000 per night",
+                    priceNumeric: 15000,
+                    image: "https://placehold.co/600x400/f59e0b/ffffff?text=Elysian+Sourire"
+                },
+                {
+                    id: 5,
+                    name: "Villa Francesca Private Resort - Pansol",
+                    address: "Pansol, Calamba, Laguna",
+                    description: "A spacious private resort ideal for large groups and events with multiple pools.",
+                    facilities: ["Multiple swimming pools", "Function hall", "Videoke", "Cottages", "Playground"],
+                    lat: 14.180012234621406,
+                    lng: 121.1871543967939,
+                    bedrooms: 6,
+                    price: "premium",
+                    amenities: ["karaoke", "aircon", "kitchen", "parking", "wifi", "smoking", "pet-friendly"],
+                    priceValue: "₱18,000 per night",
+                    priceNumeric: 18000,
+                    image: "https://placehold.co/600x400/ec4899/ffffff?text=Villa+Francesca"
+                }
+            ];
+
+            const resortsRef = database.ref('resorts');
+            sampleResorts.forEach(resort => {
+                resortsRef.child(resort.id.toString()).set(resort);
+            });
+
+            resorts = sampleResorts;
+            resortsLoaded = true;
         }
 
         function showDropdown() {
             const dropdown = document.getElementById('resortDropdown');
             dropdown.classList.remove('hidden');
-
-            if (!resortsLoaded) {
-                loadResorts();
-            } else {
+            if (resortsLoaded) {
                 filterResorts();
             }
         }
@@ -1539,46 +2029,55 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const dropdownContent = document.getElementById('dropdownContent');
 
-            let filteredResorts = resorts.filter(resort => {
-                const matchesSearch = resort.name.toLowerCase().includes(searchTerm);
-                const matchesPrice = resort.priceRange >= minPrice && resort.priceRange <= maxPrice;
-                
-                let matchesAmenities = true;
-                if (selectedAmenities.length > 0) {
-                    matchesAmenities = selectedAmenities.every(amenity => {
-                        if (!resort.amenities) return false;
-                        return resort.amenities.includes(amenity);
-                    });
-                }
+            let filteredResorts = resorts;
 
-                let matchesInclusions = true;
-                if (selectedInclusions.length > 0) {
-                    matchesInclusions = selectedInclusions.every(inclusion => {
-                        if (!resort.inclusions || !Array.isArray(resort.inclusions)) return false;
-                        return resort.inclusions.includes(inclusion);
-                    });
-                }
+            // Filter by search term
+            if (searchTerm) {
+                filteredResorts = resorts.filter(resort =>
+                    resort.name.toLowerCase().includes(searchTerm) ||
+                    resort.address.toLowerCase().includes(searchTerm) ||
+                    resort.description.toLowerCase().includes(searchTerm) ||
+                    resort.facilities.some(facility => facility.toLowerCase().includes(searchTerm)) ||
+                    resort.amenities.some(amenity => amenity.toLowerCase().includes(searchTerm))
+                );
+            }
 
-                return matchesSearch && matchesPrice && matchesAmenities && matchesInclusions;
-            });
+            // Filter by number of pax (bedrooms capacity)
+            filteredResorts = filteredResorts.filter(resort => resort.bedrooms >= Math.ceil(pax / 4));
+
+            // Filter by price range
+            filteredResorts = filteredResorts.filter(resort =>
+                resort.priceNumeric >= minPrice && resort.priceNumeric <= maxPrice
+            );
+
+            // Filter by selected inclusions - ALL must be present (AND logic)
+            if (selectedInclusions.length > 0) {
+                filteredResorts = filteredResorts.filter(resort => {
+                    const resortAmenities = resort.amenities || [];
+                    return selectedInclusions.every(inclusion => resortAmenities.includes(inclusion));
+                });
+            }
 
             if (filteredResorts.length === 0) {
-                dropdownContent.innerHTML = '<div class="px-5 py-4 text-center text-gray-500">No resorts found</div>';
+                dropdownContent.innerHTML = `
+            <div class="px-5 py-4 text-gray-500 text-sm">
+                No resorts found matching your criteria
+            </div>
+        `;
             } else {
                 dropdownContent.innerHTML = filteredResorts.map(resort => `
-                    <div class="dropdown-item px-5 py-3 cursor-pointer border-b border-gray-100 last:border-0" 
-                         onclick="selectResort('${resort.name}')">
-                        <div class="flex items-center">
-                            <div class="w-16 h-16 bg-gray-200 rounded-lg mr-3 flex-shrink-0 overflow-hidden">
-                                ${resort.imageUrl ? `<img src="${resort.imageUrl}" alt="${resort.name}" class="w-full h-full object-cover">` : ''}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="font-semibold text-gray-900 truncate">${resort.name}</div>
-                                <div class="text-sm text-gray-500">₱${resort.priceRange.toLocaleString()}</div>
-                            </div>
-                        </div>
+            <div class="dropdown-item px-5 py-4 cursor-pointer border-b border-gray-100 last:border-b-0" onclick="selectResort('${resort.name.replace(/'/g, "\\'")}')">
+                <div class="flex justify-between items-start w-full">
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-900 mb-1">${resort.name}</div>
+                        <div class="text-sm text-gray-600">${resort.priceValue} • ${resort.bedrooms} bedrooms • Max ${resort.bedrooms * 4} pax</div>
                     </div>
-                `).join('');
+                    <div class="text-xs text-white bg-blue-600 px-2 py-1 rounded ml-2 shrink-0">
+                        ${resort.price}
+                    </div>
+                </div>
+            </div>
+        `).join('');
             }
         }
 
@@ -1587,77 +2086,65 @@
             document.getElementById('resortDropdown').classList.add('hidden');
         }
 
+        function redirectToFeaturedResorts() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            let url = 'index2.html';
+            const params = new URLSearchParams();
+
+            if (searchTerm) {
+                params.append('search', searchTerm);
+            }
+            if (stayType) {
+                params.append('stayType', stayType);
+            }
+            if (selectedStartDate) {
+                params.append('checkIn', selectedStartDate.toISOString());
+            }
+            if (selectedEndDate) {
+                params.append('checkOut', selectedEndDate.toISOString());
+            }
+            params.append('pax', pax);
+            params.append('minPrice', minPrice);
+            params.append('maxPrice', maxPrice);
+
+            if (selectedInclusions.length > 0) {
+                params.append('inclusions', selectedInclusions.join(','));
+            }
+
+            const queryString = params.toString();
+            if (queryString) {
+                url += '?' + queryString;
+            }
+
+            window.location.href = url;
+        }
+
         function handleEnterKey(event) {
             if (event.key === 'Enter') {
                 redirectToFeaturedResorts();
             }
         }
 
-        function redirectToFeaturedResorts() {
-            const selectedResort = document.getElementById('searchInput').value;
-            const params = new URLSearchParams();
+        // Initialize Firebase on page load
+        initializeFirebase();
+        renderCalendar();
+        updatePriceSlider();
 
-            if (selectedResort) params.append('resort', selectedResort);
-            if (selectedStartDate) params.append('checkIn', selectedStartDate.toISOString());
-            if (selectedEndDate && stayType === 'overnight') params.append('checkOut', selectedEndDate.toISOString());
-            params.append('stayType', stayType);
-            params.append('rooms', rooms);
-            params.append('pax', pax);
-            params.append('minPrice', minPrice);
-            params.append('maxPrice', maxPrice);
-            if (selectedAmenities.length > 0) params.append('amenities', selectedAmenities.join(','));
-            if (selectedInclusions.length > 0) params.append('inclusions', selectedInclusions.join(','));
+        // Close mobile menu when window is resized to desktop
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                const menu = document.getElementById('mobileMenu');
+                const overlay = document.getElementById('mobileMenuOverlay');
+                const hamburger = document.getElementById('hamburger');
 
-            window.location.href = `index2.html?${params.toString()}`;
-        }
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function (event) {
-            const searchInput = document.getElementById('searchInput');
-            const resortDropdown = document.getElementById('resortDropdown');
-            const calendarContainer = document.getElementById('calendarContainer');
-            const dateRangeInput = document.getElementById('dateRangeInput');
-            const priceSliderContainer = document.getElementById('priceSliderContainer');
-            const priceRangeInput = document.getElementById('priceRangeInput');
-            const guestsInput = document.getElementById('guestsInput');
-            const guestsDropdown = document.getElementById('guestsDropdown');
-            const inclusionsInput = document.getElementById('inclusionsInput');
-            const inclusionsDropdown = document.getElementById('inclusionsDropdown');
-            const amenitiesInput = document.getElementById('amenitiesInput');
-            const amenitiesDropdown = document.getElementById('amenitiesDropdown');
-
-            if (!searchInput.contains(event.target) && !resortDropdown.contains(event.target)) {
-                resortDropdown.classList.add('hidden');
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
+                hamburger.classList.remove('active');
+                document.body.style.overflow = '';
             }
-
-            if (!dateRangeInput.contains(event.target) && !calendarContainer.contains(event.target)) {
-                calendarContainer.classList.add('hidden');
-            }
-
-            if (!priceRangeInput.contains(event.target) && !priceSliderContainer.contains(event.target)) {
-                priceSliderContainer.classList.add('hidden');
-            }
-
-            if (!guestsInput.contains(event.target) && !guestsDropdown.contains(event.target)) {
-                guestsDropdown.classList.add('hidden');
-            }
-
-            if (!inclusionsInput.contains(event.target) && !inclusionsDropdown.contains(event.target)) {
-                inclusionsDropdown.classList.add('hidden');
-            }
-
-            if (!amenitiesInput.contains(event.target) && !amenitiesDropdown.contains(event.target)) {
-                amenitiesDropdown.classList.add('hidden');
-            }
-        });
-
-        // Initialize
-        window.addEventListener('DOMContentLoaded', function () {
-            renderCalendar();
-            initPriceSlider();
-            selectStayType('overnight');
         });
     </script>
+
 </body>
 
 </html>
