@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -92,6 +91,113 @@
 
         .modal.active>div {
             animation: modalFadeIn 0.3s ease;
+        }
+
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            padding: 1rem;
+        }
+
+        .auth-modal.active {
+            display: flex;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #6b7280;
+        }
+
+        .auth-tab.active {
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+            margin-bottom: -2px;
+        }
+
+        .auth-form {
+            display: none;
+            padding: 2rem;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            min-height: 48px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 0.875rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 48px;
+        }
+
+        .auth-button:hover {
+            background: #2563eb;
+        }
+
+        .auth-button:active {
+            transform: scale(0.98);
         }
 
         ::-webkit-scrollbar {
@@ -280,7 +386,7 @@
             <div class="mb-6 pb-6 border-b border-gray-200">
                 <!-- Guest State -->
                 <div id="guestMenuMobile" class="hidden">
-                    <button onclick="window.location.href='index.html#signin'" class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                    <button onclick="openAuthModal(); closeMobileMenu();" class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
                         Sign In
                     </button>
                 </div>
@@ -331,7 +437,7 @@
                 <div id="userMenuDesktop" class="relative">
                     <!-- Guest State -->
                     <div id="guestMenuDesktop" class="hidden">
-                        <button onclick="window.location.href='index.html#signin'" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                        <button onclick="openAuthModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                             Sign In
                         </button>
                     </div>
@@ -368,6 +474,85 @@
             </button>
         </div>
     </header>
+
+    <!-- Auth Modal (Sign In / Sign Up) -->
+    <div id="authModal" class="auth-modal" onclick="closeAuthModal(event)">
+        <div class="auth-container" onclick="event.stopPropagation()">
+            <div class="flex justify-end p-4">
+                <button onclick="closeAuthModal()" class="p-2 hover:bg-gray-100 rounded-lg transition">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="signinTab" onclick="switchAuthTab('signin')">Sign In</div>
+                <div class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')">Sign Up</div>
+            </div>
+
+            <!-- Sign In Form -->
+            <div id="signinForm" class="auth-form active">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Welcome Back</h2>
+                <form onsubmit="handleSignIn(event)">
+                    <div class="form-group">
+                        <label for="signinEmail">Email Address</label>
+                        <input type="email" id="signinEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signinPassword">Password</label>
+                        <input type="password" id="signinPassword" placeholder="Enter your password" required>
+                    </div>
+                    <div class="flex justify-between items-center mb-6">
+                        <label class="flex items-center gap-2 text-sm text-gray-600">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-blue-600 hover:text-blue-700">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="auth-button">Sign In</button>
+                </form>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Don't have an account? 
+                    <a href="#" onclick="switchAuthTab('signup'); return false;" class="text-blue-600 hover:text-blue-700 font-semibold">Sign Up</a>
+                </p>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div id="signupForm" class="auth-form">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Account</h2>
+                <form onsubmit="handleSignUp(event)">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required minlength="6">
+                    </div>
+                    <div class="mb-6">
+                        <label class="flex items-start gap-2 text-sm text-gray-600">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded mt-0.5" required>
+                            <span>I agree to the <a href="#" class="text-blue-600 hover:text-blue-700">Terms of Service</a> and <a href="#" class="text-blue-600 hover:text-blue-700">Privacy Policy</a></span>
+                        </label>
+                    </div>
+                    <button type="submit" class="auth-button">Sign Up</button>
+                </form>
+                <p class="text-center text-sm text-gray-600 mt-4">
+                    Already have an account? 
+                    <a href="#" onclick="switchAuthTab('signin'); return false;" class="text-blue-600 hover:text-blue-700 font-semibold">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
 
     <div class="hero-bg py-8 sm:py-24 px-3">
         <div class="max-w-7xl mx-auto text-center">
@@ -448,177 +633,66 @@
         </div>
     </section>
 
-    <div id="resortModal" class="modal">
-        <div class="bg-white rounded-none sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-screen sm:max-h-[90vh] overflow-y-auto m-0 sm:m-4">
-            <div class="relative">
-                <button onclick="closeModal()" class="absolute top-3 right-3 z-10 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-100 transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-                <img id="modalImage" class="w-full h-40 sm:h-64 object-cover" src="" alt="">
-            </div>
-            <div class="p-4 sm:p-8">
-                <div class="flex flex-col gap-3 mb-4">
-                    <div class="flex-1">
-                        <h3 id="modalTitle" class="text-xl sm:text-3xl font-bold text-gray-900 mb-2"></h3>
-                        <div id="modalRating" class="mb-2"></div>
-                        <p id="modalAddress" class="text-sm sm:text-lg text-gray-600 mb-2"></p>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div id="modalPrice" class="text-lg sm:text-2xl font-bold text-blue-600"></div>
-                        <div id="modalCapacity" class="text-sm text-gray-600"></div>
-                    </div>
-                </div>
-
-                <div class="mb-5">
-                    <h4 class="text-base sm:text-xl font-bold text-gray-900 mb-2">About This Resort</h4>
-                    <p id="modalDescription" class="text-sm sm:text-base text-gray-700 leading-relaxed"></p>
-                </div>
-
-                <div class="mb-5">
-                    <h4 class="text-base sm:text-xl font-bold text-gray-900 mb-3">Facilities Available</h4>
-                    <div id="modalFacilities" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
-                </div>
-
-                <div class="mb-5">
-                    <h4 class="text-base sm:text-xl font-bold text-gray-900 mb-3">Amenities</h4>
-                    <div id="modalAmenities" class="flex flex-wrap gap-2"></div>
-                </div>
-
-                <div class="mb-5 bg-blue-50 p-3 rounded-lg">
-                    <h4 class="text-sm sm:text-lg font-bold text-gray-900 mb-2">📍 Location</h4>
-                    <p id="modalLocation" class="text-sm text-gray-700 mb-2"></p>
-                    <p class="text-xs text-gray-600">Coordinates: <span id="modalCoords"></span></p>
-                </div>
-
-                <div id="modalFacebook" class="mb-5">
-                </div>
-
-                <div class="border-t pt-3">
-                    <p class="text-xs text-gray-500 italic">For informational purposes only. Contact the resort directly for availability and booking details.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <footer class="bg-gray-800 text-gray-300 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-
                 <div>
                     <h3 class="text-xl font-bold text-white mb-4">Pansol Resorts</h3>
                     <p class="text-sm text-gray-400 mb-4 leading-relaxed">
                         Your comprehensive guide to discovering the best hot spring resorts in Pansol, Calamba, Laguna.
-                        Explore natural hot springs, family-friendly accommodations, and relaxing getaways.
                     </p>
-                    <div class="flex items-start text-sm">
-                        <svg class="w-5 h-5 mr-2 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                            </path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                        <span class="text-gray-400">Pansol, Calamba City, Laguna, Philippines</span>
-                    </div>
                 </div>
-
                 <div>
                     <h3 class="text-xl font-bold text-white mb-4">Visitor's Guide</h3>
-                    <div class="space-y-3 text-sm">
-                        <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
-                            </svg>
-                            <div>
-                                <span class="font-semibold text-gray-200">Location:</span>
-                                <span class="text-gray-400"> Just 2 hours from Manila via South Luzon Expressway
-                                    (SLEX)</span>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
-                            </svg>
-                            <div>
-                                <span class="font-semibold text-gray-200">Best Time to Visit:</span>
-                                <span class="text-gray-400"> Year-round, especially during cooler months (November -
-                                    February)</span>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
-                            </svg>
-                            <div>
-                                <span class="font-semibold text-gray-200">What to Bring:</span>
-                                <span class="text-gray-400"> Swimwear, towels, extra clothes, sunscreen, and
-                                    toiletries</span>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <svg class="w-4 h-4 mr-3 text-blue-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
-                            </svg>
-                            <div>
-                                <span class="font-semibold text-gray-200">Tip:</span>
-                                <span class="text-gray-400"> Book in advance during weekends and holidays for better
-                                    rates</span>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="text-sm text-gray-400">Book in advance during weekends and holidays for better rates</p>
                 </div>
-
                 <div>
                     <h3 class="text-xl font-bold text-white mb-4">Contact Us</h3>
-                    <p class="text-sm text-gray-400 mb-4">For inquiries, reservations, or assistance:</p>
                     <div class="space-y-3" id="contact">
                         <div class="flex items-center text-sm">
-                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                                </path>
+                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                             </svg>
-                            <a href="tel:+6490950496667" class="text-gray-300 hover:text-blue-400 transition">(+64) 909
-                                504 9667</a>
+                            <a href="tel:+6490950496667" class="text-gray-300 hover:text-blue-400 transition">(+64) 909 504 9667</a>
                         </div>
                         <div class="flex items-center text-sm">
-                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                </path>
+                            <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
-                            <a href="mailto:azriel.tizon07@gmail.com"
-                                class="text-gray-300 hover:text-blue-400 transition">azriel.tizon07@gmail.com</a>
+                            <a href="mailto:azriel.tizon07@gmail.com" class="text-gray-300 hover:text-blue-400 transition">azriel.tizon07@gmail.com</a>
                         </div>
                     </div>
-                    <div class="mt-6 pt-4 border-t border-gray-700">
-                        <p class="text-xs text-gray-500 italic leading-relaxed">We help you find the perfect hot spring
-                            resort for your relaxation and family bonding needs.</p>
-                    </div>
                 </div>
-
             </div>
 
             <div class="mt-10 pt-6 border-t border-gray-700 text-center text-xs text-gray-400">
-                &copy; 2025 Pansol Resorts. All rights reserved. Information purposes only.
+                &copy; 2025 Pansol Resorts. All rights reserved.
             </div>
         </div>
     </footer>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoILyFqD0iuOe4DfA2YoyjNiu30Mzw_DM",
+            authDomain: "resort-ec9b6.firebaseapp.com",
+            databaseURL: "https://resort-ec9b6-default-rtdb.firebaseio.com",
+            projectId: "resort-ec9b6",
+            storageBucket: "resort-ec9b6.firebasestorage.app",
+            messagingSenderId: "1034701877647",
+            appId: "1:1034701877647:web:e14e3e791b9d7780e15bfa",
+            measurementId: "G-12YD26J2E8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+
+        let resorts = [];
+        let activeFilter = 'all';
+        let currentSort = 'name';
+
         // Mobile Menu Functions
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
@@ -653,32 +727,108 @@
             }
         });
 
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDoILyFqD0iuOe4DfA2YoyjNiu30Mzw_DM",
-            authDomain: "resort-ec9b6.firebaseapp.com",
-            databaseURL: "https://resort-ec9b6-default-rtdb.firebaseio.com",
-            projectId: "resort-ec9b6",
-            storageBucket: "resort-ec9b6.firebasestorage.app",
-            messagingSenderId: "1034701877647",
-            appId: "1:1034701877647:web:e14e3e791b9d7780e15bfa",
-            measurementId: "G-12YD26J2E8"
-        };
+        // Auth Modal Functions
+        function openAuthModal() {
+            document.getElementById('authModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const firestore = firebase.firestore();
-        const auth = firebase.auth();
+        function closeAuthModal(event) {
+            if (!event || event.target.id === 'authModal') {
+                document.getElementById('authModal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function switchAuthTab(tab) {
+            const signinTab = document.getElementById('signinTab');
+            const signupTab = document.getElementById('signupTab');
+            const signinForm = document.getElementById('signinForm');
+            const signupForm = document.getElementById('signupForm');
+
+            if (tab === 'signin') {
+                signinTab.classList.add('active');
+                signupTab.classList.remove('active');
+                signinForm.classList.add('active');
+                signupForm.classList.remove('active');
+            } else {
+                signupTab.classList.add('active');
+                signinTab.classList.remove('active');
+                signupForm.classList.add('active');
+                signinForm.classList.remove('active');
+            }
+        }
+
+        // Sign In Handler
+        async function handleSignIn(event) {
+            event.preventDefault();
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                console.log('User signed in:', userCredential.user);
+                closeAuthModal();
+            } catch (error) {
+                console.error('Sign in error:', error);
+                alert('Sign in failed: ' + error.message);
+            }
+        }
+
+        // Sign Up Handler
+        async function handleSignUp(event) {
+            event.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Update user profile with name
+                await userCredential.user.updateProfile({
+                    displayName: name
+                });
+
+                // Store additional user info in database
+                await database.ref('users/' + userCredential.user.uid).set({
+                    name: name,
+                    email: email,
+                    createdAt: Date.now()
+                });
+
+                console.log('User signed up:', userCredential.user);
+                closeAuthModal();
+            } catch (error) {
+                console.error('Sign up error:', error);
+                alert('Sign up failed: ' + error.message);
+            }
+        }
+
+        // Sign Out Handler
+        async function signOut() {
+            try {
+                await auth.signOut();
+                console.log('User signed out');
+                closeMobileMenu();
+            } catch (error) {
+                console.error('Sign out error:', error);
+                alert('Sign out failed: ' + error.message);
+            }
+        }
 
         // Check Authentication State
         function checkAuthState() {
             auth.onAuthStateChanged((user) => {
                 if (user) {
-                    // User is signed in
                     showSignedInState(user);
                 } else {
-                    // User is signed out
                     showGuestState();
                 }
             });
@@ -686,24 +836,19 @@
 
         // Show Signed In State
         function showSignedInState(user) {
-            // Desktop
-            document.getElementById('guestMenuDesktop').classList.add('hidden');
-            document.getElementById('signedInMenuDesktop').classList.remove('hidden');
-            
-            // Mobile
-            document.getElementById('guestMenuMobile').classList.add('hidden');
-            document.getElementById('signedInMenuMobile').classList.remove('hidden');
-            
-            // Set user info
             const displayName = user.displayName || user.email.split('@')[0];
             const initial = displayName.charAt(0).toUpperCase();
             
             // Desktop
+            document.getElementById('guestMenuDesktop').classList.add('hidden');
+            document.getElementById('signedInMenuDesktop').classList.remove('hidden');
             document.getElementById('userInitialDesktop').textContent = initial;
             document.getElementById('userNameDesktop').textContent = displayName;
             document.getElementById('userEmailDesktop').textContent = user.email;
             
             // Mobile
+            document.getElementById('guestMenuMobile').classList.add('hidden');
+            document.getElementById('signedInMenuMobile').classList.remove('hidden');
             document.getElementById('userInitialMobile').textContent = initial;
             document.getElementById('userNameMobile').textContent = displayName;
             document.getElementById('userEmailMobile').textContent = user.email;
@@ -720,262 +865,31 @@
             document.getElementById('signedInMenuMobile').classList.add('hidden');
         }
 
-        // Sign Out Function
-        function signOut() {
-            auth.signOut().then(() => {
-                console.log('User signed out successfully');
-                closeMobileMenu();
-                // Optionally redirect to home page
-                // window.location.href = 'index.html';
-            }).catch((error) => {
-                console.error('Error signing out:', error);
-                alert('Error signing out. Please try again.');
-            });
-        }
-
-        // Facility Images
-        const facilityImages = {
-            'Swimming pools': 'https://placehold.co/80x80/0ea5e9/ffffff?text=Pool',
-            'Hot spring baths': 'https://placehold.co/80x80/f59e0b/ffffff?text=Hot+Spring',
-            'Cottages': 'https://placehold.co/80x80/10b981/ffffff?text=Cottage',
-            'Function halls': 'https://placehold.co/80x80/8b5cf6/ffffff?text=Hall',
-            'Restaurant': 'https://placehold.co/80x80/ef4444/ffffff?text=Food',
-            'Parking': 'https://placehold.co/80x80/6b7280/ffffff?text=Parking',
-            'Private pools': 'https://placehold.co/80x80/06b6d4/ffffff?text=Private',
-            'Event space': 'https://placehold.co/80x80/ec4899/ffffff?text=Event',
-            'Kitchen facilities': 'https://placehold.co/80x80/f97316/ffffff?text=Kitchen',
-            'Barbecue area': 'https://placehold.co/80x80/dc2626/ffffff?text=BBQ',
-            'Air-conditioned rooms': 'https://placehold.co/80x80/3b82f6/ffffff?text=AC',
-            'Karaoke': 'https://placehold.co/80x80/a855f7/ffffff?text=Karaoke',
-            'Videoke': 'https://placehold.co/80x80/a855f7/ffffff?text=Videoke',
-            'Outdoor grilling area': 'https://placehold.co/80x80/ea580c/ffffff?text=Grill',
-            'WiFi': 'https://placehold.co/80x80/0891b2/ffffff?text=WiFi',
-            'Heated pools': 'https://placehold.co/80x80/f59e0b/ffffff?text=Heated',
-            'Spa services': 'https://placehold.co/80x80/ec4899/ffffff?text=Spa',
-            'Gazebo': 'https://placehold.co/80x80/14b8a6/ffffff?text=Gazebo',
-            'Garden area': 'https://placehold.co/80x80/22c55e/ffffff?text=Garden',
-            'Outdoor dining': 'https://placehold.co/80x80/f59e0b/ffffff?text=Dining',
-            'Multiple swimming pools': 'https://placehold.co/80x80/0ea5e9/ffffff?text=Pools',
-            'Function hall': 'https://placehold.co/80x80/8b5cf6/ffffff?text=Hall',
-            'Playground': 'https://placehold.co/80x80/facc15/ffffff?text=Play'
-        };
-
-        // Global Variables
-        let resorts = [];
-        let activeFilter = 'all';
-        let currentSort = 'name';
-        let resortRatings = {};
-
-        // Amenity Labels
-        const amenityLabels = {
-            'hot-spring': '🌊 Hot Spring',
-            'aircon': '❄️ Air Conditioning',
-            'kitchen': '🍳 Kitchen',
-            'karaoke': '🎤 Karaoke/Videoke',
-            'wifi': '📶 WiFi',
-            'parking': '🅿️ Parking',
-            'pet-friendly': '🐾 Pet Friendly',
-            'smoking': '🚬 Smoking Area',
-            'billiards': '🎱 Billiards'
-        };
-
-        // Price Badge Colors
-        const priceBadgeColors = {
-            'budget': 'bg-green-100 text-green-800',
-            'mid': 'bg-blue-100 text-blue-800',
-            'premium': 'bg-purple-100 text-purple-800'
-        };
-
-        // Calculate Average Rating
-        function calculateAverageRating(feedbackList) {
-            if (!feedbackList || feedbackList.length === 0) {
-                return { average: 0, count: 0 };
-            }
-            const totalRating = feedbackList.reduce((sum, feedback) => sum + feedback.rating, 0);
-            const average = totalRating / feedbackList.length;
-            return { average: average, count: feedbackList.length };
-        }
-
-        // Generate Star Rating HTML
-        function generateStarRating(rating, count) {
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 >= 0.5;
-            let starsHTML = '<div class="star-rating">';
-            
-            // Full stars
-            for (let i = 0; i < fullStars; i++) {
-                starsHTML += '<svg class="w-4 h-4 star" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>';
-            }
-            
-            // Half star
-            if (hasHalfStar) {
-                starsHTML += '<svg class="w-4 h-4 star" fill="currentColor" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path fill="url(#half)" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>';
-            }
-            
-            // Empty stars
-            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-            for (let i = 0; i < emptyStars; i++) {
-                starsHTML += '<svg class="w-4 h-4 star-empty" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>';
-            }
-            
-            starsHTML += `<span class="ml-1 text-xs text-gray-600 font-semibold">${rating.toFixed(1)}</span>`;
-            if (count > 0) {
-                starsHTML += `<span class="ml-1 text-xs text-gray-500">(${count})</span>`;
-            }
-            starsHTML += '</div>';
-            return starsHTML;
-        }
-
-        // Load Ratings from Firestore
-        async function loadAllRatings() {
-            try {
-                const snapshot = await firestore.collection('feedback')
-                    .where('archived', '==', false)
-                    .get();
-                
-                const ratingsByResort = {};
-                
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.rating && data.resortId) {
-                        if (!ratingsByResort[data.resortId]) {
-                            ratingsByResort[data.resortId] = [];
-                        }
-                        ratingsByResort[data.resortId].push(data);
-                    }
-                });
-                
-                // Calculate averages
-                Object.keys(ratingsByResort).forEach(resortId => {
-                    const feedbackList = ratingsByResort[resortId];
-                    const totalRating = feedbackList.reduce((sum, feedback) => sum + feedback.rating, 0);
-                    const average = totalRating / feedbackList.length;
-                    resortRatings[resortId] = {
-                        average: average,
-                        count: feedbackList.length
-                    };
-                });
-                
-                console.log('Loaded ratings for resorts:', resortRatings);
-            } catch (error) {
-                console.error('Error loading ratings:', error);
-            }
-        }
-
-        // Get URL Parameters
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                search: params.get('search') || '',
-                sort: params.get('sort') || 'name',
-                pax: params.get('pax') ? parseInt(params.get('pax')) : null,
-                stayType: params.get('stayType') || '',
-                checkIn: params.get('checkIn') || '',
-                checkOut: params.get('checkOut') || '',
-                adults: params.get('adults') || '',
-                minPrice: params.get('minPrice') ? parseInt(params.get('minPrice')) : null,
-                maxPrice: params.get('maxPrice') ? parseInt(params.get('maxPrice')) : null,
-                amenities: params.get('amenities') ? params.get('amenities').split(',') : []
-            };
-        }
-
         // Load Resorts from Firebase
         async function loadResortsFromFirebase() {
             try {
-                // Load ratings first
-                await loadAllRatings();
-                
                 const resortsRef = database.ref('resorts');
                 const snapshot = await resortsRef.once('value');
                 const data = snapshot.val();
                 
                 if (data) {
-                    console.log('Firebase data loaded:', data);
-                    // Convert object to array while preserving the ID from the key
                     resorts = Object.entries(data).map(([key, value]) => ({
                         ...value,
-                        id: parseInt(key) || value.id // Use the key as ID if it's not already set
+                        id: parseInt(key) || value.id
                     }));
-                    resorts = validateResortData(resorts);
-                    
-                    // Add ratings to resorts
-                    resorts = resorts.map(resort => {
-                        const ratingData = resortRatings[resort.id] || { average: 0, count: 0 };
-                        return {
-                            ...resort,
-                            rating: ratingData.average,
-                            reviewCount: ratingData.count
-                        };
-                    });
-                    
-                    console.log('Processed resorts with ratings:', resorts);
                 } else {
                     resorts = [];
-                    console.log('No resorts data found in Firebase');
                 }
                 
                 document.getElementById('loadingOverlay').style.display = 'none';
-                initializePageWithData();
+                applyFiltersAndSort();
+                setupSearch();
+                setupSort();
             } catch (error) {
                 console.error('Error loading resorts:', error);
                 document.getElementById('loadingOverlay').style.display = 'none';
                 alert('Error loading resorts. Please refresh the page.');
             }
-        }
-
-        // Initialize Page with Data
-        function initializePageWithData() {
-            const urlParams = getUrlParams();
-            if (urlParams.search) {
-                document.getElementById('searchInput').value = urlParams.search;
-            }
-            if (urlParams.sort) {
-                document.getElementById('sortSelect').value = urlParams.sort;
-                currentSort = urlParams.sort;
-            }
-            if (urlParams.pax || urlParams.adults || urlParams.stayType ||
-                urlParams.minPrice || urlParams.maxPrice ||
-                (urlParams.amenities && urlParams.amenities.length > 0)) {
-                displayFilterInfo(urlParams);
-            }
-            applyFiltersAndSort();
-            setupSearch();
-            setupSort();
-        }
-
-        // Display Filter Info
-        function displayFilterInfo(params) {
-            const filterSection = document.querySelector('.filter-section .max-w-7xl');
-            let filterInfoHTML = '<div class="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">';
-            filterInfoHTML += '<svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">';
-            filterInfoHTML += '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
-            filterInfoHTML += '</svg>';
-            filterInfoHTML += '<div class="flex-1"><div class="font-semibold text-blue-900 mb-1 text-sm">Active Filters:</div>';
-            filterInfoHTML += '<div class="text-xs text-blue-800">';
-            const filters = [];
-            if (params.pax) filters.push(`${params.pax} pax`);
-            if (params.adults) filters.push(`${params.adults} adult${params.adults > 1 ? 's' : ''}`);
-            if (params.stayType) filters.push(params.stayType === 'overnight' ? 'Overnight' : 'Day use');
-            if (params.minPrice !== null || params.maxPrice !== null) {
-                const min = params.minPrice !== null ? params.minPrice : 700;
-                const max = params.maxPrice !== null ? params.maxPrice : 20000;
-                filters.push(`₱${min.toLocaleString()}-₱${max.toLocaleString()}`);
-            }
-            if (params.amenities && params.amenities.length > 0) {
-                filters.push(`${params.amenities.length} amenity`);
-            }
-            if (filters.length === 0) filters.push('All resorts');
-            filterInfoHTML += filters.join(' • ');
-            filterInfoHTML += '</div></div>';
-            filterInfoHTML += '<button onclick="clearSearchFilters()" class="text-blue-600 hover:text-blue-800 font-semibold text-xs whitespace-nowrap">Clear</button>';
-            filterInfoHTML += '</div>';
-            filterSection.insertAdjacentHTML('afterbegin', filterInfoHTML);
-        }
-
-        // Clear Search Filters
-        function clearSearchFilters() {
-            window.history.replaceState({}, '', window.location.pathname);
-            window.location.reload();
         }
 
         // Toggle Filter
@@ -991,17 +905,6 @@
                 }
             });
             applyFiltersAndSort();
-            
-            // Scroll to the resorts grid section
-            const resortsSection = document.getElementById('resortsGrid').parentElement;
-            const headerHeight = document.querySelector('header').offsetHeight;
-            const filterHeight = document.querySelector('.filter-section').offsetHeight;
-            const scrollPosition = resortsSection.offsetTop - headerHeight - filterHeight;
-            
-            window.scrollTo({
-                top: scrollPosition,
-                behavior: 'smooth'
-            });
         }
 
         // Render Resorts
@@ -1021,49 +924,24 @@
             resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
             
             grid.innerHTML = resortsToShow.map(resort => `
-                <div class="resort-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="showResortDetails(${resort.id})">
+                <div class="resort-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="window.location.href='resort-details.html?id=${resort.id}'">
                     <div class="relative">
                         <img class="w-full h-44 object-cover" src="${resort.image}" alt="${resort.name}">
-                        <span class="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold ${priceBadgeColors[resort.price]} shadow-lg uppercase">
+                        <span class="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 shadow-lg uppercase">
                             ${resort.price}
                         </span>
                     </div>
                     <div class="p-3">
-                        <div class="flex justify-between items-start mb-1.5">
-                            <h4 class="text-base font-bold text-gray-900 flex-1">${resort.name}</h4>
-                        </div>
-                        <div class="mb-1.5">
-                            ${resort.rating > 0 ? generateStarRating(resort.rating, resort.reviewCount) : '<span class="text-xs text-gray-500">No reviews yet</span>'}
-                        </div>
-                        <p class="text-xs text-gray-600 mb-1.5 flex items-center">
-                            <svg class="w-3 h-3 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="truncate">${resort.address}</span>
-                        </p>
-                        <p class="text-xs text-gray-700 mb-2 line-clamp-2">${resort.description}</p>
-                        <div class="flex justify-between items-center mb-2 pb-2 border-b border-gray-200">
-                            <div class="text-xs text-gray-600 flex items-center">
-                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
-                                </svg>
-                                ${resort.pax || resort.capacity || resort.bedrooms || 'N/A'} pax
+                        <h4 class="text-base font-bold text-gray-900 mb-2">${resort.name}</h4>
+                        <p class="text-xs text-gray-600 mb-2 truncate">${resort.address || 'Pansol, Calamba'}</p>
+                        <p class="text-xs text-gray-700 mb-2 line-clamp-2">${resort.description || ''}</p>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-600">
+                                ${resort.pax || resort.capacity || 'N/A'} pax
                             </div>
                             <div class="font-bold text-blue-600 text-base">
-                                ${resort.priceValue.split(' ')[0]}
+                                ${resort.priceValue || 'Contact for price'}
                             </div>
-                        </div>
-                        <div class="flex flex-wrap gap-1">
-                            ${resort.amenities.slice(0, 3).map(amenity => `
-                                <span class="text-xs px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full font-medium">
-                                    ${amenityLabels[amenity] ? amenityLabels[amenity].split(' ')[0] : amenity}
-                                </span>
-                            `).join('')}
-                            ${resort.amenities.length > 3 ? `
-                                <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded-full font-medium">
-                                    +${resort.amenities.length - 3}
-                                </span>
-                            ` : ''}
                         </div>
                     </div>
                 </div>
@@ -1073,82 +951,21 @@
         // Apply Filters and Sort
         function applyFiltersAndSort() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const urlParams = getUrlParams();
             let filtered = resorts;
             
             if (activeFilter !== 'all') {
                 filtered = filtered.filter(resort => resort.price === activeFilter);
             }
             
-            if (urlParams.pax) {
-                filtered = filtered.filter(resort => {
-                    const resortPax = resort.pax || resort.capacity || resort.bedrooms || 0;
-                    return resortPax >= urlParams.pax;
-                });
-            }
-            
-            if (urlParams.minPrice !== null || urlParams.maxPrice !== null) {
-                const min = urlParams.minPrice !== null ? urlParams.minPrice : 0;
-                const max = urlParams.maxPrice !== null ? urlParams.maxPrice : 999999;
-                filtered = filtered.filter(resort => {
-                    const resortPrice = resort.priceNumeric || 0;
-                    return resortPrice >= min && resortPrice <= max;
-                });
-            }
-            
-            if (urlParams.amenities && urlParams.amenities.length > 0) {
-                filtered = filtered.filter(resort => {
-                    const resortAmenities = resort.amenities || [];
-                    return urlParams.amenities.every(amenity => resortAmenities.includes(amenity));
-                });
-            }
-            
             if (searchTerm) {
-                const exactMatch = filtered.filter(r => r.name.toLowerCase() === searchTerm);
-                if (exactMatch.length > 0) {
-                    filtered = exactMatch;
-                } else {
-                    filtered = filtered.filter(r =>
-                        r.name.toLowerCase().includes(searchTerm) ||
-                        r.description.toLowerCase().includes(searchTerm) ||
-                        (r.facilities && r.facilities.some(f => f.toLowerCase().includes(searchTerm)))
-                    );
-                }
+                filtered = filtered.filter(r =>
+                    r.name.toLowerCase().includes(searchTerm) ||
+                    (r.description && r.description.toLowerCase().includes(searchTerm))
+                );
             }
             
             filtered = sortResorts(filtered, currentSort);
             renderResorts(filtered);
-        }
-
-        // Validate Resort Data
-        function validateResortData(resortsArray) {
-            return resortsArray.map(resort => {
-                if (!resort.priceNumeric && resort.priceValue) {
-                    const match = resort.priceValue.match(/₱?(\d+,?\d*)/);
-                    if (match) {
-                        resort.priceNumeric = parseInt(match[1].replace(/,/g, ''));
-                    }
-                }
-                if (!resort.priceNumeric || isNaN(resort.priceNumeric)) {
-                    resort.priceNumeric = 0;
-                }
-                if (!resort.amenities) {
-                    resort.amenities = [];
-                }
-                // Ensure pax field exists with fallbacks
-                if (!resort.pax) {
-                    if (resort.capacity) {
-                        resort.pax = resort.capacity;
-                    } else if (resort.bedrooms) {
-                        resort.pax = resort.bedrooms;
-                    } else if (resort.bedroom) {
-                        resort.pax = resort.bedroom;
-                    } else {
-                        resort.pax = 0;
-                    }
-                }
-                return resort;
-            });
         }
 
         // Sort Resorts
@@ -1156,17 +973,11 @@
             const sorted = [...resortsArray];
             switch (sortType) {
                 case 'price-low':
-                    return sorted.sort((a, b) => a.priceNumeric - b.priceNumeric);
+                    return sorted.sort((a, b) => (a.priceNumeric || 0) - (b.priceNumeric || 0));
                 case 'price-high':
-                    return sorted.sort((a, b) => b.priceNumeric - a.priceNumeric);
+                    return sorted.sort((a, b) => (b.priceNumeric || 0) - (a.priceNumeric || 0));
                 case 'capacity':
-                    return sorted.sort((a, b) => {
-                        const aPax = b.pax || b.capacity || b.bedrooms || 0;
-                        const bPax = a.pax || a.capacity || a.bedrooms || 0;
-                        return aPax - bPax;
-                    });
-                case 'rating':
-                    return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                    return sorted.sort((a, b) => (b.pax || b.capacity || 0) - (a.pax || a.capacity || 0));
                 case 'name':
                 default:
                     return sorted.sort((a, b) => a.name.localeCompare(b.name));
@@ -1186,17 +997,6 @@
             });
         }
 
-        // Show Resort Details - Redirect to resort-details.html
-        function showResortDetails(resortId) {
-            window.location.href = `resort-details.html?id=${resortId}`;
-        }
-
-        // Close Modal
-        function closeModal() {
-            document.getElementById('resortModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
         // Reset Filters
         function resetFilters() {
             activeFilter = 'all';
@@ -1212,28 +1012,21 @@
                     btn.classList.add('bg-gray-200', 'text-gray-700');
                 }
             });
-            window.history.replaceState({}, '', window.location.pathname);
             applyFiltersAndSort();
         }
 
-        // Modal Click Outside to Close
-        document.getElementById('resortModal').addEventListener('click', (e) => {
-            if (e.target.id === 'resortModal') closeModal();
-        });
-
-        // Keyboard ESC to close modal
+        // Keyboard ESC to close modals
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                closeModal();
+                closeAuthModal();
                 closeMobileMenu();
             }
         });
 
-        // Initialize - Load Resorts from Firebase and Check Auth
+        // Initialize
         checkAuthState();
         loadResortsFromFirebase();
     </script>
 
 </body>
-
 </html>
