@@ -344,18 +344,39 @@
             display: none;
         }
 
-        .star-rating {
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-tag {
             display: inline-flex;
             align-items: center;
-            gap: 1px;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: #dbeafe;
+            color: #1e40af;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
 
-        .star {
-            color: #fbbf24;
-        }
-
-        .star-empty {
-            color: #d1d5db;
+        .filter-tag button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            background: #1e40af;
+            color: white;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 0;
+            min-height: auto;
         }
     </style>
 </head>
@@ -571,6 +592,11 @@
 
     <section class="filter-section py-3 sm:py-6 px-3 sm:px-6 lg:px-8 shadow-sm">
         <div class="max-w-7xl mx-auto">
+            <!-- Active Filters Display -->
+            <div id="activeFiltersContainer" class="active-filters hidden">
+                <!-- Active filter tags will be inserted here -->
+            </div>
+
             <div class="flex flex-col gap-3">
                 <div class="w-full">
                     <div class="relative">
@@ -688,10 +714,24 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const auth = firebase.auth();
+        const firestore = firebase.firestore();
 
         let resorts = [];
         let activeFilter = 'all';
         let currentSort = 'name';
+        
+        // Filter state from URL parameters
+        let urlFilters = {
+            stayType: 'overnight',
+            search: '',
+            dateRange: '',
+            startDate: null,
+            endDate: null,
+            minPrice: 0,
+            maxPrice: 20000,
+            pax: 1,
+            amenities: []
+        };
 
         // Mobile Menu Functions
         function toggleMobileMenu() {
@@ -865,6 +905,136 @@
             document.getElementById('signedInMenuMobile').classList.add('hidden');
         }
 
+        // Parse URL Parameters
+        function parseURLParameters() {
+            const params = new URLSearchParams(window.location.search);
+            
+            urlFilters.stayType = params.get('stayType') || 'overnight';
+            urlFilters.search = params.get('search') || '';
+            urlFilters.dateRange = params.get('dateRange') || '';
+            urlFilters.minPrice = parseInt(params.get('minPrice')) || 0;
+            urlFilters.maxPrice = parseInt(params.get('maxPrice')) || 20000;
+            urlFilters.pax = parseInt(params.get('pax')) || 1;
+            
+            const startDateStr = params.get('startDate');
+            const endDateStr = params.get('endDate');
+            if (startDateStr) urlFilters.startDate = new Date(startDateStr);
+            if (endDateStr) urlFilters.endDate = new Date(endDateStr);
+            
+            const amenitiesStr = params.get('amenities');
+            if (amenitiesStr) {
+                urlFilters.amenities = amenitiesStr.split(',').filter(a => a);
+            }
+
+            // Apply search term to search input
+            if (urlFilters.search) {
+                document.getElementById('searchInput').value = urlFilters.search;
+            }
+
+            // Display active filters
+            displayActiveFilters();
+        }
+
+        // Display Active Filters
+        function displayActiveFilters() {
+            const container = document.getElementById('activeFiltersContainer');
+            const tags = [];
+
+            if (urlFilters.stayType) {
+                tags.push({
+                    label: urlFilters.stayType === 'overnight' ? 'Overnight Stay' : 'Day Use Stay',
+                    filter: 'stayType'
+                });
+            }
+
+            if (urlFilters.dateRange) {
+                tags.push({
+                    label: `Dates: ${urlFilters.dateRange}`,
+                    filter: 'dateRange'
+                });
+            }
+
+            if (urlFilters.minPrice > 0 || urlFilters.maxPrice < 20000) {
+                tags.push({
+                    label: `Price: ₱${urlFilters.minPrice} - ₱${urlFilters.maxPrice}`,
+                    filter: 'price'
+                });
+            }
+
+            if (urlFilters.pax > 1) {
+                tags.push({
+                    label: `${urlFilters.pax} guests`,
+                    filter: 'pax'
+                });
+            }
+
+            if (urlFilters.amenities.length > 0) {
+                urlFilters.amenities.forEach(amenity => {
+                    const displayName = amenity.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    tags.push({
+                        label: displayName,
+                        filter: `amenity-${amenity}`
+                    });
+                });
+            }
+
+            if (tags.length > 0) {
+                container.classList.remove('hidden');
+                container.innerHTML = tags.map(tag => `
+                    <div class="filter-tag">
+                        <span>${tag.label}</span>
+                        <button onclick="removeFilter('${tag.filter}')" aria-label="Remove filter">×</button>
+                    </div>
+                `).join('') + `
+                    <button onclick="clearAllURLFilters()" class="text-xs text-blue-600 hover:text-blue-700 font-semibold underline">
+                        Clear All
+                    </button>
+                `;
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // Remove Individual Filter
+        function removeFilter(filterType) {
+            if (filterType === 'stayType') {
+                urlFilters.stayType = 'overnight';
+            } else if (filterType === 'dateRange') {
+                urlFilters.dateRange = '';
+                urlFilters.startDate = null;
+                urlFilters.endDate = null;
+            } else if (filterType === 'price') {
+                urlFilters.minPrice = 0;
+                urlFilters.maxPrice = 20000;
+            } else if (filterType === 'pax') {
+                urlFilters.pax = 1;
+            } else if (filterType.startsWith('amenity-')) {
+                const amenity = filterType.replace('amenity-', '');
+                urlFilters.amenities = urlFilters.amenities.filter(a => a !== amenity);
+            }
+
+            displayActiveFilters();
+            applyFiltersAndSort();
+        }
+
+        // Clear All URL Filters
+        function clearAllURLFilters() {
+            urlFilters = {
+                stayType: 'overnight',
+                search: '',
+                dateRange: '',
+                startDate: null,
+                endDate: null,
+                minPrice: 0,
+                maxPrice: 20000,
+                pax: 1,
+                amenities: []
+            };
+            document.getElementById('searchInput').value = '';
+            displayActiveFilters();
+            applyFiltersAndSort();
+        }
+
         // Load Resorts from Firebase
         async function loadResortsFromFirebase() {
             try {
@@ -907,6 +1077,36 @@
             applyFiltersAndSort();
         }
 
+        // Check if resort matches amenity filters
+        function matchesAmenities(resort) {
+            if (urlFilters.amenities.length === 0) return true;
+            
+            // Assuming resorts have amenities stored in a specific way
+            // Adjust this based on your actual data structure
+            const resortAmenities = resort.amenities || resort.inclusions || [];
+            
+            return urlFilters.amenities.every(amenity => {
+                if (Array.isArray(resortAmenities)) {
+                    return resortAmenities.some(a => 
+                        a.toLowerCase().includes(amenity.toLowerCase())
+                    );
+                }
+                return false;
+            });
+        }
+
+        // Check if resort matches price range
+        function matchesPriceRange(resort) {
+            const price = resort.priceNumeric || 0;
+            return price >= urlFilters.minPrice && price <= urlFilters.maxPrice;
+        }
+
+        // Check if resort matches capacity
+        function matchesCapacity(resort) {
+            const capacity = resort.pax || resort.capacity || 0;
+            return capacity >= urlFilters.pax;
+        }
+
         // Render Resorts
         function renderResorts(resortsToShow) {
             const grid = document.getElementById('resortsGrid');
@@ -923,17 +1123,28 @@
             noResults.classList.add('hidden');
             resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
             
-            grid.innerHTML = resortsToShow.map(resort => `
-                <div class="resort-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="window.location.href='resort-details.html?id=${resort.id}'">
+            grid.innerHTML = resortsToShow.map(resort => {
+                const resortId = resort.id;
+                return `
+                <div class="resort-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="window.location.href='resort-details.html?id=${resortId}'">
                     <div class="relative">
-                        <img class="w-full h-44 object-cover" src="${resort.image}" alt="${resort.name}">
+                        <img class="w-full h-44 object-cover" src="${resort.image || 'https://placehold.co/400x300/94a3b8/ffffff?text=Resort+Image'}" alt="${resort.name}" onerror="this.src='https://placehold.co/400x300/94a3b8/ffffff?text=${encodeURIComponent(resort.name)}'">
                         <span class="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 shadow-lg uppercase">
-                            ${resort.price}
+                            ${resort.price || 'N/A'}
                         </span>
                     </div>
                     <div class="p-3">
                         <h4 class="text-base font-bold text-gray-900 mb-2">${resort.name}</h4>
                         <p class="text-xs text-gray-600 mb-2 truncate">${resort.address || 'Pansol, Calamba'}</p>
+                        
+                        <!-- Rating Display -->
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="flex items-center" id="rating-stars-${resortId}">
+                                <span class="text-xs text-gray-500">Loading...</span>
+                            </div>
+                            <span class="text-xs text-gray-500" id="rating-count-${resortId}"></span>
+                        </div>
+                        
                         <p class="text-xs text-gray-700 mb-2 line-clamp-2">${resort.description || ''}</p>
                         <div class="flex justify-between items-center">
                             <div class="text-xs text-gray-600">
@@ -945,7 +1156,13 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
+
+            // Load ratings for all displayed resorts
+            resortsToShow.forEach(resort => {
+                loadResortRating(resort.id);
+            });
         }
 
         // Apply Filters and Sort
@@ -953,16 +1170,27 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             let filtered = resorts;
             
+            // Apply price category filter
             if (activeFilter !== 'all') {
                 filtered = filtered.filter(resort => resort.price === activeFilter);
             }
             
-            if (searchTerm) {
+            // Apply search term filter
+            if (searchTerm || urlFilters.search) {
+                const term = searchTerm || urlFilters.search.toLowerCase();
                 filtered = filtered.filter(r =>
-                    r.name.toLowerCase().includes(searchTerm) ||
-                    (r.description && r.description.toLowerCase().includes(searchTerm))
+                    r.name.toLowerCase().includes(term) ||
+                    (r.description && r.description.toLowerCase().includes(term)) ||
+                    (r.address && r.address.toLowerCase().includes(term))
                 );
             }
+
+            // Apply URL filters
+            filtered = filtered.filter(resort => {
+                return matchesPriceRange(resort) && 
+                       matchesCapacity(resort) && 
+                       matchesAmenities(resort);
+            });
             
             filtered = sortResorts(filtered, currentSort);
             renderResorts(filtered);
@@ -978,10 +1206,104 @@
                     return sorted.sort((a, b) => (b.priceNumeric || 0) - (a.priceNumeric || 0));
                 case 'capacity':
                     return sorted.sort((a, b) => (b.pax || b.capacity || 0) - (a.pax || a.capacity || 0));
+                case 'rating':
+                    return sorted.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
                 case 'name':
                 default:
                     return sorted.sort((a, b) => a.name.localeCompare(b.name));
             }
+        }
+
+        // Load Resort Rating from Firestore
+        async function loadResortRating(resortId) {
+            const starsContainer = document.getElementById(`rating-stars-${resortId}`);
+            const countContainer = document.getElementById(`rating-count-${resortId}`);
+
+            if (!starsContainer || !countContainer) return;
+
+            try {
+                // Query Firestore for feedback/reviews
+                const feedbackQuery = firestore.collection('feedback')
+                    .where('resortId', '==', String(resortId))
+                    .where('archived', '==', false);
+                
+                const querySnapshot = await feedbackQuery.get();
+                
+                if (querySnapshot.empty) {
+                    displayNoRatings(starsContainer, countContainer);
+                    return;
+                }
+
+                // Calculate average rating from feedback
+                const feedbackList = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.rating && typeof data.rating === 'number') {
+                        feedbackList.push(data);
+                    }
+                });
+
+                if (feedbackList.length > 0) {
+                    const totalRating = feedbackList.reduce((sum, feedback) => sum + feedback.rating, 0);
+                    const averageRating = totalRating / feedbackList.length;
+                    const reviewCount = feedbackList.length;
+
+                    displayRating(resortId, averageRating, reviewCount, starsContainer, countContainer);
+                } else {
+                    displayNoRatings(starsContainer, countContainer);
+                }
+
+            } catch (error) {
+                console.error('Error loading rating for resort', resortId, ':', error);
+                displayNoRatings(starsContainer, countContainer);
+            }
+        }
+
+        // Display Rating Function
+        function displayRating(resortId, averageRating, reviewCount, starsContainer, countContainer) {
+            // Store rating in resort object for sorting
+            const resort = resorts.find(r => r.id == resortId);
+            if (resort) {
+                resort.averageRating = averageRating;
+                resort.reviewCount = reviewCount;
+            }
+
+            // Generate star display
+            const fullStars = Math.floor(averageRating);
+            const hasHalfStar = (averageRating % 1) >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+            let starsHTML = '<div class="flex items-center gap-0.5">';
+            
+            // Full stars
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+            }
+            
+            // Half star
+            if (hasHalfStar) {
+                starsHTML += '<svg class="w-4 h-4 text-yellow-400" viewBox="0 0 20 20"><defs><linearGradient id="half-' + resortId + '"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path fill="url(#half-' + resortId + ')" d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+            }
+            
+            // Empty stars
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+            }
+            
+            starsHTML += `<span class="text-xs font-semibold text-gray-700 ml-1">${averageRating.toFixed(1)}</span>`;
+            starsHTML += '</div>';
+
+            starsContainer.innerHTML = starsHTML;
+            countContainer.textContent = `(${reviewCount} ${reviewCount === 1 ? 'review' : 'reviews'})`;
+        }
+
+        // Display No Ratings Function
+        function displayNoRatings(starsContainer, countContainer) {
+            starsContainer.innerHTML = '<div class="flex items-center gap-0.5">' +
+                '<svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>'.repeat(5) +
+                '<span class="text-xs text-gray-500 ml-1">No ratings yet</span>' +
+                '</div>';
+            countContainer.textContent = '';
         }
 
         // Setup Search
@@ -1012,7 +1334,7 @@
                     btn.classList.add('bg-gray-200', 'text-gray-700');
                 }
             });
-            applyFiltersAndSort();
+            clearAllURLFilters();
         }
 
         // Keyboard ESC to close modals
@@ -1025,6 +1347,7 @@
 
         // Initialize
         checkAuthState();
+        parseURLParameters();
         loadResortsFromFirebase();
     </script>
 
