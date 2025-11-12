@@ -996,8 +996,28 @@
             
             const startDateStr = params.get('startDate');
             const endDateStr = params.get('endDate');
-            if (startDateStr) urlFilters.startDate = new Date(startDateStr);
-            if (endDateStr) urlFilters.endDate = new Date(endDateStr);
+            
+            if (startDateStr && startDateStr !== '') {
+                try {
+                    urlFilters.startDate = new Date(startDateStr);
+                    if (isNaN(urlFilters.startDate.getTime())) {
+                        urlFilters.startDate = null;
+                    }
+                } catch (e) {
+                    urlFilters.startDate = null;
+                }
+            }
+            
+            if (endDateStr && endDateStr !== '') {
+                try {
+                    urlFilters.endDate = new Date(endDateStr);
+                    if (isNaN(urlFilters.endDate.getTime())) {
+                        urlFilters.endDate = null;
+                    }
+                } catch (e) {
+                    urlFilters.endDate = null;
+                }
+            }
             
             const amenitiesStr = params.get('amenities');
             if (amenitiesStr) {
@@ -1018,9 +1038,9 @@
             const container = document.getElementById('activeFiltersContainer');
             const tags = [];
 
-            if (urlFilters.stayType) {
+            if (urlFilters.stayType && urlFilters.stayType !== 'overnight') {
                 tags.push({
-                    label: urlFilters.stayType === 'overnight' ? 'Overnight Stay' : 'Day Use Stay',
+                    label: urlFilters.stayType === 'dayuse' ? 'Day Use Stay' : 'Overnight Stay',
                     filter: 'stayType'
                 });
             }
@@ -1113,7 +1133,7 @@
             applyFiltersAndSort();
         }
 
-        // Load Resorts from Firebase
+        // Load Resorts from Firebase and check availability
         async function loadResortsFromFirebase() {
             try {
                 const resortsRef = database.ref('resorts');
@@ -1125,6 +1145,9 @@
                         ...value,
                         id: parseInt(key) || value.id
                     }));
+                    
+                    // Load availability data from Firestore for each resort
+                    await loadAllResortsAvailability();
                 } else {
                     resorts = [];
                 }
@@ -1137,6 +1160,40 @@
                 console.error('Error loading resorts:', error);
                 document.getElementById('loadingOverlay').style.display = 'none';
                 alert('Error loading resorts. Please refresh the page.');
+            }
+        }
+
+        // Load availability data from Firestore for all resorts
+        async function loadAllResortsAvailability() {
+            try {
+                const availabilitySnapshot = await firestore.collection('availability').get();
+                
+                availabilitySnapshot.forEach((doc) => {
+                    const resortId = doc.id;
+                    const availabilityData = doc.data();
+                    
+                    // Find the resort in our array
+                    const resort = resorts.find(r => String(r.id) === resortId);
+                    
+                    if (resort) {
+                        // Extract unavailable dates from Firestore document
+                        const unavailableDates = [];
+                        
+                        // Loop through all fields in the document
+                        Object.keys(availabilityData).forEach(dateKey => {
+                            if (availabilityData[dateKey] === 'unavailable') {
+                                unavailableDates.push(dateKey);
+                            }
+                        });
+                        
+                        // Add unavailable dates to resort object
+                        resort.unavailableDates = unavailableDates;
+                    }
+                });
+                
+                console.log('Loaded availability for', resorts.filter(r => r.unavailableDates).length, 'resorts');
+            } catch (error) {
+                console.error('Error loading availability:', error);
             }
         }
 
@@ -1155,12 +1212,70 @@
             applyFiltersAndSort();
         }
 
+        // Check if resort matches date range
+        function matchesDateRange(resort) {
+            if (!urlFilters.startDate || !urlFilters.endDate) return true;
+            
+            // Check if resort has unavailable dates
+            if (!resort.unavailableDates || resort.unavailableDates.length === 0) {
+                return true; // No unavailable dates, resort is available
+            }
+            
+            // Convert unavailable dates to Date objects for comparison
+            const unavailableDates = resort.unavailableDates.map(dateStr => {
+                const date = new Date(dateStr);
+                date.setHours(0, 0, 0, 0);
+                return date.getTime();
+            });
+            
+            // Create array of all dates in the selected range
+            const selectedDates = [];
+            const currentDate = new Date(urlFilters.startDate);
+            currentDate.setHours(0, 0, 0, 0);
+            const endDate = new Date(urlFilters.endDate);
+            endDate.setHours(0, 0, 0, 0);
+            
+            // For day use, only check the single date
+            if (urlFilters.stayType === 'dayuse') {
+                selectedDates.push(currentDate.getTime());
+            } else {
+                // For overnight, check all dates in the range including start and end
+                while (currentDate <= endDate) {
+                    selectedDates.push(currentDate.getTime());
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+            }
+            
+            // Check if any selected date is in the unavailable dates
+            const hasConflict = selectedDates.some(selectedDate => 
+                unavailableDates.includes(selectedDate)
+            );
+            
+            // Debug logging
+            if (hasConflict) {
+                console.log(`Resort ${resort.name} (ID: ${resort.id}) filtered out due to date conflict`);
+            }
+            
+            return !hasConflict; // Return true only if there's no conflict
+        }
+
+        // Check if resort matches stay type
+        function matchesStayType(resort) {
+            if (!urlFilters.stayType) return true;
+            
+            // If resort has stayType property, match it
+            // Otherwise, assume it supports both types
+            if (resort.stayType) {
+                return resort.stayType === urlFilters.stayType || resort.stayType === 'both';
+            }
+            
+            return true;
+        }
+
         // Check if resort matches amenity filters
         function matchesAmenities(resort) {
             if (urlFilters.amenities.length === 0) return true;
             
-            // Assuming resorts have amenities stored in a specific way
-            // Adjust this based on your actual data structure
             const resortAmenities = resort.amenities || resort.inclusions || [];
             
             return urlFilters.amenities.every(amenity => {
@@ -1194,12 +1309,24 @@
             if (resortsToShow.length === 0) {
                 grid.innerHTML = '';
                 noResults.classList.remove('hidden');
-                resultsCount.textContent = 'No resorts found';
+                
+                // Provide helpful message based on active filters
+                if (urlFilters.startDate && urlFilters.endDate) {
+                    resultsCount.textContent = 'No resorts available for selected dates';
+                } else {
+                    resultsCount.textContent = 'No resorts found';
+                }
                 return;
             }
             
             noResults.classList.add('hidden');
-            resultsCount.textContent = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
+            
+            // Update results count with date info if applicable
+            let countText = `Showing ${resortsToShow.length} resort${resortsToShow.length !== 1 ? 's' : ''}`;
+            if (urlFilters.startDate && urlFilters.endDate) {
+                countText += ' available for your dates';
+            }
+            resultsCount.textContent = countText;
             
             grid.innerHTML = resortsToShow.map(resort => {
                 const resortId = resort.id;
@@ -1210,6 +1337,7 @@
                         <span class="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 shadow-lg uppercase">
                             ${resort.price || 'N/A'}
                         </span>
+                        ${urlFilters.startDate && urlFilters.endDate ? '<span class="absolute top-2 left-2 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 shadow-lg">Available</span>' : ''}
                     </div>
                     <div class="p-3">
                         <h4 class="text-base font-bold text-gray-900 mb-2">${resort.name}</h4>
@@ -1263,11 +1391,13 @@
                 );
             }
 
-            // Apply URL filters
+            // Apply URL filters including date range and stay type
             filtered = filtered.filter(resort => {
                 return matchesPriceRange(resort) && 
                        matchesCapacity(resort) && 
-                       matchesAmenities(resort);
+                       matchesAmenities(resort) &&
+                       matchesDateRange(resort) &&
+                       matchesStayType(resort);
             });
             
             filtered = sortResorts(filtered, currentSort);
@@ -1300,7 +1430,6 @@
             if (!starsContainer || !countContainer) return;
 
             try {
-                // Query Firestore for feedback/reviews
                 const feedbackQuery = firestore.collection('feedback')
                     .where('resortId', '==', String(resortId))
                     .where('archived', '==', false);
@@ -1312,7 +1441,6 @@
                     return;
                 }
 
-                // Calculate average rating from feedback
                 const feedbackList = [];
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
