@@ -177,7 +177,39 @@
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
         }
 
-        .feedback-modal {
+        .calendar-button {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        @media (min-width: 768px) {
+            .calendar-button {
+                bottom: 30px;
+                left: 30px;
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        .calendar-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+        }
+
+        .feedback-modal,
+        .calendar-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -192,16 +224,20 @@
         }
 
         @media (min-width: 768px) {
-            .feedback-modal {
+
+            .feedback-modal,
+            .calendar-modal {
                 padding: 20px;
             }
         }
 
-        .feedback-modal.active {
+        .feedback-modal.active,
+        .calendar-modal.active {
             display: flex;
         }
 
-        .feedback-content {
+        .feedback-content,
+        .calendar-content {
             background: white;
             border-radius: 16px;
             padding: 20px;
@@ -213,8 +249,14 @@
             animation: slideUp 0.3s ease;
         }
 
+        .calendar-content {
+            max-width: 600px;
+        }
+
         @media (min-width: 768px) {
-            .feedback-content {
+
+            .feedback-content,
+            .calendar-content {
                 border-radius: 20px;
                 padding: 30px;
             }
@@ -314,7 +356,8 @@
             border-color: #3b82f6;
         }
 
-        .submit-feedback {
+        .submit-feedback,
+        .save-availability-btn {
             width: 100%;
             padding: 12px;
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
@@ -327,18 +370,30 @@
             margin-top: 15px;
         }
 
+        .save-availability-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
         @media (min-width: 768px) {
-            .submit-feedback {
+
+            .submit-feedback,
+            .save-availability-btn {
                 padding: 14px;
             }
         }
 
-        .submit-feedback:hover {
+        .submit-feedback:hover,
+        .save-availability-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
 
-        .submit-feedback:disabled {
+        .save-availability-btn:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .submit-feedback:disabled,
+        .save-availability-btn:disabled {
             background: #9ca3af;
             cursor: not-allowed;
             transform: none;
@@ -366,6 +421,141 @@
         .success-message.active {
             display: block;
             animation: slideUp 0.3s ease;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            padding: 8px 12px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-nav button:hover {
+            background: #e5e7eb;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 12px;
+            padding: 8px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .calendar-day:hover:not(.empty):not(.past) {
+            background: #f3f4f6;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.empty {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .calendar-day.available {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .calendar-day.unavailable {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .calendar-day.today {
+            box-shadow: 0 0 0 3px #3b82f6;
+        }
+
+        .calendar-day.past {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .calendar-day.owner-mode:not(.past):hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .calendar-day.selected-for-edit {
+            box-shadow: 0 0 0 3px #f59e0b;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 3px #f59e0b;
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px #f59e0b;
+            }
+        }
+
+        .calendar-legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .owner-controls {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
         }
 
         .image-gallery-modal {
@@ -844,6 +1034,15 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .mode-btn {
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
     </style>
 </head>
 
@@ -1152,7 +1351,8 @@
 
             <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-5 md:p-8 mb-6 md:mb-8">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center">
-                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3 text-blue-600" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                     Amenities
@@ -1292,7 +1492,7 @@
                             <svg class="w-5 h-5 mr-3 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 0022z">
                                 </path>
                             </svg>
                             <a href="mailto:azriel.tizon07@gmail.com"
@@ -1313,12 +1513,112 @@
         </div>
     </footer>
 
+    <div class="calendar-button" id="calendarButton" title="View Availability">
+        <svg class="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+            </path>
+        </svg>
+    </div>
+
     <div class="feedback-button" id="feedbackButton" title="Send Feedback">
         <svg class="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
             </path>
         </svg>
+    </div>
+
+    <div class="calendar-modal" id="calendarModal">
+        <div class="calendar-content">
+            <div class="close-modal" id="closeCalendarModal">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </div>
+
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2 text-center">Resort Availability</h2>
+            <p class="text-gray-600 text-xs md:text-sm text-center mb-4" id="calendarSubtitle">View available dates</p>
+
+            <div class="calendar-header">
+                <h3 class="text-lg font-bold text-gray-900" id="currentMonthYear"></h3>
+                <div class="calendar-nav">
+                    <button id="prevMonth">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <button id="nextMonth">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="calendar-day-header">Sun</div>
+                <div class="calendar-day-header">Mon</div>
+                <div class="calendar-day-header">Tue</div>
+                <div class="calendar-day-header">Wed</div>
+                <div class="calendar-day-header">Thu</div>
+                <div class="calendar-day-header">Fri</div>
+                <div class="calendar-day-header">Sat</div>
+            </div>
+            <div id="calendarDays" class="calendar-grid" style="grid-column: 1 / -1;"></div>
+
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #d1fae5; border: 2px solid #10b981;"></div>
+                    <span>Available</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #fee2e2; border: 2px solid #ef4444;"></div>
+                    <span>Unavailable</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border: 2px solid #3b82f6; background: white;"></div>
+                    <span>Today</span>
+                </div>
+            </div>
+
+            <div id="ownerControls" class="owner-controls" style="display: none;">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-blue-800 mb-2">
+                        <strong>🔧 Resort Owner Mode</strong>
+                    </p>
+                    <p class="text-xs text-blue-700 mb-3">
+                        Click the buttons below to select a mode, then click on any future date to mark its
+                        availability.
+                    </p>
+                    <div class="flex gap-2 mb-2">
+                        <button id="markAvailableBtn"
+                            class="mode-btn flex-1 px-3 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 transition font-semibold text-sm border-2 border-green-300">
+                            ✓ Available
+                        </button>
+                        <button id="markUnavailableBtn"
+                            class="mode-btn flex-1 px-3 py-2 bg-red-100 text-red-800 rounded-lg hover:bg-red-200 transition font-semibold text-sm border-2 border-red-300">
+                            ✕ Unavailable
+                        </button>
+                    </div>
+                    <p class="text-xs text-blue-600 text-center" id="currentModeText">
+                        Current mode: <strong>Available</strong>
+                    </p>
+                </div>
+
+                <button class="save-availability-btn" id="saveAvailability">
+                    <span id="saveText">💾 Save Changes</span>
+                    <span id="saveLoading" style="display: none;">Saving...</span>
+                </button>
+            </div>
+
+            <div class="success-message" id="calendarSuccessMessage">
+                ✓ Availability updated successfully!
+            </div>
+        </div>
     </div>
 
     <div class="feedback-modal" id="feedbackModal">
@@ -1422,6 +1722,23 @@
         const firestore = firebase.firestore();
         const auth = firebase.auth();
 
+        // Resort owner credentials mapping
+        const resortOwnerAccounts = {
+            'resort1@gmail.com': '0',
+            'resort2@gmail.com': '1',
+            'resort3@gmail.com': '2',
+            'resort4@gmail.com': '3',
+            'resort5@gmail.com': '4'
+        };
+
+        let currentResortOwner = null;
+        let isResortOwner = false;
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let availabilityData = {};
+        let originalAvailabilityData = {};
+        let selectionMode = 'available'; // 'available' or 'unavailable'
+
         const resortContactInfo = {
             '0': {
                 name: 'Laguna Hot Spring Resort',
@@ -1474,6 +1791,187 @@
         const INITIAL_FACILITIES_COUNT = 6;
         let galleryImages = [];
         let currentGalleryIndex = 0;
+
+        // Calendar functions
+        function openCalendar() {
+            const resortId = getResortIdFromUrl();
+            document.getElementById('calendarModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loadAvailabilityData(resortId);
+            renderCalendar();
+        }
+
+        function closeCalendar() {
+            document.getElementById('calendarModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function loadAvailabilityData(resortId) {
+            firestore.collection('availability')
+                .doc(resortId)
+                .get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        availabilityData = doc.data() || {};
+                        originalAvailabilityData = JSON.parse(JSON.stringify(availabilityData));
+                    } else {
+                        availabilityData = {};
+                        originalAvailabilityData = {};
+                    }
+                    renderCalendar();
+                })
+                .catch((error) => {
+                    console.error('Error loading availability:', error);
+                    availabilityData = {};
+                    originalAvailabilityData = {};
+                    renderCalendar();
+                });
+        }
+
+        function renderCalendar() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+
+            document.getElementById('currentMonthYear').textContent =
+                `${monthNames[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let daysHtml = '';
+
+            for (let i = 0; i < firstDay; i++) {
+                daysHtml += '<div class="calendar-day empty"></div>';
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const currentDate = new Date(currentYear, currentMonth, day);
+                const isPast = currentDate < today;
+                const isToday = currentDate.getTime() === today.getTime();
+
+                const status = availabilityData[dateStr] || 'available';
+
+                let classes = 'calendar-day';
+                if (isPast) classes += ' past';
+                if (isToday) classes += ' today';
+                if (status === 'available') classes += ' available';
+                if (status === 'unavailable') classes += ' unavailable';
+                if (isResortOwner && !isPast) classes += ' owner-mode';
+
+                const clickHandler = isResortOwner && !isPast ? `onclick="toggleDateAvailability('${dateStr}')"` : '';
+
+                daysHtml += `<div class="${classes}" ${clickHandler}>${day}</div>`;
+            }
+
+            document.getElementById('calendarDays').innerHTML = daysHtml;
+        }
+
+        function toggleDateAvailability(dateStr) {
+            if (!isResortOwner) return;
+
+            availabilityData[dateStr] = selectionMode;
+            renderCalendar();
+
+            // Visual feedback
+            const dateElements = document.querySelectorAll('.calendar-day');
+            dateElements.forEach(el => {
+                if (el.textContent.trim() && !el.classList.contains('empty') && !el.classList.contains('past')) {
+                    const day = parseInt(el.textContent);
+                    const checkDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    if (checkDateStr === dateStr) {
+                        el.classList.add('selected-for-edit');
+                        setTimeout(() => {
+                            el.classList.remove('selected-for-edit');
+                        }, 500);
+                    }
+                }
+            });
+        }
+
+        function setSelectionMode(mode) {
+            selectionMode = mode;
+            const availableBtn = document.getElementById('markAvailableBtn');
+            const unavailableBtn = document.getElementById('markUnavailableBtn');
+            const modeText = document.getElementById('currentModeText');
+
+            if (mode === 'available') {
+                availableBtn.classList.add('active');
+                unavailableBtn.classList.remove('active');
+                modeText.innerHTML = 'Current mode: <strong class="text-green-700">Available ✓</strong>';
+            } else {
+                unavailableBtn.classList.add('active');
+                availableBtn.classList.remove('active');
+                modeText.innerHTML = 'Current mode: <strong class="text-red-700">Unavailable ✕</strong>';
+            }
+        }
+
+        function saveAvailability() {
+            const resortId = getResortIdFromUrl();
+            const saveBtn = document.getElementById('saveAvailability');
+
+            saveBtn.disabled = true;
+            document.getElementById('saveText').style.display = 'none';
+            document.getElementById('saveLoading').style.display = 'inline';
+
+            firestore.collection('availability')
+                .doc(resortId)
+                .set(availabilityData)
+                .then(() => {
+                    document.getElementById('calendarSuccessMessage').classList.add('active');
+                    originalAvailabilityData = JSON.parse(JSON.stringify(availabilityData));
+
+                    setTimeout(() => {
+                        document.getElementById('calendarSuccessMessage').classList.remove('active');
+                        saveBtn.disabled = false;
+                        document.getElementById('saveText').style.display = 'inline';
+                        document.getElementById('saveLoading').style.display = 'none';
+                    }, 2000);
+                })
+                .catch((error) => {
+                    console.error('Error saving availability:', error);
+                    alert('Error saving availability: ' + error.message);
+                    saveBtn.disabled = false;
+                    document.getElementById('saveText').style.display = 'inline';
+                    document.getElementById('saveLoading').style.display = 'none';
+                });
+        }
+
+        document.getElementById('calendarButton').addEventListener('click', openCalendar);
+        document.getElementById('closeCalendarModal').addEventListener('click', closeCalendar);
+        document.getElementById('calendarModal').addEventListener('click', function (e) {
+            if (e.target === this) closeCalendar();
+        });
+
+        document.getElementById('prevMonth').addEventListener('click', function () {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', function () {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        });
+
+        document.getElementById('saveAvailability').addEventListener('click', saveAvailability);
+
+        document.getElementById('markAvailableBtn').addEventListener('click', function () {
+            setSelectionMode('available');
+        });
+
+        document.getElementById('markUnavailableBtn').addEventListener('click', function () {
+            setSelectionMode('unavailable');
+        });
 
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
@@ -1546,6 +2044,9 @@
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 console.log('User signed in:', userCredential.user);
                 closeAuthModal();
+
+                // Check if resort owner
+                checkResortOwnerStatus(email);
             } catch (error) {
                 console.error('Sign in error:', error);
                 alert('Sign in failed: ' + error.message);
@@ -1589,14 +2090,44 @@
             try {
                 await auth.signOut();
                 console.log('User signed out');
+                isResortOwner = false;
+                currentResortOwner = null;
                 closeMobileMenu();
                 const dropdown = document.getElementById('userDropdown');
                 if (dropdown) {
                     dropdown.classList.add('hidden');
                 }
+                updateOwnerControls();
             } catch (error) {
                 console.error('Sign out error:', error);
                 alert('Sign out failed: ' + error.message);
+            }
+        }
+
+        function checkResortOwnerStatus(email) {
+            const resortId = getResortIdFromUrl();
+            if (resortOwnerAccounts[email] === resortId) {
+                isResortOwner = true;
+                currentResortOwner = resortId;
+                updateOwnerControls();
+            } else {
+                isResortOwner = false;
+                currentResortOwner = null;
+                updateOwnerControls();
+            }
+        }
+
+        function updateOwnerControls() {
+            const ownerControls = document.getElementById('ownerControls');
+            const calendarSubtitle = document.getElementById('calendarSubtitle');
+
+            if (isResortOwner) {
+                ownerControls.style.display = 'block';
+                calendarSubtitle.textContent = 'Manage your resort availability';
+                setSelectionMode('available'); // Set default mode
+            } else {
+                ownerControls.style.display = 'none';
+                calendarSubtitle.textContent = 'View available dates';
             }
         }
 
@@ -1604,8 +2135,12 @@
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     showSignedInState(user);
+                    checkResortOwnerStatus(user.email);
                 } else {
                     showGuestState();
+                    isResortOwner = false;
+                    currentResortOwner = null;
+                    updateOwnerControls();
                 }
             });
         }
@@ -1773,11 +2308,11 @@
         function formatPhoneNumber(phone) {
             const cleanPhone = phone.replace(/\s+/g, '').replace(/[^\d+()-]/g, '');
             let telLink = cleanPhone;
-            
+
             if (cleanPhone.startsWith('0')) {
                 telLink = '+63' + cleanPhone.substring(1);
             }
-            
+
             return { display: phone, link: telLink };
         }
 
@@ -1860,6 +2395,7 @@
             const modal = document.getElementById('imageGalleryModal');
             const authModal = document.getElementById('authModal');
             const feedbackModal = document.getElementById('feedbackModal');
+            const calendarModal = document.getElementById('calendarModal');
 
             if (e.key === 'Escape') {
                 if (modal.classList.contains('active')) {
@@ -1870,6 +2406,9 @@
                 }
                 if (feedbackModal.classList.contains('active')) {
                     closeFeedbackModal();
+                }
+                if (calendarModal.classList.contains('active')) {
+                    closeCalendar();
                 }
                 closeMobileMenu();
             } else if (modal.classList.contains('active')) {
@@ -1934,14 +2473,17 @@
         }
 
         function displayResortDetails(resort, resortId) {
-            console.log('Displaying resort:', resort.name, 'ID:', resortId);
-            
+            console.log('Current Resort ID:', resortId);
+            console.log('Current Resort Name:', resort.name);
+            console.log('Loading images from folder:', resortId + '_resort');
+            console.log('Contact Info shows:', resortContactInfo[resortId]?.name);
+
             document.title = `${resort.name} - Pansol Hot Spring Resorts`;
-            
+
             const heroImage = document.getElementById('resortHeroImage');
             heroImage.src = resort.image || resort.imageUrl || '';
             heroImage.alt = resort.name;
-            heroImage.onerror = function() {
+            heroImage.onerror = function () {
                 this.src = 'https://placehold.co/1200x500/94a3b8/ffffff?text=' + encodeURIComponent(resort.name);
             };
 
@@ -1953,14 +2495,14 @@
             document.getElementById('resortName').textContent = resort.name;
 
             const contactInfo = resortContactInfo[resortId];
-            
+
             const address = contactInfo?.address || resort.address || 'Pansol, Calamba City, Laguna';
             document.getElementById('resortAddress').textContent = address;
 
             const paxElement = document.getElementById('resortPax');
             const paxContainer = document.getElementById('paxContainer');
             const paxValue = resort.pax || resort.capacity || resort.maxGuests || resort.bedrooms;
-            
+
             if (paxValue) {
                 let paxText = '';
                 if (typeof paxValue === 'number') {
@@ -1976,7 +2518,7 @@
 
             const priceElement = document.getElementById('resortPrice');
             let priceValue = resort.priceValue || resort.price || resort.pricePerNight;
-            
+
             if (priceValue) {
                 priceValue = priceValue.toString().replace(/[^0-9,]/g, '');
                 priceElement.textContent = '₱' + priceValue;
@@ -2015,10 +2557,10 @@
 
             const amenitiesList = resort.amenities || [];
             const amenitiesListHtml = amenitiesList.map(amenity => {
-                const details = amenityDetails[amenity] || { 
-                    icon: '✓', 
-                    label: amenity, 
-                    color: 'bg-gray-100 text-gray-800 border-gray-200' 
+                const details = amenityDetails[amenity] || {
+                    icon: '✓',
+                    label: amenity,
+                    color: 'bg-gray-100 text-gray-800 border-gray-200'
                 };
                 return `
                     <div class="amenity-item flex items-center">
@@ -2274,6 +2816,7 @@
                 });
         });
 
+        // Initialize
         loadResortDetails();
         checkAuthState();
     </script>
